@@ -8,3 +8,4 @@ tensorflow
 flax
 tf-keras
 sentencepiece
+matplotlib
