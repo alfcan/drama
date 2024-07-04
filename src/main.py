@@ -62,14 +62,14 @@ if __name__ == '__main__':
     # Calculate the symptoms for each sensitive attribute
     for sensitive_attribute in sensitive_attributes:
         print(f"\n\n\nCalculating symptoms for the sensitive attribute: {sensitive_attribute}")
-        privileged = input(f"Enter the privileged group value for {sensitive_attribute}: ")
-        unprivileged = input(f"Enter the unprivileged group value for {sensitive_attribute}: ")
+        privileged_condition = input(f"Enter the condition for the privileged group for {sensitive_attribute} (e.g., '{sensitive_attribute} >= 30' or '{sensitive_attribute} == \"White\"' or '{sensitive_attribute} < 20 or {sensitive_attribute} > 40'): ")
+        unprivileged_condition = input(f"Enter the condition for the unprivileged group for {sensitive_attribute} (e.g., '{sensitive_attribute} < 30' or '{sensitive_attribute} != \"White\"'): ")
 
         # Create the symptom calculator instance
         symptom_calculator = SymptomCalculator(df, sensitive_attribute, target_attribute)
 
         # Calculate symptoms
-        symptoms = symptom_calculator.calculate_symptoms(privileged, unprivileged)
+        symptoms = symptom_calculator.calculate_symptoms(privileged_condition, unprivileged_condition)
         for symptom, value in symptoms.items():
             print(f"{symptom}: {value}")
 
@@ -98,7 +98,7 @@ if __name__ == '__main__':
             print(f"Correlation Ratio is high: {symptoms['Correlation Ratio']}, indicating potential bias.")
 
         print("\n\n\nBias detection:")
-        bias_detection = symptom_calculator.detect_bias_symptoms(privileged, unprivileged)
+        bias_detection = symptom_calculator.detect_bias_symptoms(privileged_condition, unprivileged_condition)
         for symptom, flag in bias_detection.items():
             if flag:
                 print(f"{symptom} indicates potential bias.")
@@ -143,7 +143,7 @@ if __name__ == '__main__':
 
                     # Recalculating symptoms after mutation
                     symptom_calculator = SymptomCalculator(df_new, sensitive_attribute, target_attribute)
-                    new_symptoms = symptom_calculator.calculate_symptoms(privileged, unprivileged)
+                    new_symptoms = symptom_calculator.calculate_symptoms(privileged_condition, unprivileged_condition)
 
                     column_type = 'numeric' if pd.api.types.is_numeric_dtype(df[col]) else 'text'
                     store_results(col, column_type, operator, col in sensitive_attributes, symptoms, new_symptoms)

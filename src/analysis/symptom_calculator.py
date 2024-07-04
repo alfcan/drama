@@ -17,7 +17,7 @@ class SymptomCalculator:
         self.sensitive_attribute = sensitive_attribute
         self.target_attribute = target_attribute
 
-    def calculate_apd(self, privileged, unprivileged):
+    def calculate_apd(self, privileged_condition, unprivileged_condition):
         """
         Calculate the Absolute Probability Difference (APD).
 
@@ -28,8 +28,8 @@ class SymptomCalculator:
         Returns:
         - float: The calculated APD value.
         """
-        privileged = self.df[self.df[self.sensitive_attribute].isin([privileged])]
-        unprivileged = self.df[self.df[self.sensitive_attribute].isin([unprivileged])]
+        privileged = self.df.query(privileged_condition)
+        unprivileged = self.df.query(unprivileged_condition)
         p_privileged = privileged[self.target_attribute].mean()
         p_unprivileged = unprivileged[self.target_attribute].mean()
         return abs(p_privileged - p_unprivileged)
@@ -142,7 +142,7 @@ class SymptomCalculator:
         denominator += len(self.df) * (self.df[self.target_attribute] - mean_total).var()
         return np.sqrt(numerator / denominator)
 
-    def calculate_symptoms(self, privileged=None, unprivileged=None):
+    def calculate_symptoms(self, privileged_condition=None, unprivileged_condition=None):
         """
         Calculate all symptoms and store results.
 
@@ -154,7 +154,7 @@ class SymptomCalculator:
         - dict: Dictionary containing all calculated symptom values.
         """
         symptoms = {
-            'APD': self.calculate_apd(privileged, unprivileged) if privileged and unprivileged else None,
+            'APD': self.calculate_apd(privileged_condition, unprivileged_condition) if privileged_condition and unprivileged_condition else None,
             'Gini Index': self.calculate_gini_index(),
             'Shannon Entropy': self.calculate_shannon_entropy(),
             'Simpson Diversity': self.calculate_simpson_diversity(),
