@@ -5,16 +5,14 @@ from analysis.symptom_calculator import SymptomCalculator
 from mutation.mutation_operator import MutationOperator
 from datetime import datetime
 
-# Function to check if a string contains a single word
-def is_single_word(text):
-    return len(text.split()) == 1
 
-def store_results(column, column_type, mutation_type, is_sensitive, pre_symptoms, post_symptoms):
+def store_results(column, dataset, column_type, mutation_type, is_sensitive, pre_symptoms, post_symptoms):
     pre_symptoms_prefixed = {f'pre_{key}': value for key, value in pre_symptoms.items()}
     post_symptoms_prefixed = {f'post_{key}': value for key, value in post_symptoms.items()}
 
     results.append({
         'column': column,
+        'dataset': dataset,
         'column_type': column_type, # 'text' or 'numeric
         'mutation_type': mutation_type,
         'is_sensitive': is_sensitive,
@@ -64,42 +62,20 @@ if __name__ == '__main__':
         print(f"\n\n\nCalculating symptoms for the sensitive attribute: {sensitive_attribute}")
         privileged_condition = input(f"Enter the condition for the privileged group for {sensitive_attribute} (e.g., '{sensitive_attribute} >= 30' or '{sensitive_attribute} == \"White\"' or '{sensitive_attribute} < 20 or {sensitive_attribute} > 40'): ")
         unprivileged_condition = input(f"Enter the condition for the unprivileged group for {sensitive_attribute} (e.g., '{sensitive_attribute} < 30' or '{sensitive_attribute} != \"White\"'): ")
+        privileged_condition = privileged_condition.replace("\n", " ").strip()
+        unprivileged_condition = unprivileged_condition.replace("\n", " ").strip()
 
         # Create the symptom calculator instance
         symptom_calculator = SymptomCalculator(df, sensitive_attribute, target_attribute)
 
         # Calculate symptoms
-        symptoms = symptom_calculator.calculate_symptoms(privileged_condition, unprivileged_condition)
-        for symptom, value in symptoms.items():
+        pre_symptoms = symptom_calculator.calculate_symptoms(privileged_condition, unprivileged_condition)
+        for symptom, value in pre_symptoms.items():
             print(f"{symptom}: {value}")
 
-        print("\n\n\nSymptoms analysis:")
-        if symptoms['APD'] and symptoms['APD'] > 0.1:
-            print(f"APD is high: {symptoms['APD']}, indicating potential bias.")
-        if symptoms['Gini Index'] < 0.5:
-            print(f"Gini Index is low: {symptoms['Gini Index']}, indicating potential bias.")
-        if symptoms['Shannon Entropy'] < 0.5:
-            print(f"Shannon Entropy is low: {symptoms['Shannon Entropy']}, indicating potential bias.")
-        if symptoms['Simpson Diversity'] < 0.5:
-            print(f"Simpson Diversity is low: {symptoms['Simpson Diversity']}, indicating potential bias.")
-        if symptoms['Imbalance Ratio'] > 1.5:
-            print(f"Imbalance Ratio is high: {symptoms['Imbalance Ratio']}, indicating potential bias.")
-        if abs(symptoms['Kurtosis']) > 3:
-            print(f"Kurtosis is high: {symptoms['Kurtosis']}, indicating potential bias.")
-        if abs(symptoms['Skewness']) > 1:
-            print(f"Skewness is high: {symptoms['Skewness']}, indicating potential bias.")
-        if symptoms['Mutual Information'] > 0.5:
-            print(f"Mutual Information is high: {symptoms['Mutual Information']}, indicating potential bias.")
-        if symptoms['Normalized Mutual Information'] > 0.5:
-            print(f"Normalized Mutual Information is high: {symptoms['Normalized Mutual Information']}, indicating potential bias.")
-        if abs(symptoms['Kendall Tau']) > 0.5:
-            print(f"Kendall Tau is high: {symptoms['Kendall Tau']}, indicating potential bias.")
-        if symptoms['Correlation Ratio'] > 0.5:
-            print(f"Correlation Ratio is high: {symptoms['Correlation Ratio']}, indicating potential bias.")
-
-        print("\n\n\nBias detection:")
-        bias_detection = symptom_calculator.detect_bias_symptoms(privileged_condition, unprivileged_condition)
-        for symptom, flag in bias_detection.items():
+        print("\n\n\nPRE - Bias detection:")
+        pre_bias_detection = symptom_calculator.detect_bias_symptoms(pre_symptoms, privileged_condition, unprivileged_condition)
+        for symptom, flag in pre_bias_detection.items():
             if flag:
                 print(f"{symptom} indicates potential bias.")
         
@@ -111,14 +87,8 @@ if __name__ == '__main__':
                     # Apply a numeric mutation operator randomly
                     operators = ['increment_decrement_feature', 'swap_values', 'scale_values', 'discrete_binning']
                 else:
-                    # Check if all rows in the column contain a single word
-                    if all(is_single_word(text) for text in df[col]):
-                        # Exclude augment_text if all rows have a single word
-                        operators = ['replace_synonyms', 'add_noise', 'random_category_assignment', 'swap_values']
-                    else:
-                        # Include augment_text among the available text-based operators and exclude random_category_assignment
-                        operators = ['augment_text', 'replace_synonyms', 'add_noise', 'swap_values']
-            
+                    operators = ['augment_text', 'replace_synonyms', 'add_noise', 'random_category_assignment', 'swap_values']
+                
                 for operator in operators:
                     print(f"\n\n\nApplying {operator} to column {col}.")
                     # Call the mutation operator method dynamically
@@ -132,9 +102,9 @@ if __name__ == '__main__':
                         bins = np.linspace(df[col].min(), df[col].max(), num=4) # Split the range into 4 bins
                         df_new = mutation_operator.discrete_binning(col, bins=bins)
                     elif operator == 'random_category_assignment':
-                        df_new = mutation_operator.random_category_assignment(col, percentage=30)
+                        df_new = mutation_operator.random_category_assignment(col, percentage=20)
                     elif operator == 'augment_text':
-                        df_new = mutation_operator.augment_text(col, percentage=20)
+                        df_new = mutation_operator.augment_text(col, percentage=10)
                     elif operator == 'replace_synonyms':
                         df_new = mutation_operator.replace_synonyms(col, row_percentage=20, word_percentage=20)
                     elif operator == 'add_noise':
@@ -143,20 +113,34 @@ if __name__ == '__main__':
 
                     # Recalculating symptoms after mutation
                     symptom_calculator = SymptomCalculator(df_new, sensitive_attribute, target_attribute)
-                    new_symptoms = symptom_calculator.calculate_symptoms(privileged_condition, unprivileged_condition)
+                    post_symptoms = symptom_calculator.calculate_symptoms(privileged_condition, unprivileged_condition)
 
                     column_type = 'numeric' if pd.api.types.is_numeric_dtype(df[col]) else 'text'
-                    store_results(col, column_type, operator, col in sensitive_attributes, symptoms, new_symptoms)
+                    store_results(col, file_path, column_type, operator, col in sensitive_attributes, pre_symptoms, post_symptoms)
 
                     # Compare pre and post mutation symptoms
                     print(f"\nComparing symptoms for {col}:")
-                    for symptom, value in new_symptoms.items():
-                        old_value = symptoms.get(symptom, None)
+                    for symptom, value in post_symptoms.items():
+                        old_value = pre_symptoms.get(symptom, None)
                         if old_value:
                             change = value - old_value
                             if change != 0:
                                 print(f"{symptom} changed by {change}")
                             else:
                                 print(f"{symptom} remained the same")
+
+                    print("\n\n\nPOST - Bias detection:")
+                    post_bias_detection = symptom_calculator.detect_bias_symptoms(post_symptoms, privileged_condition, unprivileged_condition)
+                    for symptom, flag in post_bias_detection.items():
+                        if flag:
+                            print(f"{symptom} indicates potential bias.")
+                    
+                    for key in pre_bias_detection.keys():
+                        if pre_bias_detection[key] != post_bias_detection[key]:
+                            if pre_bias_detection[key] == 1 and post_bias_detection[key] == 0:
+                                print(f"The symptom {key} is no longer present with the application of the mutation.")
+                            elif pre_bias_detection[key] == 0 and post_bias_detection[key] == 1:
+                                print(f"The symptom {key} appeared with the application of the mutation.")
+
             
     export_results_to_csv()      
