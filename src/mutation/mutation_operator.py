@@ -1,10 +1,14 @@
 import numpy as np
 import pandas as pd
 import random
-from transformers import BartTokenizer, BartForConditionalGeneration, pipeline
+from transformers import T5Tokenizer, T5ForConditionalGeneration, pipeline
 import nltk
 from nltk.corpus import wordnet
 import string
+from concurrent.futures import ThreadPoolExecutor
+import multiprocessing
+from tqdm import tqdm
+
 
 nltk.download('wordnet')
 
@@ -12,8 +16,8 @@ class MutationOperator:
     def __init__(self, dataframe):
         self.dataframe = dataframe
         # Initialise the paraphrase model
-        self.tokenizer = BartTokenizer.from_pretrained("eugenesiow/bart-paraphrase")
-        self.model = BartForConditionalGeneration.from_pretrained("eugenesiow/bart-paraphrase")
+        self.tokenizer = T5Tokenizer.from_pretrained("prithivida/parrot_paraphraser_on_T5")
+        self.model = T5ForConditionalGeneration.from_pretrained("prithivida/parrot_paraphraser_on_T5")
         self.paraphraser = pipeline("text2text-generation", model=self.model, tokenizer=self.tokenizer)
 
     def increment_decrement_feature(self, feature_name, increment=True, amount=1, percentage=100):
@@ -155,13 +159,14 @@ class MutationOperator:
         
         return modified_df
     
-    def augment_text(self, text_column, percentage=10):
+    def augment_text(self, text_column, percentage=10, batch_size=10):
         """
         Paraphrase text data in the specified column to introduce variability.
 
         Parameters:
         - text_column (str): The name of the column containing text data to be paraphrased.
         - percentage (int): The percentage of text data to paraphrase.
+        - batch_size (int): The number of texts to paraphrase in a batch.
 
         Returns:
         - pd.DataFrame: A new DataFrame with the paraphrased text data.
@@ -182,12 +187,19 @@ class MutationOperator:
         # Sample the rows to paraphrase
         rows_to_paraphrase = modified_df.sample(n=num_to_replace).index
 
-        # Apply paraphrase function to the sampled rows
-        for row in rows_to_paraphrase:
-            original_text = modified_df.loc[row, text_column]
-            print("ORIGINAL TEXT", original_text)
-            paraphrased_text = self._paraphrase_text(original_text)
-            modified_df.loc[row, text_column] = paraphrased_text       
+         # Apply paraphrase function to the sampled rows in batches
+        with ThreadPoolExecutor(max_workers=multiprocessing.cpu_count()) as executor:
+            futures = []
+            for i in range(0, num_to_replace, batch_size):
+                batch_indices = rows_to_paraphrase[i:i + batch_size]
+                batch_texts = modified_df.loc[batch_indices, text_column].tolist()
+                futures.append(executor.submit(self._paraphrase_texts_batch, batch_texts))
+            
+            for future in tqdm(futures, desc="Paraphrasing", unit="batch"):
+                paraphrased_texts = future.result()
+                batch_indices = rows_to_paraphrase[futures.index(future) * batch_size : (futures.index(future) + 1) * batch_size]
+                for j, idx in enumerate(batch_indices):
+                    modified_df.at[idx, text_column] = paraphrased_texts[j]  
          
         return modified_df
     
@@ -223,7 +235,8 @@ class MutationOperator:
 
         # Apply synonym replacement to the sampled rows
         for idx in rows_to_modify:
-            modified_df.at[idx, text_column] = self._synonym_replacement(modified_df.at[idx, text_column], word_percentage)
+            if isinstance(modified_df.at[idx, text_column], str):  # Make sure the value is a string, in the case of NaN values
+                modified_df.at[idx, text_column] = self._synonym_replacement(modified_df.at[idx, text_column], word_percentage)
 
         return modified_df
     
@@ -282,6 +295,12 @@ class MutationOperator:
 
         return modified_df
 
+    def _paraphrase_texts_batch(self, texts, min_length=10, max_length=50):
+        paraphrased_texts = []
+        for text in texts:
+            paraphrased_texts.append(self._paraphrase_text(text, min_length, max_length))
+        return paraphrased_texts
+
     def _paraphrase_text(self, text, min_length=10, max_length=50):
         """
         Generate a paraphrased version of the input text using a pre-trained model.
@@ -301,8 +320,6 @@ class MutationOperator:
         try:
             paraphrased_results = self.paraphraser(text, min_length=min_length, max_length=max_length, truncation=True)
             paraphrased_text = paraphrased_results[0]['generated_text']
-            print(paraphrased_results)
-            print("PAR RES", paraphrased_text)
         except Exception as e:
             print(f"Error paraphrasing text: {e}")
             paraphrased_text = text  # Return original text in case of error
