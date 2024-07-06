@@ -168,7 +168,7 @@ class SymptomCalculator:
         }
         return symptoms
 
-    def detect_bias_symptoms(self, privileged=None, unprivileged=None):
+    def detect_bias_symptoms(self, symptoms, privileged=None, unprivileged=None):
         """
         Calculate symptoms and return a dictionary indicating if the dataset is affected by bias.
 
@@ -179,8 +179,6 @@ class SymptomCalculator:
         Returns:
         - dict: Dictionary with symptom names as keys and boolean values indicating if the dataset is affected by bias.
         """
-        symptoms = self.calculate_symptoms(privileged, unprivileged)
-
         apd_flag = False
         gini_flag = False
         shannon_flag = False
