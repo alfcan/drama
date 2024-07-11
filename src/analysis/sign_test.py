@@ -2,7 +2,7 @@ from scipy.stats import binomtest
 import pandas as pd
 
 # Load the dataset
-file_path = "../../results/results_20240702_095048.csv"
+file_path = "../../results/results.csv"
 df = pd.read_csv(file_path)
 
 # List of symptoms

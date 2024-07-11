@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 from scipy.stats import shapiro, kstest
 
 # Load dataset
-df = pd.read_csv('../../results/results_20240702_095048.csv')
+df = pd.read_csv('../../results/results.csv')
 
 # Descriptive statistics
 desc = df.describe()
@@ -14,14 +14,14 @@ desc.to_csv('../../results/descriptive_statistics.csv')
 plt.figure(figsize=(12, 6))
 df.filter(like='pre_').boxplot()
 plt.title('Box plot for pre-mutation symptoms')
-plt.xticks(rotation=45)
+plt.xticks(rotation=90)
 plt.show()
 
 # Box plot for post-mutation symptoms
 plt.figure(figsize=(12, 6))
 df.filter(like='post_').boxplot()
-plt.title('Box plot for pre-mutation symptoms')
-plt.xticks(rotation=45)
+plt.title('Box plot for post-mutation symptoms')
+plt.xticks(rotation=90)
 plt.show()
 
 # Perform Shapiro-Wilk test for normality
