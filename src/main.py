@@ -108,7 +108,7 @@ if __name__ == '__main__':
                     elif operator == 'replace_synonyms':
                         df_new = mutation_operator.replace_synonyms(col, row_percentage=20, word_percentage=20)
                     elif operator == 'add_noise':
-                        df_new = mutation_operator.add_noise(col, noise_chance=0.1)
+                        df_new = mutation_operator.add_noise(col, noise_chance=0.1, percentage=20)
                     print("Mutation applied successfully.")
 
                     # Recalculating symptoms after mutation

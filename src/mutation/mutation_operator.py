@@ -240,13 +240,14 @@ class MutationOperator:
 
         return modified_df
     
-    def add_noise(self, text_column, noise_chance=0.1):
+    def add_noise(self, text_column, noise_chance=0.1, percentage=10):
         """
         Add typographical errors or random punctuation to text data.
 
         Parameters:
         - text_column (str): The name of the column containing text data.
         - noise_chance (float): The probability of introducing noise to each word (default is 10%).
+        - percentage (int): The percentage of rows to modify.
 
         Returns:
         - pd.DataFrame: A new DataFrame with the noisy text data.
@@ -258,7 +259,14 @@ class MutationOperator:
         if text_column not in modified_df.columns:
             raise ValueError(f"The column {text_column} does not exist in the DataFrame.")
 
-        modified_df[text_column] = modified_df[text_column].apply(self._introduce_noise, noise_chance=noise_chance)
+        num_cols = len(modified_df.columns)
+        num_noisy_cols = int(num_cols * (percentage / 100))
+
+        noisy_columns = np.random.choice(modified_df.columns, num_noisy_cols, replace=False)
+
+        for col in noisy_columns:
+            modified_df[col] = self._introduce_noise(modified_df[col], noise_chance)
+
         return modified_df
     
     def random_category_assignment(self, category_column, percentage):
@@ -375,18 +383,21 @@ class MutationOperator:
         Returns:
         - str: The text with introduced noise.
         """
-        words = text.split()
-        noisy_words = []
-        for word in words:
-            if random.random() < noise_chance:
-                # Add random punctuation or space
-                if random.choice([True, False]):
-                    # Add random punctuation at the end of the word
-                    word += random.choice(string.punctuation)
-                else:
-                    # Add random space within the word (if it's longer than 1 character)
-                    if len(word) > 1:
-                        index = random.randint(1, len(word) - 1)
-                        word = word[:index] + ' ' + word[index:]
-            noisy_words.append(word)
-        return ' '.join(noisy_words)
+        if isinstance(text, str):
+            words = text.split()
+            noisy_words = []
+            for word in words:
+                if random.random() < noise_chance:
+                    # Add random punctuation or space
+                    if random.choice([True, False]):
+                        # Add random punctuation at the end of the word
+                        word += random.choice(string.punctuation)
+                    else:
+                        # Add random space within the word (if it's longer than 1 character)
+                        if len(word) > 1:
+                            index = random.randint(1, len(word) - 1)
+                            word = word[:index] + ' ' + word[index:]
+                noisy_words.append(word)
+            return ' '.join(noisy_words)
+        else:
+            return text
