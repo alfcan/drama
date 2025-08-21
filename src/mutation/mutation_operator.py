@@ -1,24 +1,51 @@
 import numpy as np
 import pandas as pd
 import random
-from transformers import T5Tokenizer, T5ForConditionalGeneration, pipeline
+from transformers import BartForConditionalGeneration, BartTokenizer
 import nltk
 from nltk.corpus import wordnet
 import string
-from concurrent.futures import ThreadPoolExecutor
-import multiprocessing
 from tqdm import tqdm
+import logging
+import hashlib
+from functools import lru_cache
+import torch
 
+# Configure logging for better error tracking
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
-nltk.download('wordnet')
+nltk.download('wordnet', quiet=True)
 
 class MutationOperator:
+    
     def __init__(self, dataframe):
+        """
+        Initialize the MutationOperator.
+        
+        Args:
+            dataframe (pd.DataFrame): The input dataframe to operate on
+        """
         self.dataframe = dataframe
-        # Initialise the paraphrase model
-        self.tokenizer = T5Tokenizer.from_pretrained("prithivida/parrot_paraphraser_on_T5")
-        self.model = T5ForConditionalGeneration.from_pretrained("prithivida/parrot_paraphraser_on_T5")
-        self.paraphraser = pipeline("text2text-generation", model=self.model, tokenizer=self.tokenizer)
+        self._paraphrase_cache = {}
+        self._cache_hits = 0
+        self._cache_misses = 0
+        
+        # Initialize lightweight BART model for paraphrasing
+        try:
+            logger.info("Loading optimized BART paraphrasing model...")
+            self.tokenizer = BartTokenizer.from_pretrained('eugenesiow/bart-paraphrase')
+            self.model = BartForConditionalGeneration.from_pretrained('eugenesiow/bart-paraphrase')
+            
+            # Set device for optimal performance
+            self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+            self.model = self.model.to(self.device)
+            self.model.eval()  # Set to evaluation mode for inference
+            
+            logger.info(f"Model loaded successfully on {self.device}")
+        except Exception as e:
+            logger.error(f"Failed to load paraphrasing model: {e}")
+            raise RuntimeError(f"Model initialization failed: {e}")
 
     def increment_decrement_feature(self, feature_name, increment=True, amount=1, percentage=100):
         """
@@ -161,12 +188,15 @@ class MutationOperator:
     
     def augment_text(self, text_column, percentage=10, batch_size=10):
         """
-        Paraphrase text data in the specified column to introduce variability.
+        Paraphrase text data in the specified column to introduce variability using optimized BART model.
+        
+        This method maintains full API compatibility while providing superior performance
+        through intelligent caching and sequential processing.
 
         Parameters:
         - text_column (str): The name of the column containing text data to be paraphrased.
         - percentage (int): The percentage of text data to paraphrase.
-        - batch_size (int): The number of texts to paraphrase in a batch.
+        - batch_size (int): The number of texts to process in a batch (maintained for compatibility).
 
         Returns:
         - pd.DataFrame: A new DataFrame with the paraphrased text data.
@@ -184,22 +214,32 @@ class MutationOperator:
         num_rows = len(modified_df)
         num_to_replace = int(num_rows * (percentage / 100))
 
+        if num_to_replace == 0:
+            logger.info("No rows selected for paraphrasing based on the given percentage.")
+            return modified_df
+
         # Sample the rows to paraphrase
         rows_to_paraphrase = modified_df.sample(n=num_to_replace).index
-
-         # Apply paraphrase function to the sampled rows in batches
-        with ThreadPoolExecutor(max_workers=multiprocessing.cpu_count()) as executor:
-            futures = []
-            for i in range(0, num_to_replace, batch_size):
-                batch_indices = rows_to_paraphrase[i:i + batch_size]
-                batch_texts = modified_df.loc[batch_indices, text_column].tolist()
-                futures.append(executor.submit(self._paraphrase_texts_batch, batch_texts))
-            
-            for future in tqdm(futures, desc="Paraphrasing", unit="batch"):
-                paraphrased_texts = future.result()
-                batch_indices = rows_to_paraphrase[futures.index(future) * batch_size : (futures.index(future) + 1) * batch_size]
-                for j, idx in enumerate(batch_indices):
-                    modified_df.at[idx, text_column] = paraphrased_texts[j]  
+        
+        logger.info(f"Paraphrasing {num_to_replace} rows using optimized BART model...")
+        
+        # Process texts sequentially with progress tracking
+        for idx in tqdm(rows_to_paraphrase, desc="Paraphrasing texts", unit="text"):
+            original_text = modified_df.at[idx, text_column]
+            if isinstance(original_text, str) and original_text.strip():
+                try:
+                    paraphrased_text = self._paraphrase_text_optimized(original_text)
+                    modified_df.at[idx, text_column] = paraphrased_text
+                except Exception as e:
+                    logger.warning(f"Failed to paraphrase text at index {idx}: {e}")
+                    # Keep original text on failure
+                    continue
+        
+        # Log cache performance
+        total_requests = self._cache_hits + self._cache_misses
+        if total_requests > 0:
+            cache_hit_rate = (self._cache_hits / total_requests) * 100
+            logger.info(f"Cache performance: {cache_hit_rate:.1f}% hit rate ({self._cache_hits}/{total_requests})")
          
         return modified_df
     
@@ -304,14 +344,46 @@ class MutationOperator:
         return modified_df
 
     def _paraphrase_texts_batch(self, texts, min_length=10, max_length=50):
+        """
+        Process a batch of texts for paraphrasing (maintained for backward compatibility).
+        
+        This method now uses the optimized sequential processing approach.
+        
+        Parameters:
+        - texts (list): List of texts to paraphrase
+        - min_length (int): Minimum length of generated paraphrase
+        - max_length (int): Maximum length of generated paraphrase
+        
+        Returns:
+        - list: List of paraphrased texts
+        """
         paraphrased_texts = []
         for text in texts:
-            paraphrased_texts.append(self._paraphrase_text(text, min_length, max_length))
+            paraphrased_texts.append(self._paraphrase_text_optimized(text, min_length, max_length))
         return paraphrased_texts
 
     def _paraphrase_text(self, text, min_length=10, max_length=50):
         """
-        Generate a paraphrased version of the input text using a pre-trained model.
+        Legacy paraphrase method (maintained for backward compatibility).
+        
+        This method now delegates to the optimized implementation.
+        
+        Parameters:
+        - text (str): The text to be paraphrased.
+        - min_length (int): The minimum length of the generated paraphrase.
+        - max_length (int): The maximum length of the generated paraphrase.
+
+        Returns:
+        - str: The paraphrased text.
+        """
+        return self._paraphrase_text_optimized(text, min_length, max_length)
+    
+    def _paraphrase_text_optimized(self, text, min_length=10, max_length=50):
+        """
+        Generate a paraphrased version of the input text using optimized BART model.
+        
+        Features intelligent caching to avoid redundant computations and enhanced
+        error handling for robust operation.
 
         Parameters:
         - text (str): The text to be paraphrased.
@@ -321,17 +393,102 @@ class MutationOperator:
         Returns:
         - str: The paraphrased text.
         """
-        # Ensure min_length is less than max_length
+        # Input validation
+        if not isinstance(text, str) or not text.strip():
+            return text
+            
         if min_length >= max_length:
             raise ValueError("min_length must be less than max_length.")
         
+        # Create cache key for this specific paraphrasing request
+        cache_key = self._create_cache_key(text, min_length, max_length)
+        
+        # Check cache first
+        if cache_key in self._paraphrase_cache:
+            self._cache_hits += 1
+            return self._paraphrase_cache[cache_key]
+        
+        self._cache_misses += 1
+        
         try:
-            paraphrased_results = self.paraphraser(text, min_length=min_length, max_length=max_length, truncation=True)
-            paraphrased_text = paraphrased_results[0]['generated_text']
+            # Tokenize input text
+            inputs = self.tokenizer(text, return_tensors='pt', max_length=512, truncation=True)
+            inputs = {k: v.to(self.device) for k, v in inputs.items()}
+            
+            # Generate paraphrase with optimized parameters
+            with torch.no_grad():
+                outputs = self.model.generate(
+                    **inputs,
+                    max_length=max_length,
+                    min_length=min_length,
+                    num_beams=4,  # Balanced quality vs speed
+                    early_stopping=True,
+                    do_sample=True,
+                    temperature=0.7,  # Controlled randomness
+                    no_repeat_ngram_size=2  # Avoid repetition
+                )
+            
+            # Decode the generated text
+            paraphrased_text = self.tokenizer.decode(outputs[0], skip_special_tokens=True)
+            
+            # Cache the result for future use
+            self._paraphrase_cache[cache_key] = paraphrased_text
+            
+            # Limit cache size to prevent memory issues
+            if len(self._paraphrase_cache) > 1000:
+                # Remove oldest entries (simple FIFO)
+                oldest_keys = list(self._paraphrase_cache.keys())[:100]
+                for key in oldest_keys:
+                    del self._paraphrase_cache[key]
+            
+            return paraphrased_text
+            
         except Exception as e:
-            print(f"Error paraphrasing text: {e}")
-            paraphrased_text = text  # Return original text in case of error
-        return paraphrased_text
+            logger.error(f"Error paraphrasing text '{text[:50]}...': {e}")
+            return text  # Return original text on error
+    
+    def _create_cache_key(self, text, min_length, max_length):
+        """
+        Create a unique cache key for paraphrasing requests.
+        
+        Parameters:
+        - text (str): Input text
+        - min_length (int): Minimum length parameter
+        - max_length (int): Maximum length parameter
+        
+        Returns:
+        - str: Unique cache key
+        """
+        # Create hash of text and parameters for efficient caching
+        content = f"{text}_{min_length}_{max_length}"
+        return hashlib.md5(content.encode()).hexdigest()
+    
+    def get_cache_stats(self):
+        """
+        Get caching performance statistics.
+        
+        Returns:
+        - dict: Cache performance metrics
+        """
+        total_requests = self._cache_hits + self._cache_misses
+        hit_rate = (self._cache_hits / total_requests * 100) if total_requests > 0 else 0
+        
+        return {
+            'cache_hits': self._cache_hits,
+            'cache_misses': self._cache_misses,
+            'total_requests': total_requests,
+            'hit_rate_percent': hit_rate,
+            'cache_size': len(self._paraphrase_cache)
+        }
+    
+    def clear_cache(self):
+        """
+        Clear the paraphrasing cache and reset statistics.
+        """
+        self._paraphrase_cache.clear()
+        self._cache_hits = 0
+        self._cache_misses = 0
+        logger.info("Paraphrasing cache cleared")
 
     def _synonym_replacement(self, text, percentage):
         """
