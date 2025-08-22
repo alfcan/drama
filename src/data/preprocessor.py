@@ -91,6 +91,9 @@ class DataPreprocessor:
         complete removal of any rows containing missing values. This ensures
         data integrity without introducing bias through imputation methods.
         
+        Note: This method also treats '?' values as missing values, which is
+        common in some datasets (e.g., adult.csv, bank.csv).
+        
         Args:
             df: Input DataFrame
             
@@ -107,6 +110,10 @@ class DataPreprocessor:
             raise ValueError("Input DataFrame is empty")
             
         df_cleaned = df.copy()
+        
+        # Replace '?' with NaN to treat as missing values
+        df_cleaned = df_cleaned.replace('?', pd.NA)
+        
         missing_before = df_cleaned.isnull().sum().sum()
         
         if missing_before == 0:
