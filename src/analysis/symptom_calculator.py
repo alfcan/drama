@@ -55,24 +55,39 @@ class SymptomCalculator:
 
     def calculate_gini_index(self):
         """
-        Calculate the Gini Index.
+        Calculate the (normalized) Gini Index:
+        G = (m/(m-1)) * (1 - sum_i f_i^2), where f_i are class frequencies (sum to 1).
         """
-        counts = self.df[self.sensitive_attribute].value_counts().values
-        return gini_fun(counts)
+        counts = self.df[self.sensitive_attribute].value_counts(normalize=True).values
+        m = len(counts)
+        if m <= 1:
+            return 1.0
+        f2 = np.sum(counts ** 2)
+        return (m / (m - 1)) * (1.0 - f2)
 
     def calculate_shannon_entropy(self):
-        """Calculate the Shannon Entropy."""
-        counts = self.df[self.sensitive_attribute].value_counts()
-        if len(counts) == 0:
-            return 0
-        logs = np.log(counts)
-        return -(1 / np.log(len(counts))) * np.sum(counts * logs)
+        """Calculate the normalized Shannon Entropy (between 0-1)."""
+        counts = self.df[self.sensitive_attribute].value_counts(normalize=True)
+        if len(counts) <= 1:
+            return 1.0  # Perfect balance for single category
+        
+        # Shannon entropy normalized to [0,1]
+        entropy = -np.sum(counts * np.log(counts))
+        max_entropy = np.log(len(counts))
+        return entropy / max_entropy if max_entropy > 0 else 0.0
 
     def calculate_simpson_diversity(self):
-        """Calcute the Simpson Diversity Index"""
-        counts = self.df[self.sensitive_attribute].value_counts()
-        f = np.sum(np.square(counts))
-        return (1 / f) - 1 if f != 0 else 0
+        """Calculate the normalized Simpson Diversity Index as:
+        D = (1/(m-1)) * ((1 / sum_i f_i^2) - 1), where f_i are class frequencies (sum to 1).
+        """
+        counts = self.df[self.sensitive_attribute].value_counts(normalize=True).values
+        m = len(counts)
+        if m <= 1:
+            return 1.0
+        f2 = np.sum(counts ** 2)
+        if f2 <= 0:
+            return 1.0
+        return (1.0 / (m - 1)) * ((1.0 / f2) - 1.0)
 
     def calculate_imbalance_ratio(self):
         """Imbalance ratio as min/max"""
@@ -81,21 +96,15 @@ class SymptomCalculator:
 
     def calculate_kurtosis(self):
         """
-        Calculate the Kurtosis.
-
-        Returns:
-        - float: The calculated Kurtosis.
+        Calculate the Kurtosis (classical, not excess).
         """
-        return kurtosis(self.df[self.target_attribute])
+        return kurtosis(self.df[self.target_attribute], fisher=False, bias=False)
 
     def calculate_skewness(self):
         """
-        Calculate the Skewness.
-
-        Returns:
-        - float: The calculated Skewness.
+        Calculate the Skewness (with bias correction).
         """
-        return skew(self.df[self.target_attribute])
+        return skew(self.df[self.target_attribute], bias=False)
 
     def calculate_mutual_information(self):
         """
@@ -109,15 +118,18 @@ class SymptomCalculator:
     def calculate_normalized_mutual_information(self):
         """
         Calculate the Normalized Mutual Information between sensitive attribute and target attribute.
-
-        Returns:
-        - float: The calculated Normalized Mutual Information.
+        Uses natural logarithm consistently and non-normalized entropies:
+        NMI = I(X;Y) / (H(X) + H(Y))
         """
-        mutual_info = self.calculate_mutual_information()
-        h_x = self.calculate_shannon_entropy()
-        h_y = -np.sum(self.df[self.target_attribute].value_counts(normalize=True).values * 
-                      np.log2(self.df[self.target_attribute].value_counts(normalize=True).values))
-        return mutual_info / (h_x + h_y)
+        mi = self.calculate_mutual_information()  # sklearn uses natural log for MI
+        # H(X)
+        px = self.df[self.sensitive_attribute].value_counts(normalize=True).values
+        hx = -np.sum(px * np.log(px + 1e-12))
+        # H(Y)
+        py = self.df[self.target_attribute].value_counts(normalize=True).values
+        hy = -np.sum(py * np.log(py + 1e-12))
+        denom = hx + hy
+        return mi / denom if denom > 0 else 0.0
 
     def calculate_kendall_tau(self):
         """
@@ -163,7 +175,7 @@ class SymptomCalculator:
 
     def statistical_parity(self, privileged_condition, unprivileged_condition):
         unpriv_prob, priv_prob = self._compute_probs(privileged_condition, unprivileged_condition)
-        return unpriv_prob - priv_prob
+        return abs(unpriv_prob - priv_prob)
 
     def disparate_impact(self, privileged_condition, unprivileged_condition):
         unpriv_prob, priv_prob = self._compute_probs(privileged_condition, unprivileged_condition)
@@ -233,11 +245,11 @@ class SymptomCalculator:
         """
         unpriv_prob = priv_prob = None
         unpriv_ratio = priv_ratio = None
-        sp = di = pos_prob_diff = None
+        dsp = di = pos_prob_diff = None
         if privileged_condition and unprivileged_condition:
             unpriv_prob, priv_prob = self._compute_probs(privileged_condition, unprivileged_condition)
             unpriv_ratio, priv_ratio = self._group_ratio(privileged_condition, unprivileged_condition)
-            sp = self.statistical_parity(privileged_condition, unprivileged_condition)
+            dsp = self.statistical_parity(privileged_condition, unprivileged_condition)
             di = self.disparate_impact(privileged_condition, unprivileged_condition)
             pos_prob_diff = unpriv_prob - priv_prob if unpriv_prob is not None else None
 
@@ -247,7 +259,6 @@ class SymptomCalculator:
             'Shannon Entropy': self.calculate_shannon_entropy(),
             'Simpson Diversity': self.calculate_simpson_diversity(),
             'Imbalance Ratio': self.calculate_imbalance_ratio(),
-            'Kurtosis': self.calculate_kurtosis(),
             'Skewness': self.calculate_skewness(),
             'Mutual Information': self.calculate_mutual_information(),
             'Normalized Mutual Information': self.calculate_normalized_mutual_information(),
@@ -257,7 +268,7 @@ class SymptomCalculator:
             'Privileged Pos Prob': priv_prob,
             'Unprivileged Unbalance': unpriv_ratio,
             'Privileged Unbalance': priv_ratio,
-            'Statistical Parity': sp,
+            'Data Statistical Parity': dsp,
             'Disparate Impact': di,
             'Pos Probability Diff': pos_prob_diff
         }
@@ -270,54 +281,76 @@ class SymptomCalculator:
         Returns:
         - dict: Dictionary with symptom names as keys and boolean values indicating if the dataset is affected by bias.
         """
-        apd_flag = False
+        # Initialize flags for all symptoms
+        dsp_flag = False
         gini_flag = False
         shannon_flag = False
         simpson_flag = False
         ir_flag = False
-        kurtosis_flag = False
         skewness_flag = False
-        mi_flag = False
-        nmi_flag = False
-        kt_flag = False
-        cr_flag = False
+        mutual_info_flag = False
+        kendall_tau_flag = False
+        unpriv_unbalance_flag = False
+        priv_unbalance_flag = False
+        upp_flag = False
+        
+        # Data Statistical Parity (DSP) - 1 indicates complete bias, 0 indicates optimal fairness
+        if 'Data Statistical Parity' in symptoms and symptoms['Data Statistical Parity'] is not None:
+            dsp_flag = abs(symptoms['Data Statistical Parity']) >= 1.0
+        
+        # Gini Index - After 0-1 normalisation, 0 indicates completely unbalanced variable (bias), 1 indicates completely balanced
+        if symptoms['Gini Index'] is not None:
+            gini_flag = symptoms['Gini Index'] <= 0.0
+        
+        # Shannon Diversity - After 0-1 normalisation, 0 indicates completely unbalanced variable (bias), 1 indicates completely balanced
+        if symptoms['Shannon Entropy'] is not None:
+            shannon_flag = symptoms['Shannon Entropy'] <= 0.0
+        
+        # Simpson Diversity - After 0-1 normalisation, 0 indicates completely unbalanced variable (bias), 1 indicates completely balanced
+        if symptoms['Simpson Diversity'] is not None:
+            simpson_flag = symptoms['Simpson Diversity'] <= 0.0
+        
+        # Imbalance Ratio - After 0-1 normalisation, 1 indicates completely unbalanced variable (bias), 0 indicates completely balanced
+        if symptoms['Imbalance Ratio'] is not None:
+            ir_flag = symptoms['Imbalance Ratio'] >= 1.0
+        
+        # Skewness - Value other than 0 indicates imbalance, tends to 0 for balanced data
+        if symptoms['Skewness'] is not None:
+            skewness_flag = abs(symptoms['Skewness']) > 0.0
+        
+        # Mutual Information - Greater than 0 indicates dependence, 0 indicates complete independence
+        if symptoms['Mutual Information'] is not None:
+            mutual_info_flag = symptoms['Mutual Information'] > 0.0
+        
+        # Kendall's Tau - 0 implies no correlation, no specific bias identification found
+        if symptoms['Kendall Tau'] is not None:
+            kendall_tau_flag = abs(symptoms['Kendall Tau']) > 0.5
+        
+        # Unprivileged Group Unbalance - Greater than 1 indicates over-sampling, less than 1 indicates under-sampling, 1 indicates balance
+        if symptoms['Unprivileged Unbalance'] is not None:
+            unpriv_unbalance_flag = symptoms['Unprivileged Unbalance'] != 1.0
+        
+        # Privileged Group Unbalance - Greater than 1 indicates over-sampling, less than 1 indicates under-sampling, 1 indicates balance
+        if symptoms['Privileged Unbalance'] is not None:
+            priv_unbalance_flag = symptoms['Privileged Unbalance'] != 1.0
 
-        if symptoms['APD'] and symptoms['APD'] > 0.1:
-            apd_flag = True
-        if symptoms['Gini Index'] < 0.5:
-            gini_flag = True
-        if symptoms['Shannon Entropy'] < 0.5:
-            shannon_flag = True
-        if symptoms['Simpson Diversity'] < 0.5:
-            simpson_flag = True
-        # For min/max definition, ratio closer to 0 indicates imbalance
-        if symptoms['Imbalance Ratio'] is not None and symptoms['Imbalance Ratio'] < 0.5:
-            ir_flag = True
-        if abs(symptoms['Kurtosis']) > 3:
-            kurtosis_flag = True
-        if abs(symptoms['Skewness']) > 1:
-            skewness_flag = True
-        if symptoms['Mutual Information'] > 0.5:
-            mi_flag = True
-        if symptoms['Normalized Mutual Information'] > 0.5:
-            nmi_flag = True
-        if abs(symptoms['Kendall Tau']) > 0.5:
-            kt_flag = True
-        if symptoms['Correlation Ratio'] > 0.5:
-            cr_flag = True
+        # Unprivileged Positive Probability (UPP) - Second most important variable for predicting SP and AO
+        if symptoms['Unprivileged Pos Prob'] is not None:
+            upp_flag = symptoms['Unprivileged Pos Prob'] != 0.5
 
+        # Create bias detection dictionary with all symptoms
         bias_detection = {
-            'APD': apd_flag,
+            'Data Statistical Parity': dsp_flag,
             'Gini Index': gini_flag,
             'Shannon Entropy': shannon_flag,
             'Simpson Diversity': simpson_flag,
             'Imbalance Ratio': ir_flag,
-            'Kurtosis': kurtosis_flag,
             'Skewness': skewness_flag,
-            'Mutual Information': mi_flag,
-            'Normalized Mutual Information': nmi_flag,
-            'Kendall Tau': kt_flag,
-            'Correlation Ratio': cr_flag
+            'Mutual Information': mutual_info_flag,
+            'Kendall Tau': kendall_tau_flag,
+            'Unprivileged Unbalance': unpriv_unbalance_flag,
+            'Privileged Unbalance': priv_unbalance_flag,
+            'Unprivileged Pos Prob': upp_flag
         }
 
         return bias_detection
