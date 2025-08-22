@@ -118,9 +118,12 @@ class MutationOperator:
         if num_swaps > len(self.dataframe):
             raise ValueError("Number of swaps cannot exceed the number of rows in the DataFrame.")
         
+        # Get actual DataFrame indices instead of assuming sequential integers
+        available_indices = modified_df.index.tolist()
+        
         for _ in range(num_swaps):
-            # Randomly pick two indices to swap
-            idx1, idx2 = random.sample(range(len(modified_df)), 2)
+            # Randomly pick two indices to swap from actual DataFrame indices
+            idx1, idx2 = random.sample(available_indices, 2)
             # Swap the values
             modified_df.at[idx1, feature_name], modified_df.at[idx2, feature_name] = modified_df.at[idx2, feature_name], modified_df.at[idx1, feature_name]
 
