@@ -3,6 +3,25 @@ import numpy as np
 from scipy.stats import kurtosis, skew, kendalltau
 from sklearn.metrics import mutual_info_score
 
+# --- Helper functions ---
+
+def gini_fun(x, w=None):
+    """Weighted Gini coefficient"""
+    x = np.asarray(x)
+    if w is not None:
+        w = np.asarray(w)
+        sorted_indices = np.argsort(x)
+        sorted_x = x[sorted_indices]
+        sorted_w = w[sorted_indices]
+        cumw = np.cumsum(sorted_w, dtype=float)
+        cumxw = np.cumsum(sorted_x * sorted_w, dtype=float)
+        return np.sum(cumxw[1:] * cumw[:-1] - cumxw[:-1] * cumw[1:]) / (cumxw[-1] * cumw[-1])
+    else:
+        sorted_x = np.sort(x)
+        n = len(x)
+        cumx = np.cumsum(sorted_x, dtype=float)
+        return (n + 1 - 2 * np.sum(cumx) / cumx[-1]) / n
+
 class SymptomCalculator:
     def __init__(self, df, sensitive_attribute, target_attribute):
         """
@@ -37,42 +56,28 @@ class SymptomCalculator:
     def calculate_gini_index(self):
         """
         Calculate the Gini Index.
-
-        Returns:
-        - float: The calculated Gini Index.
         """
-        p = self.df[self.sensitive_attribute].value_counts(normalize=True).values
-        return 1 - np.sum(np.square(p))
+        counts = self.df[self.sensitive_attribute].value_counts().values
+        return gini_fun(counts)
 
     def calculate_shannon_entropy(self):
-        """
-        Calculate the Shannon Entropy.
-
-        Returns:
-        - float: The calculated Shannon Entropy.
-        """
-        p = self.df[self.sensitive_attribute].value_counts(normalize=True).values
-        return -np.sum(p * np.log2(p))
+        """Calculate the Shannon Entropy."""
+        counts = self.df[self.sensitive_attribute].value_counts()
+        if len(counts) == 0:
+            return 0
+        logs = np.log(counts)
+        return -(1 / np.log(len(counts))) * np.sum(counts * logs)
 
     def calculate_simpson_diversity(self):
-        """
-        Calculate the Simpson Diversity Index.
-
-        Returns:
-        - float: The calculated Simpson Diversity Index.
-        """
-        p = self.df[self.sensitive_attribute].value_counts(normalize=True).values
-        return 1 - np.sum(p**2)
+        """Calcute the Simpson Diversity Index"""
+        counts = self.df[self.sensitive_attribute].value_counts()
+        f = np.sum(np.square(counts))
+        return (1 / f) - 1 if f != 0 else 0
 
     def calculate_imbalance_ratio(self):
-        """
-        Calculate the Imbalance Ratio (IR).
-
-        Returns:
-        - float: The calculated Imbalance Ratio.
-        """
-        p = self.df[self.sensitive_attribute].value_counts(normalize=True).values
-        return np.max(p) / np.min(p)
+        """Imbalance ratio as min/max"""
+        counts = self.df[self.sensitive_attribute].value_counts(normalize=True).values
+        return np.min(counts) / np.max(counts) if len(counts) > 1 else 0
 
     def calculate_kurtosis(self):
         """
@@ -142,17 +147,100 @@ class SymptomCalculator:
         denominator += len(self.df) * (self.df[self.target_attribute] - mean_total).var()
         return np.sqrt(numerator / denominator)
 
+    # ------------------- Additional Metrics (bias_symptoms parity) -------------------
+    def _get_groups(self, privileged_condition, unprivileged_condition):
+        unpriv_group = self.df.query(unprivileged_condition)
+        priv_group = self.df.query(privileged_condition)
+        unpriv_group_pos = unpriv_group[self.target_attribute] == 1
+        priv_group_pos = priv_group[self.target_attribute] == 1
+        return unpriv_group, unpriv_group_pos, priv_group, priv_group_pos
+
+    def _compute_probs(self, privileged_condition, unprivileged_condition):
+        unpriv_group, unpriv_group_pos, priv_group, priv_group_pos = self._get_groups(privileged_condition, unprivileged_condition)
+        unpriv_prob = unpriv_group_pos.mean() if len(unpriv_group) else 0
+        priv_prob = priv_group_pos.mean() if len(priv_group) else 0
+        return unpriv_prob, priv_prob
+
+    def statistical_parity(self, privileged_condition, unprivileged_condition):
+        unpriv_prob, priv_prob = self._compute_probs(privileged_condition, unprivileged_condition)
+        return unpriv_prob - priv_prob
+
+    def disparate_impact(self, privileged_condition, unprivileged_condition):
+        unpriv_prob, priv_prob = self._compute_probs(privileged_condition, unprivileged_condition)
+        return unpriv_prob / priv_prob if priv_prob != 0 else 0
+
+    def _group_ratio(self, privileged_condition, unprivileged_condition):
+        unpriv_group, unpriv_group_pos, priv_group, priv_group_pos = self._get_groups(privileged_condition, unprivileged_condition)
+        n = len(self.df)
+        total_pos = (self.df[self.target_attribute] == 1).sum()
+
+        def _ratio(group, group_pos):
+            if len(group) == 0 or total_pos == 0:
+                return 0
+            w_exp = (len(group) / n) * (total_pos / n)
+            w_obs = group_pos.sum() / n
+            return w_obs / w_exp if w_exp != 0 else 0
+
+        return _ratio(unpriv_group, unpriv_group_pos), _ratio(priv_group, priv_group_pos)
+
+    def infer_privileged_unprivileged_conditions(self):
+        """
+        Automatically infer privileged and unprivileged group conditions for the
+        sensitive attribute based on the mean value of the target attribute.
+
+        Logic:
+        1. If the sensitive attribute is numerical, split the data at the median.
+           The side with the higher mean target value is considered privileged.
+        2. If the sensitive attribute is categorical, the category with the
+           highest mean target value is privileged, while the category with the
+           lowest mean target value is unprivileged.
+
+        Returns
+        -------
+        tuple(str, str)
+            (privileged_condition, unprivileged_condition)
+        """
+        col = self.sensitive_attribute
+        y = self.target_attribute
+        series = self.df[col]
+
+        # Numerical attribute: median split
+        if pd.api.types.is_numeric_dtype(series):
+            median_val = series.median()
+            cond_high = f"`{col}` >= {median_val}"
+            cond_low = f"`{col}` < {median_val}"
+            mean_high = self.df.query(cond_high)[y].mean()
+            mean_low = self.df.query(cond_low)[y].mean()
+            if mean_high >= mean_low:
+                return cond_high, cond_low
+            else:
+                return cond_low, cond_high
+
+        # Categorical attribute
+        means = self.df.groupby(col)[y].mean()
+        privileged_cat = means.idxmax()
+        unprivileged_cat = means.idxmin()
+        priv_cond = f"`{col}` == {repr(privileged_cat)}"
+        unpriv_cond = f"`{col}` == {repr(unprivileged_cat)}"
+        return priv_cond, unpriv_cond
+
     def calculate_symptoms(self, privileged_condition=None, unprivileged_condition=None):
         """
         Calculate all symptoms and store results.
 
-        Parameters:
-        - privileged: Value of the privileged category of the sensitive attribute (required for APD calculation).
-        - unprivileged: Value of the unprivileged category of the sensitive attribute (required for APD calculation).
-
         Returns:
         - dict: Dictionary containing all calculated symptom values.
         """
+        unpriv_prob = priv_prob = None
+        unpriv_ratio = priv_ratio = None
+        sp = di = pos_prob_diff = None
+        if privileged_condition and unprivileged_condition:
+            unpriv_prob, priv_prob = self._compute_probs(privileged_condition, unprivileged_condition)
+            unpriv_ratio, priv_ratio = self._group_ratio(privileged_condition, unprivileged_condition)
+            sp = self.statistical_parity(privileged_condition, unprivileged_condition)
+            di = self.disparate_impact(privileged_condition, unprivileged_condition)
+            pos_prob_diff = unpriv_prob - priv_prob if unpriv_prob is not None else None
+
         symptoms = {
             'APD': self.calculate_apd(privileged_condition, unprivileged_condition) if privileged_condition and unprivileged_condition else None,
             'Gini Index': self.calculate_gini_index(),
@@ -164,17 +252,20 @@ class SymptomCalculator:
             'Mutual Information': self.calculate_mutual_information(),
             'Normalized Mutual Information': self.calculate_normalized_mutual_information(),
             'Kendall Tau': self.calculate_kendall_tau(),
-            'Correlation Ratio': self.calculate_correlation_ratio()
+            'Correlation Ratio': self.calculate_correlation_ratio(),
+            'Unprivileged Pos Prob': unpriv_prob,
+            'Privileged Pos Prob': priv_prob,
+            'Unprivileged Unbalance': unpriv_ratio,
+            'Privileged Unbalance': priv_ratio,
+            'Statistical Parity': sp,
+            'Disparate Impact': di,
+            'Pos Probability Diff': pos_prob_diff
         }
         return symptoms
 
-    def detect_bias_symptoms(self, symptoms, privileged=None, unprivileged=None):
+    def detect_bias_symptoms(self, symptoms):
         """
         Calculate symptoms and return a dictionary indicating if the dataset is affected by bias.
-
-        Parameters:
-        - privileged: Value of the privileged category of the sensitive attribute (required for APD calculation).
-        - unprivileged: Value of the unprivileged category of the sensitive attribute (required for APD calculation).
 
         Returns:
         - dict: Dictionary with symptom names as keys and boolean values indicating if the dataset is affected by bias.
@@ -199,7 +290,8 @@ class SymptomCalculator:
             shannon_flag = True
         if symptoms['Simpson Diversity'] < 0.5:
             simpson_flag = True
-        if symptoms['Imbalance Ratio'] > 1.5:
+        # For min/max definition, ratio closer to 0 indicates imbalance
+        if symptoms['Imbalance Ratio'] is not None and symptoms['Imbalance Ratio'] < 0.5:
             ir_flag = True
         if abs(symptoms['Kurtosis']) > 3:
             kurtosis_flag = True
