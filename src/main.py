@@ -1,24 +1,35 @@
 import numpy as np
 import pandas as pd
 from data.loader import load_dataset
+from data.preprocessor import DataPreprocessor
 from analysis.symptom_calculator import SymptomCalculator
 from mutation.mutation_operator import MutationOperator
 from datetime import datetime
 
 
-def store_results(column, dataset, column_type, mutation_type, is_sensitive, pre_symptoms, post_symptoms):
+def store_results(column, dataset, column_type, mutation_type, is_sensitive, 
+                 pre_symptoms, post_symptoms, preprocessing_info=None):
+    """Store results with preprocessing metadata."""
     pre_symptoms_prefixed = {f'pre_{key}': value for key, value in pre_symptoms.items()}
     post_symptoms_prefixed = {f'post_{key}': value for key, value in post_symptoms.items()}
-
-    results.append({
+    
+    result_entry = {
         'column': column,
         'dataset': dataset,
-        'column_type': column_type, # 'text' or 'numeric
+        'column_type': column_type,
         'mutation_type': mutation_type,
         'is_sensitive': is_sensitive,
         **pre_symptoms_prefixed,
-        **post_symptoms_prefixed
-    })
+        **post_symptoms_prefixed,
+        'preprocessing_applied': True,
+        'missing_handled': preprocessing_info.get('missing_handled', 0) if preprocessing_info else 0,
+        'outliers_detected': preprocessing_info.get('outliers_detected', 0) if preprocessing_info else 0,
+        'features_scaled': preprocessing_info.get('features_scaled', 0) if preprocessing_info else 0,
+        'categorical_encoded': preprocessing_info.get('categorical_encoded', 0) if preprocessing_info else 0
+    }
+    
+    results.append(result_entry)
+
 
 def export_results_to_csv():
     df_results = pd.DataFrame(results)
@@ -27,16 +38,26 @@ def export_results_to_csv():
     df_results.to_csv(filename, index=False)
     print(f'Results exported successfully to {filename}')
 
+
 if __name__ == '__main__':
     
-    # Load the dataset
+    # Initialize preprocessor with only required preprocessing steps
+    preprocessor = DataPreprocessor()
+    
+    # Load and preprocess dataset
     DATA_PATH = '../data/'
     file_path = input("Enter the name of the CSV data set to be analyzed (placed in the data folder): ")
+    
     try:
-        df = load_dataset(DATA_PATH+file_path)
+        df_raw = load_dataset(DATA_PATH+file_path)
+        print(f"Loaded dataset with {len(df_raw)} rows and {len(df_raw.columns)} columns")
     except (FileNotFoundError, ValueError) as e:
         print(e)
         exit(1)
+    
+    # Apply required preprocessing: remove missing values and one-hot encode
+    df, preprocessing_info = preprocessor.fit_transform(df_raw)
+    print(f"After preprocessing: {len(df)} rows and {len(df.columns)} columns")
 
     # Display the columns of the dataset
     print("Columns in the dataset:")
@@ -50,23 +71,32 @@ if __name__ == '__main__':
     for attr in sensitive_attributes:
         if attr not in df.columns:
             raise ValueError(f"The sensitive attribute {attr} does not exist in the dataset.")
-            exit(1)
     if target_attribute not in df.columns:
         raise ValueError(f"The target attribute {target_attribute} does not exist in the dataset.")
-        exit(1)
 
     results = []
 
     # Calculate the symptoms for each sensitive attribute
     for sensitive_attribute in sensitive_attributes:
         print(f"\n\n\nCalculating symptoms for the sensitive attribute: {sensitive_attribute}")
-        privileged_condition = input(f"Enter the condition for the privileged group for {sensitive_attribute} (e.g., '{sensitive_attribute} >= 30' or '{sensitive_attribute} == \"White\"' or '{sensitive_attribute} < 20 or {sensitive_attribute} > 40'): ")
-        unprivileged_condition = input(f"Enter the condition for the unprivileged group for {sensitive_attribute} (e.g., '{sensitive_attribute} < 30' or '{sensitive_attribute} != \"White\"'): ")
-        privileged_condition = privileged_condition.replace("\n", " ").strip()
-        unprivileged_condition = unprivileged_condition.replace("\n", " ").strip()
 
-        # Create the symptom calculator instance
+        # Build calculator early so we can optionally infer groups
         symptom_calculator = SymptomCalculator(df, sensitive_attribute, target_attribute)
+
+        privileged_condition = input(
+            f"Enter the condition for the privileged group for {sensitive_attribute} (leave empty for auto-detection): "
+        ).replace("\n", " ").strip()
+        unprivileged_condition = input(
+            f"Enter the condition for the unprivileged group for {sensitive_attribute} (leave empty for auto-detection): "
+        ).replace("\n", " ").strip()
+
+        # Automatic inference if any condition is missing
+        if privileged_condition == "" or unprivileged_condition == "":
+            privileged_condition, unprivileged_condition = symptom_calculator.infer_privileged_unprivileged_conditions()
+            print("\n\n\nAutomatically inferred conditions:")
+            print(f"  Privileged: {privileged_condition}")
+            print(f"  Unprivileged: {unprivileged_condition}")
+            print("\n\n\n")
 
         # Calculate symptoms
         pre_symptoms = symptom_calculator.calculate_symptoms(privileged_condition, unprivileged_condition)
@@ -74,7 +104,7 @@ if __name__ == '__main__':
             print(f"{symptom}: {value}")
 
         print("\n\n\nPRE - Bias detection:")
-        pre_bias_detection = symptom_calculator.detect_bias_symptoms(pre_symptoms, privileged_condition, unprivileged_condition)
+        pre_bias_detection = symptom_calculator.detect_bias_symptoms(pre_symptoms)
         for symptom, flag in pre_bias_detection.items():
             if flag:
                 print(f"{symptom} indicates potential bias.")
@@ -130,7 +160,7 @@ if __name__ == '__main__':
                                 print(f"{symptom} remained the same")
 
                     print("\n\n\nPOST - Bias detection:")
-                    post_bias_detection = symptom_calculator.detect_bias_symptoms(post_symptoms, privileged_condition, unprivileged_condition)
+                    post_bias_detection = symptom_calculator.detect_bias_symptoms(post_symptoms)
                     for symptom, flag in post_bias_detection.items():
                         if flag:
                             print(f"{symptom} indicates potential bias.")
@@ -143,4 +173,4 @@ if __name__ == '__main__':
                                 print(f"The symptom {key} appeared with the application of the mutation.")
 
             
-    export_results_to_csv()      
+    export_results_to_csv()
