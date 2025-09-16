@@ -252,7 +252,7 @@ class MutationOperator:
         # Apply noise injection to selected rows
         for idx in rows_to_modify:
             if isinstance(modified_df.at[idx, text_column], str):
-                modified_df.at[idx, text_column] = self._introduce_character_noise(modified_df.at[idx, text_column])
+                modified_df.at[idx, text_column] = self._introduce_noise(modified_df.at[idx, text_column])
 
         return modified_df
     

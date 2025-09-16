@@ -157,9 +157,6 @@ if __name__ == '__main__':
                     results.append(result_entry)
                     
                     # Report changes
-                    print(f"\nImpact on {sensitive_attribute}:")
-                    if not post_symptoms.items():
-                        print("NOTHING")
                     for symptom, value in post_symptoms.items():
                         old_value = baseline['symptoms'].get(symptom, 0)
                         change = value - old_value
