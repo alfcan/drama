@@ -1,42 +1,14 @@
 import numpy as np
 import pandas as pd
+import os
 from data.loader import load_dataset
 from data.preprocessor import DataPreprocessor
 from analysis.symptom_calculator import SymptomCalculator
 from mutation.mutation_operator import MutationOperator
 from datetime import datetime
-
-
-def store_results(column, dataset, column_type, mutation_type, is_sensitive, 
-                 pre_symptoms, post_symptoms, preprocessing_info=None):
-    """Store results with preprocessing metadata."""
-    pre_symptoms_prefixed = {f'pre_{key}': value for key, value in pre_symptoms.items()}
-    post_symptoms_prefixed = {f'post_{key}': value for key, value in post_symptoms.items()}
-    
-    result_entry = {
-        'column': column,
-        'dataset': dataset,
-        'column_type': column_type,
-        'mutation_type': mutation_type,
-        'is_sensitive': is_sensitive,
-        **pre_symptoms_prefixed,
-        **post_symptoms_prefixed,
-        'preprocessing_applied': True,
-        'missing_handled': preprocessing_info.get('missing_handled', 0) if preprocessing_info else 0,
-        'outliers_detected': preprocessing_info.get('outliers_detected', 0) if preprocessing_info else 0,
-        'features_scaled': preprocessing_info.get('features_scaled', 0) if preprocessing_info else 0,
-        'categorical_encoded': preprocessing_info.get('categorical_encoded', 0) if preprocessing_info else 0
-    }
-    
-    results.append(result_entry)
-
-
-def export_results_to_csv():
-    df_results = pd.DataFrame(results)
-    timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
-    filename = f'../results/results_{timestamp}.csv'
-    df_results.to_csv(filename, index=False)
-    print(f'Results exported successfully to {filename}')
+from utils.result_handlers import export_streamlined_results
+from utils.file_utils import create_feature_directory_structure
+from utils.analysis_helpers import get_applicable_operators, get_user_defined_conditions
 
 
 if __name__ == '__main__':
@@ -55,13 +27,16 @@ if __name__ == '__main__':
         print(e)
         exit(1)
     
-    # Apply required preprocessing: remove missing values and one-hot encode
-    df, preprocessing_info = preprocessor.fit_transform(df_raw)
-    print(f"After preprocessing: {len(df)} rows and {len(df.columns)} columns")
+    # Apply only missing value removal (keep raw format for mutations)
+    df_cleaned, preprocessing_info = preprocessor.clean_data_only(df_raw)
+    print(f"After cleaning (missing values removed): {len(df_cleaned)} rows and {len(df_cleaned.columns)} columns")
+    
+    # Store the cleaned raw dataset for mutations
+    df_raw_cleaned = df_cleaned.copy()
 
-    # Display the columns of the dataset
+    # Display the columns of the cleaned raw dataset
     print("Columns in the dataset:")
-    for col in df.columns:
+    for col in df_cleaned.columns:
         print(col)
     # Ask the user to specify the sensitive attributes and the target attribute
     sensitive_attributes = input("Enter the names of the sensitive attributes separated by commas: ").replace(" ", "").split(',')
@@ -69,108 +44,188 @@ if __name__ == '__main__':
 
     # Check that the attributes exist in the dataset
     for attr in sensitive_attributes:
-        if attr not in df.columns:
+        if attr not in df_cleaned.columns:
             raise ValueError(f"The sensitive attribute {attr} does not exist in the dataset.")
-    if target_attribute not in df.columns:
+    if target_attribute not in df_cleaned.columns:
         raise ValueError(f"The target attribute {target_attribute} does not exist in the dataset.")
 
+    # Start streamlined analysis
+    print("\n" + "="*80)
+    print("FAIRNESS ROBUSTNESS ANALYSIS FRAMEWORK")
+    print("Sequential Feature Analysis - All operators applied to all features")
+    print("="*80)
+    
     results = []
-
-    # Calculate the symptoms for each sensitive attribute
+    transformed_datasets = []
+    
+    # Initialize mutation operator
+    mutation_operator = MutationOperator(df_raw_cleaned)
+    
+    # Get all features to analyze (exclude target attribute)
+    all_features = [col for col in df_raw_cleaned.columns if col != target_attribute]
+    
+    print(f"\nAnalyzing {len(all_features)} features with all applicable operators...")
+    
+    # Calculate baseline symptoms for each sensitive attribute
+    baseline_symptoms = {}
     for sensitive_attribute in sensitive_attributes:
-        print(f"\n\n\nCalculating symptoms for the sensitive attribute: {sensitive_attribute}")
-
-        # Build calculator early so we can optionally infer groups
-        symptom_calculator = SymptomCalculator(df, sensitive_attribute, target_attribute)
-
-        privileged_condition = input(
-            f"Enter the condition for the privileged group for {sensitive_attribute} (leave empty for auto-detection): "
-        ).replace("\n", " ").strip()
-        unprivileged_condition = input(
-            f"Enter the condition for the unprivileged group for {sensitive_attribute} (leave empty for auto-detection): "
-        ).replace("\n", " ").strip()
-
-        # Automatic inference if any condition is missing
-        if privileged_condition == "" or unprivileged_condition == "":
-            privileged_condition, unprivileged_condition = symptom_calculator.infer_privileged_unprivileged_conditions()
-            print("\n\n\nAutomatically inferred conditions:")
-            print(f"  Privileged: {privileged_condition}")
-            print(f"  Unprivileged: {unprivileged_condition}")
-            print("\n\n\n")
-
-        # Calculate symptoms
-        pre_symptoms = symptom_calculator.calculate_symptoms(privileged_condition, unprivileged_condition)
-        for symptom, value in pre_symptoms.items():
-            print(f"{symptom}: {value}")
-
-        print("\n\n\nPRE - Bias detection:")
-        pre_bias_detection = symptom_calculator.detect_bias_symptoms(pre_symptoms)
-        for symptom, flag in pre_bias_detection.items():
-            if flag:
-                print(f"{symptom} indicates potential bias.")
+        print(f"\nCalculating baseline symptoms for sensitive attribute: {sensitive_attribute}")
         
-        mutation_operator = MutationOperator(df)
-
-        for col in df.columns:
-            if col != target_attribute:
-                if pd.api.types.is_numeric_dtype(df[col]):
-                    # Apply a numeric mutation operator randomly
-                    operators = ['increment_decrement_feature', 'swap_values', 'scale_values', 'discrete_binning']
-                else:
-                    operators = ['augment_text', 'replace_synonyms', 'add_noise', 'random_category_assignment', 'swap_values']
+        # Apply temporary encoding for symptom calculation
+        df_encoded_for_symptoms = preprocessor.apply_temporary_encoding(df_raw_cleaned)
+        symptom_calculator = SymptomCalculator(df_encoded_for_symptoms, sensitive_attribute, target_attribute)
+        
+        # Get user-defined privileged and unprivileged conditions
+        privileged_condition, unprivileged_condition = get_user_defined_conditions(sensitive_attribute, df_encoded_for_symptoms)
+        pre_symptoms = symptom_calculator.calculate_symptoms(privileged_condition, unprivileged_condition)
+        
+        baseline_symptoms[sensitive_attribute] = {
+            'symptoms': pre_symptoms,
+            'privileged_condition': privileged_condition,
+            'unprivileged_condition': unprivileged_condition
+        }
+    
+    # Sequential processing: iterate through each feature
+    for feature in all_features:
+        print(f"\n{'='*60}")
+        print(f"Processing feature: {feature}")
+        print(f"{'='*60}")
+        
+        # Determine if this feature is sensitive
+        is_sensitive = feature in sensitive_attributes
+        
+        # Get applicable operators for this feature
+        operators = get_applicable_operators(feature, df_raw_cleaned)
+        print(f"Applicable operators: {operators}")
+        
+        # Apply each operator to this feature
+        for operator in operators:
+            print(f"\nApplying {operator} to {feature}...")
+            
+            try:
+                # Apply mutation based on operator type
+                if operator == 'increment_decrement_feature':
+                    df_mutated = mutation_operator.increment_decrement_feature(feature, percentage=20)
+                elif operator == 'scale_values':
+                    df_mutated = mutation_operator.scale_values(feature, percentage=20)
+                elif operator == 'category_flip':
+                    df_mutated = mutation_operator.category_flip(feature)
+                elif operator == 'replace_synonyms':
+                    df_mutated = mutation_operator.replace_synonyms(feature, row_percentage=10, word_percentage=15)
+                elif operator == 'add_noise':
+                    df_mutated = mutation_operator.add_noise(feature, percentage=10)
                 
-                for operator in operators:
-                    print(f"\n\n\nApplying {operator} to column {col}.")
-                    # Call the mutation operator method dynamically
-                    if operator == 'increment_decrement_feature':
-                        df_new = mutation_operator.increment_decrement_feature(col, increment=np.random.choice([True, False]), amount=np.random.uniform(1, 10), percentage=30)
-                    elif operator == 'swap_values':
-                        df_new = mutation_operator.swap_values(col, num_swaps=int(df.shape[0] * 0.1))
-                    elif operator == 'scale_values':
-                        df_new = mutation_operator.scale_values(col, scale_factor=np.random.uniform(0.5, 1.5), percentage=30)
-                    elif operator == 'discrete_binning':
-                        bins = np.linspace(df[col].min(), df[col].max(), num=4) # Split the range into 4 bins
-                        df_new = mutation_operator.discrete_binning(col, bins=bins)
-                    elif operator == 'random_category_assignment':
-                        df_new = mutation_operator.random_category_assignment(col, percentage=20)
-                    elif operator == 'augment_text':
-                        df_new = mutation_operator.augment_text(col, percentage=10)
-                    elif operator == 'replace_synonyms':
-                        df_new = mutation_operator.replace_synonyms(col, row_percentage=20, word_percentage=20)
-                    elif operator == 'add_noise':
-                        df_new = mutation_operator.add_noise(col, noise_chance=0.1, percentage=20)
-                    print("Mutation applied successfully.")
-
-                    # Recalculating symptoms after mutation
-                    symptom_calculator = SymptomCalculator(df_new, sensitive_attribute, target_attribute)
-                    post_symptoms = symptom_calculator.calculate_symptoms(privileged_condition, unprivileged_condition)
-
-                    column_type = 'numeric' if pd.api.types.is_numeric_dtype(df[col]) else 'text'
-                    store_results(col, file_path, column_type, operator, col in sensitive_attributes, pre_symptoms, post_symptoms)
-
-                    # Compare pre and post mutation symptoms
-                    print(f"\nComparing symptoms for {col}:")
-                    for symptom, value in post_symptoms.items():
-                        old_value = pre_symptoms.get(symptom, None)
-                        if old_value:
-                            change = value - old_value
-                            if change != 0:
-                                print(f"{symptom} changed by {change}")
-                            else:
-                                print(f"{symptom} remained the same")
-
-                    print("\n\n\nPOST - Bias detection:")
-                    post_bias_detection = symptom_calculator.detect_bias_symptoms(post_symptoms)
-                    for symptom, flag in post_bias_detection.items():
-                        if flag:
-                            print(f"{symptom} indicates potential bias.")
+                print(f"Mutation {operator} applied successfully to {feature}")
+                
+                # Apply temporary encoding once for this mutated dataset
+                df_mutated_encoded = preprocessor.apply_temporary_encoding(df_mutated)
+                
+                # Store the unique transformed dataset (only once per feature-operator combination)
+                column_type = 'numeric' if pd.api.types.is_numeric_dtype(df_raw_cleaned[feature]) else 'categorical'
+                transformed_datasets.append({
+                    'original_file': file_path.replace('.csv', ''),
+                    'column': feature,
+                    'mutation': operator,
+                    'column_type': column_type,
+                    'is_sensitive': is_sensitive,
+                    'data': df_mutated.copy()
+                })
+                
+                # Calculate post-mutation symptoms for ALL sensitive attributes
+                for sensitive_attribute in sensitive_attributes:
+                    baseline = baseline_symptoms[sensitive_attribute]
                     
-                    for key in pre_bias_detection.keys():
-                        if pre_bias_detection[key] != post_bias_detection[key]:
-                            if pre_bias_detection[key] == 1 and post_bias_detection[key] == 0:
-                                print(f"The symptom {key} is no longer present with the application of the mutation.")
-                            elif pre_bias_detection[key] == 0 and post_bias_detection[key] == 1:
-                                print(f"The symptom {key} appeared with the application of the mutation.")
+                    # Create symptom calculator for this sensitive attribute
+                    symptom_calculator = SymptomCalculator(df_mutated_encoded, sensitive_attribute, target_attribute)
+                    
+                    post_symptoms = symptom_calculator.calculate_symptoms(
+                        baseline['privileged_condition'], 
+                        baseline['unprivileged_condition']
+                    )
+                    
+                    # Store results for this sensitive attribute
+                    result_entry = {
+                        'column': feature,
+                        'dataset': file_path,
+                        'column_type': column_type,
+                        'mutation_type': operator,
+                        'is_sensitive': is_sensitive,
+                        'sensitive_attr_analyzed': sensitive_attribute,
+                        **{f'pre_{key}': value for key, value in baseline['symptoms'].items()},
+                        **{f'post_{key}': value for key, value in post_symptoms.items()}
+                    }
+                    results.append(result_entry)
+                    
+                    # Report changes
+                    print(f"\nImpact on {sensitive_attribute}:")
+                    if not post_symptoms.items():
+                        print("NOTHING")
+                    for symptom, value in post_symptoms.items():
+                        old_value = baseline['symptoms'].get(symptom, 0)
+                        change = value - old_value
+                        if abs(change) > 0.01:  # Only report significant changes
+                            print(f"  {symptom}: {old_value:.3f} → {value:.3f} (Δ{change:+.3f})")
+                            if abs(change) > 0.1:
+                                print(f"    ⚠️  SIGNIFICANT CHANGE detected!")
+
+            except Exception as e:
+                print(f"Error applying {operator} to {feature}: {e}")
+                continue
+    
+    # Summary report
+    print("\n" + "="*80)
+    print("ANALYSIS COMPLETE - SUMMARY")
+    print("="*80)
+    print(f"✓ Sequential Feature Analysis completed")
+    print(f"  - Processed {len(all_features)} features")
+    print(f"  - Applied all applicable operators to each feature")
+    print(f"  - Analyzed impact on {len(sensitive_attributes)} sensitive attribute(s)")
+    
+    print(f"\nTotal mutations applied: {len(transformed_datasets)}")
+    print(f"Results stored: {len(results)} entries")
 
             
-    export_results_to_csv()
+    # Export results and transformed datasets
+    if results:
+        # Export using new streamlined format only
+        export_streamlined_results(results, file_path)
+        
+        # Keep hierarchical transformed datasets export
+        if transformed_datasets:
+            timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
+            base_results_path = '../results'
+            
+            # Group datasets by feature for hierarchical organization
+            feature_groups = {}
+            for dataset_info in transformed_datasets:
+                feature = dataset_info['column']
+                if feature not in feature_groups:
+                    feature_groups[feature] = []
+                feature_groups[feature].append(dataset_info)
+            
+            # Create hierarchical structure and export datasets
+            for feature, datasets in feature_groups.items():
+                # Create dedicated subfolder for this feature
+                feature_dir = create_feature_directory_structure(base_results_path, feature, timestamp)
+                
+                # Export each transformed dataset for this feature
+                for dataset_info in datasets:
+                    # Create filename without sensitive_attr since each dataset is unique per feature-operator
+                    filename = f"transformed_{dataset_info['original_file']}_{dataset_info['column']}_{dataset_info['mutation']}.csv"
+                    filepath = os.path.join(feature_dir, filename)
+                    dataset_info['data'].to_csv(filepath, index=False)
+                    print(f"Exported: {filepath}")
+            
+            print(f"\n✓ All {len(transformed_datasets)} transformed datasets exported in hierarchical structure.")
+            print(f"✓ Created {len(feature_groups)} feature-specific directories.")
+
+        print("\n✓ Results exported to CSV")
+    
+    print("\n" + "="*80)
+    print("FRAMEWORK EXECUTION COMPLETED SUCCESSFULLY")
+    print("="*80)
+    print(f"Check the results/ directory for:")
+    print(f"  - Analysis results CSV files")
+    print(f"  - Transformed datasets ({len(transformed_datasets)} files)")
+    print("\nThank you for using the Fairness Robustness Analysis Framework!")
+    print("="*80)

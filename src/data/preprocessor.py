@@ -1,10 +1,5 @@
 import pandas as pd
 from typing import Dict, Any
-import logging
-
-# Configure logging for preprocessing
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
 
 class DataPreprocessor:
     """
@@ -80,7 +75,6 @@ class DataPreprocessor:
             feature_types[col] = col_info
             
         self.feature_types = feature_types
-        logger.info(f"Identified feature types: {len(feature_types)} columns")
         return feature_types
     
     def handle_missing_values(self, df: pd.DataFrame) -> pd.DataFrame:
@@ -117,19 +111,13 @@ class DataPreprocessor:
         missing_before = df_cleaned.isnull().sum().sum()
         
         if missing_before == 0:
-            logger.info("No missing values found")
             return df_cleaned
             
-        # Remove all rows with any missing values
-        original_rows = len(df_cleaned)
         df_cleaned = df_cleaned.dropna()
-        removed_rows = original_rows - len(df_cleaned)
         
         if len(df_cleaned) == 0:
             raise ValueError("All rows contained missing values. Dataset is empty after preprocessing.")
-        
-        logger.info(f"Removed {removed_rows} rows with missing values")
-        
+                
         missing_after = df_cleaned.isnull().sum().sum()
         self.preprocessing_info['missing_handled'] = missing_before - missing_after
         
@@ -152,7 +140,6 @@ class DataPreprocessor:
                           if info['type'] == 'categorical' or info['type'] == 'boolean']
         
         if not categorical_cols:
-            logger.info("No categorical features to encode")
             return df_encoded
         
         # Apply one-hot encoding
@@ -160,9 +147,7 @@ class DataPreprocessor:
         
         encoded_count = len(df_encoded.columns) - len(df.columns)
         self.preprocessing_info['categorical_encoded'] = encoded_count
-        
-        logger.info(f"Applied one-hot encoding to {len(categorical_cols)} columns, created {encoded_count} new features")
-        
+                
         return df_encoded
     
     def fit(self, df: pd.DataFrame):
@@ -207,9 +192,72 @@ class DataPreprocessor:
         try:
             return self.fit(df).transform(df)
         except Exception as e:
-            logger.error(f"Error during preprocessing: {str(e)}")
             raise
             
+    def clean_data_only(self, df: pd.DataFrame):
+        """
+        Apply only missing value removal without one-hot encoding.
+        
+        This method is used when we need to apply mutations on raw data
+        but still need clean data without categorical encoding.
+        
+        Args:
+            df: Input DataFrame
+            
+        Returns:
+            tuple: (cleaned_dataframe, preprocessing_info_dict)
+        """
+        if not isinstance(df, pd.DataFrame):
+            raise TypeError("Input must be a pandas DataFrame")
+            
+        # Reset preprocessing info for this operation
+        self.preprocessing_info = {
+            'missing_handled': 0,
+            'categorical_encoded': 0
+        }
+        
+        # Identify feature types
+        self.identify_feature_types(df)
+        
+        # Only remove missing values
+        df_cleaned = self.handle_missing_values(df)
+        
+        return df_cleaned, self.preprocessing_info
+    
+    def apply_temporary_encoding(self, df: pd.DataFrame):
+        """
+        Apply one-hot encoding temporarily for symptom calculation.
+        
+        This method applies one-hot encoding to a cleaned dataset
+        for the purpose of calculating bias symptoms, but doesn't
+        modify the original preprocessing info.
+        
+        Args:
+            df: Input DataFrame (should be already cleaned)
+            
+        Returns:
+            pd.DataFrame: DataFrame with one-hot encoded categorical features
+        """
+        if not isinstance(df, pd.DataFrame):
+            raise TypeError("Input must be a pandas DataFrame")
+            
+        # Make sure feature types are identified
+        if not self.feature_types:
+            self.identify_feature_types(df)
+            
+        # Apply one-hot encoding without modifying preprocessing_info
+        df_encoded = df.copy()
+        
+        # Find categorical columns
+        categorical_cols = [col for col, info in self.feature_types.items() 
+                          if info['type'] == 'categorical' or info['type'] == 'boolean']
+        
+        if categorical_cols:
+            # Apply one-hot encoding
+            df_encoded = pd.get_dummies(df_encoded, columns=categorical_cols, prefix=categorical_cols)
+        
+        return df_encoded
+
     def get_preprocessing_summary(self) -> Dict[str, Any]:
         """
         Return a summary of preprocessing steps applied.

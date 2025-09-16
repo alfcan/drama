@@ -35,6 +35,36 @@ class SymptomCalculator:
         self.df = df.copy()  # Make a copy of the dataset
         self.sensitive_attribute = sensitive_attribute
         self.target_attribute = target_attribute
+        self._is_one_hot_encoded = None
+        self._encoded_columns = None
+        self._check_encoding_status()
+    
+    def _check_encoding_status(self):
+        """Check if the sensitive attribute is one-hot encoded and cache the result."""
+        if self.sensitive_attribute in self.df.columns:
+            self._is_one_hot_encoded = False
+            self._encoded_columns = [self.sensitive_attribute]
+        else:
+            # Check for one-hot encoded columns
+            encoded_cols = [col for col in self.df.columns if col.startswith(f"{self.sensitive_attribute}_")]
+            if encoded_cols:
+                self._is_one_hot_encoded = True
+                self._encoded_columns = encoded_cols
+            else:
+                raise ValueError(f"Sensitive attribute '{self.sensitive_attribute}' not found in dataset columns")
+    
+    def _get_sensitive_attribute_series(self):
+        """Get a series representing the sensitive attribute values, handling one-hot encoding."""
+        if not self._is_one_hot_encoded:
+            return self.df[self.sensitive_attribute]
+        else:
+            # For one-hot encoded data, reconstruct the original categorical series
+            result_series = pd.Series(index=self.df.index, dtype='object')
+            for col in self._encoded_columns:
+                category = col.replace(f"{self.sensitive_attribute}_", "")
+                mask = self.df[col] == 1
+                result_series[mask] = category
+            return result_series
 
     def calculate_apd(self, privileged_condition, unprivileged_condition):
         """
@@ -58,7 +88,8 @@ class SymptomCalculator:
         Calculate the (normalized) Gini Index:
         G = (m/(m-1)) * (1 - sum_i f_i^2), where f_i are class frequencies (sum to 1).
         """
-        counts = self.df[self.sensitive_attribute].value_counts(normalize=True).values
+        sensitive_series = self._get_sensitive_attribute_series()
+        counts = sensitive_series.value_counts(normalize=True).values
         m = len(counts)
         if m <= 1:
             return 1.0
@@ -67,7 +98,8 @@ class SymptomCalculator:
 
     def calculate_shannon_entropy(self):
         """Calculate the normalized Shannon Entropy (between 0-1)."""
-        counts = self.df[self.sensitive_attribute].value_counts(normalize=True)
+        sensitive_series = self._get_sensitive_attribute_series()
+        counts = sensitive_series.value_counts(normalize=True)
         if len(counts) <= 1:
             return 1.0  # Perfect balance for single category
         
@@ -80,7 +112,8 @@ class SymptomCalculator:
         """Calculate the normalized Simpson Diversity Index as:
         D = (1/(m-1)) * ((1 / sum_i f_i^2) - 1), where f_i are class frequencies (sum to 1).
         """
-        counts = self.df[self.sensitive_attribute].value_counts(normalize=True).values
+        sensitive_series = self._get_sensitive_attribute_series()
+        counts = sensitive_series.value_counts(normalize=True).values
         m = len(counts)
         if m <= 1:
             return 1.0
@@ -91,7 +124,8 @@ class SymptomCalculator:
 
     def calculate_imbalance_ratio(self):
         """Imbalance ratio as min/max"""
-        counts = self.df[self.sensitive_attribute].value_counts(normalize=True).values
+        sensitive_series = self._get_sensitive_attribute_series()
+        counts = sensitive_series.value_counts(normalize=True).values
         return np.min(counts) / np.max(counts) if len(counts) > 1 else 0
 
     def calculate_kurtosis(self):
@@ -113,7 +147,8 @@ class SymptomCalculator:
         Returns:
         - float: The calculated Mutual Information.
         """
-        return mutual_info_score(self.df[self.sensitive_attribute], self.df[self.target_attribute])
+        sensitive_series = self._get_sensitive_attribute_series()
+        return mutual_info_score(sensitive_series, self.df[self.target_attribute])
 
     def calculate_normalized_mutual_information(self):
         """
@@ -123,7 +158,8 @@ class SymptomCalculator:
         """
         mi = self.calculate_mutual_information()  # sklearn uses natural log for MI
         # H(X)
-        px = self.df[self.sensitive_attribute].value_counts(normalize=True).values
+        sensitive_series = self._get_sensitive_attribute_series()
+        px = sensitive_series.value_counts(normalize=True).values
         hx = -np.sum(px * np.log(px + 1e-12))
         # H(Y)
         py = self.df[self.target_attribute].value_counts(normalize=True).values
@@ -138,7 +174,8 @@ class SymptomCalculator:
         Returns:
         - float: The calculated Kendall's Tau.
         """
-        return kendalltau(self.df[self.sensitive_attribute], self.df[self.target_attribute]).correlation
+        sensitive_series = self._get_sensitive_attribute_series()
+        return kendalltau(sensitive_series, self.df[self.target_attribute]).correlation
 
     def calculate_correlation_ratio(self):
         """
@@ -147,12 +184,14 @@ class SymptomCalculator:
         Returns:
         - float: The calculated Correlation Ratio.
         """
-        categories = self.df[self.sensitive_attribute].unique()
+        sensitive_series = self._get_sensitive_attribute_series()
+        categories = sensitive_series.unique()
         mean_total = self.df[self.target_attribute].mean()
         numerator = 0
         denominator = 0
         for category in categories:
-            subset = self.df[self.df[self.sensitive_attribute] == category]
+            subset_mask = sensitive_series == category
+            subset = self.df[subset_mask]
             mean_subset = subset[self.target_attribute].mean()
             numerator += len(subset) * (mean_subset - mean_total) ** 2
             denominator += len(subset) * (subset[self.target_attribute] - mean_subset).var()
@@ -206,6 +245,7 @@ class SymptomCalculator:
         2. If the sensitive attribute is categorical, the category with the
            highest mean target value is privileged, while the category with the
            lowest mean target value is unprivileged.
+        3. Handles one-hot encoded columns by detecting columns that start with the sensitive attribute name.
 
         Returns
         -------
@@ -214,6 +254,39 @@ class SymptomCalculator:
         """
         col = self.sensitive_attribute
         y = self.target_attribute
+        
+        # Check if the original column exists (not one-hot encoded)
+        if col in self.df.columns:
+            series = self.df[col]
+        else:
+            # Handle one-hot encoded columns
+            encoded_cols = [c for c in self.df.columns if c.startswith(f"{col}_")]
+            if not encoded_cols:
+                raise ValueError(f"Sensitive attribute '{col}' not found in dataset columns. Available columns: {list(self.df.columns)[:10]}...")
+            
+            # For one-hot encoded categorical data, find the category with highest mean target value
+            category_means = {}
+            for encoded_col in encoded_cols:
+                # Extract category name from column name (remove prefix)
+                category = encoded_col.replace(f"{col}_", "")
+                # Calculate mean target value for this category
+                mask = self.df[encoded_col] == 1
+                if mask.sum() > 0:  # Ensure there are samples in this category
+                    category_means[category] = self.df[mask][y].mean()
+            
+            if not category_means:
+                raise ValueError(f"No valid categories found for one-hot encoded attribute '{col}'")
+            
+            # Find privileged (highest mean) and unprivileged (lowest mean) categories
+            privileged_category = max(category_means.keys(), key=lambda k: category_means[k])
+            unprivileged_category = min(category_means.keys(), key=lambda k: category_means[k])
+            
+            privileged_condition = f"`{col}_{privileged_category}` == 1"
+            unprivileged_condition = f"`{col}_{unprivileged_category}` == 1"
+            
+            return privileged_condition, unprivileged_condition
+        
+        # Original logic for non-encoded columns
         series = self.df[col]
 
         # Numerical attribute: median split
