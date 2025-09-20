@@ -85,14 +85,21 @@ if __name__ == '__main__':
             'unprivileged_condition': unprivileged_condition
         }
     
-    # Sequential processing: iterate through each feature
+    # Sequential processing: iterate through each feature (excluding sensitive attributes)
+    all_features = [col for col in df_raw_cleaned.columns if col != target_attribute and col not in sensitive_attributes]
+    
+    print(f"\nAnalyzing {len(all_features)} non-sensitive features with all applicable operators...")
+    print(f"Excluded from mutations: {len(sensitive_attributes)} sensitive attribute(s) + 1 target attribute")
+    print(f"Sensitive attributes excluded: {', '.join(sensitive_attributes)}")
+    print(f"Target attribute excluded: {target_attribute}")
+
     for feature in all_features:
         print(f"\n{'='*60}")
         print(f"Processing feature: {feature}")
         print(f"{'='*60}")
         
-        # Determine if this feature is sensitive
-        is_sensitive = feature in sensitive_attributes
+        # Since we've already filtered out sensitive attributes, this feature is non-sensitive
+        is_sensitive = False
         
         # Get applicable operators for this feature
         operators = get_applicable_operators(feature, df_raw_cleaned)
