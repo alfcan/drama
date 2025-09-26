@@ -3,427 +3,613 @@ import numpy as np
 from scipy.stats import kurtosis, skew, kendalltau
 from sklearn.metrics import mutual_info_score
 
-# --- Helper functions ---
+# --- Helper Functions for Diversity/Distribution Metrics ---
+# These functions are designed to operate on a single pandas Series.
 
-def gini_fun(x, w=None):
-    """Weighted Gini coefficient"""
-    x = np.asarray(x)
-    if w is not None:
-        w = np.asarray(w)
-        sorted_indices = np.argsort(x)
-        sorted_x = x[sorted_indices]
-        sorted_w = w[sorted_indices]
-        cumw = np.cumsum(sorted_w, dtype=float)
-        cumxw = np.cumsum(sorted_x * sorted_w, dtype=float)
-        return np.sum(cumxw[1:] * cumw[:-1] - cumxw[:-1] * cumw[1:]) / (cumxw[-1] * cumw[-1])
-    else:
-        sorted_x = np.sort(x)
-        n = len(x)
-        cumx = np.cumsum(sorted_x, dtype=float)
-        return (n + 1 - 2 * np.sum(cumx) / cumx[-1]) / n
+def gini_diversity_index(x: pd.Series) -> float:
+    """
+    Calculates the Gini diversity index (similar to 1 - sum(p_i^2)).
+    A value of 0 indicates complete dominance by one category, while 1 indicates high diversity.
+    Normalized for the number of categories.
+    """
+    counts = x.value_counts(normalize=True).values
+    m = len(counts)
+    if m <= 1:
+        # If there's only one category, there's no diversity, so often 0 or 1 depending on normalization.
+        # Here, 1.0 implies 'no imbalance' or 'perfectly balanced in a trivial sense'.
+        return 1.0
+    f2 = np.sum(counts ** 2)
+    # The (m / (m - 1)) factor normalizes it, so it can reach 1.0 for maximum diversity.
+    return (m / (m - 1)) * (1.0 - f2) if (m - 1) > 0 else 0.0
+
+def shannon_entropy_index(x: pd.Series) -> float:
+    """
+    Calculates the normalized Shannon Entropy.
+    Normalized to range [0, 1], where 0 means no diversity (one category dominates)
+    and 1 means maximum diversity (all categories equally frequent).
+    """
+    counts = x.value_counts(normalize=True)
+    if len(counts) <= 1:
+        # If only one category, entropy is 0, but normalized to 1.0 for consistency with 'balanced'
+        return 1.0
+    
+    # Calculate Shannon entropy (using natural logarithm)
+    entropy = -np.sum(counts * np.log(counts + 1e-12)) # Add epsilon to avoid log(0)
+    
+    # Calculate maximum possible entropy for the given number of categories
+    max_entropy = np.log(len(counts))
+    
+    # Normalize entropy
+    return entropy / max_entropy if max_entropy > 0 else 0.0
+
+def simpson_diversity_index(x: pd.Series) -> float:
+    """
+    Calculates the normalized Simpson Diversity Index (1/sum(p_i^2)).
+    A value near 0 means low diversity, near 1 means high diversity.
+    Normalized for the number of categories.
+    """
+    counts = x.value_counts(normalize=True).values
+    m = len(counts)
+    if m <= 1:
+        # If only one category, no diversity, 1.0 for consistency.
+        return 1.0
+    f2 = np.sum(counts ** 2)
+    if f2 <= 0: # Avoid division by zero if all counts are zero (unlikely with normalize=True)
+        return 1.0
+    
+    # The (1.0 / (m - 1)) factor normalizes it.
+    return (1.0 / (m - 1)) * ((1.0 / f2) - 1.0) if (m - 1) > 0 else 0.0
+
+# --- Main SymptomCalculator Class ---
 
 class SymptomCalculator:
-    def __init__(self, df, sensitive_attribute, target_attribute):
-        """
-        Initialize the SymptomCalculator with dataset, sensitive attribute, and target attribute.
+    """
+    A class to calculate various fairness and distribution symptoms for a given dataset,
+    treating individual features as potential sensitive attributes.
+    It focuses on dataset-level characteristics, not model predictions.
+    """
 
-        Parameters:
-        - df (pd.DataFrame): The dataset as a pandas DataFrame.
-        - sensitive_attribute (str): The sensitive attribute column name.
-        - target_attribute (str): The target attribute column name.
+    def __init__(self, df: pd.DataFrame, target_attribute: str, positive_label: int = 1, original_df: pd.DataFrame = None):
         """
-        self.df = df.copy()  # Make a copy of the dataset
-        self.sensitive_attribute = sensitive_attribute
+        Initialize the SymptomCalculator with a DataFrame and target information.
+        
+        Args:
+            df: Input DataFrame (should be already cleaned and encoded if needed)
+            target_attribute: Name of the target column
+            positive_label: Value representing the positive class in the target
+            original_df: Optional original DataFrame before encoding (for feature analysis)
+        """
+        if not isinstance(df, pd.DataFrame):
+            raise TypeError("Input must be a pandas DataFrame")
+        
+        if target_attribute not in df.columns:
+            raise ValueError(f"Target attribute '{target_attribute}' not found in DataFrame columns")
+        
+        self.df = df.copy()
         self.target_attribute = target_attribute
-        self._is_one_hot_encoded = None
-        self._encoded_columns = None
-        self._check_encoding_status()
-    
-    def _check_encoding_status(self):
-        """Check if the sensitive attribute is one-hot encoded and cache the result."""
-        if self.sensitive_attribute in self.df.columns:
-            self._is_one_hot_encoded = False
-            self._encoded_columns = [self.sensitive_attribute]
-        else:
-            # Check for one-hot encoded columns
-            encoded_cols = [col for col in self.df.columns if col.startswith(f"{self.sensitive_attribute}_")]
-            if encoded_cols:
-                self._is_one_hot_encoded = True
-                self._encoded_columns = encoded_cols
-            else:
-                raise ValueError(f"Sensitive attribute '{self.sensitive_attribute}' not found in dataset columns")
-    
-    def _get_sensitive_attribute_series(self):
-        """Get a series representing the sensitive attribute values, handling one-hot encoding."""
-        if not self._is_one_hot_encoded:
-            return self.df[self.sensitive_attribute]
-        else:
-            # For one-hot encoded data, reconstruct the original categorical series
-            result_series = pd.Series(index=self.df.index, dtype='object')
-            for col in self._encoded_columns:
-                category = col.replace(f"{self.sensitive_attribute}_", "")
-                mask = self.df[col] == 1
-                result_series[mask] = category
-            return result_series
-
-    def calculate_apd(self, privileged_condition, unprivileged_condition):
-        """
-        Calculate the Absolute Probability Difference (APD).
-
-        Parameters:
-        - privileged: Value of the privileged category of the sensitive attribute.
-        - unprivileged: Value of the unprivileged category of the sensitive attribute.
-
-        Returns:
-        - float: The calculated APD value.
-        """
-        privileged = self.df.query(privileged_condition)
-        unprivileged = self.df.query(unprivileged_condition)
-        p_privileged = privileged[self.target_attribute].mean()
-        p_unprivileged = unprivileged[self.target_attribute].mean()
-        return abs(p_privileged - p_unprivileged)
-
-    def calculate_gini_index(self):
-        """
-        Calculate the (normalized) Gini Index:
-        G = (m/(m-1)) * (1 - sum_i f_i^2), where f_i are class frequencies (sum to 1).
-        """
-        sensitive_series = self._get_sensitive_attribute_series()
-        counts = sensitive_series.value_counts(normalize=True).values
-        m = len(counts)
-        if m <= 1:
-            return 1.0
-        f2 = np.sum(counts ** 2)
-        return (m / (m - 1)) * (1.0 - f2)
-
-    def calculate_shannon_entropy(self):
-        """Calculate the normalized Shannon Entropy (between 0-1)."""
-        sensitive_series = self._get_sensitive_attribute_series()
-        counts = sensitive_series.value_counts(normalize=True)
-        if len(counts) <= 1:
-            return 1.0  # Perfect balance for single category
+        self.positive_label = positive_label
         
-        # Shannon entropy normalized to [0,1]
-        entropy = -np.sum(counts * np.log(counts))
-        max_entropy = np.log(len(counts))
-        return entropy / max_entropy if max_entropy > 0 else 0.0
-
-    def calculate_simpson_diversity(self):
-        """Calculate the normalized Simpson Diversity Index as:
-        D = (1/(m-1)) * ((1 / sum_i f_i^2) - 1), where f_i are class frequencies (sum to 1).
-        """
-        sensitive_series = self._get_sensitive_attribute_series()
-        counts = sensitive_series.value_counts(normalize=True).values
-        m = len(counts)
-        if m <= 1:
-            return 1.0
-        f2 = np.sum(counts ** 2)
-        if f2 <= 0:
-            return 1.0
-        return (1.0 / (m - 1)) * ((1.0 / f2) - 1.0)
-
-    def calculate_imbalance_ratio(self):
-        """Imbalance ratio as min/max"""
-        sensitive_series = self._get_sensitive_attribute_series()
-        counts = sensitive_series.value_counts(normalize=True).values
-        return np.min(counts) / np.max(counts) if len(counts) > 1 else 0
-
-    def calculate_kurtosis(self):
-        """
-        Calculate the Kurtosis (classical, not excess).
-        """
-        return kurtosis(self.df[self.target_attribute], fisher=False, bias=False)
-
-    def calculate_skewness(self):
-        """
-        Calculate the Skewness (with bias correction).
-        """
-        return skew(self.df[self.target_attribute], bias=False)
-
-    def calculate_mutual_information(self):
-        """
-        Calculate the Mutual Information between sensitive attribute and target attribute.
-
-        Returns:
-        - float: The calculated Mutual Information.
-        """
-        sensitive_series = self._get_sensitive_attribute_series()
-        return mutual_info_score(sensitive_series, self.df[self.target_attribute])
-
-    def calculate_normalized_mutual_information(self):
-        """
-        Calculate the Normalized Mutual Information between sensitive attribute and target attribute.
-        Uses natural logarithm consistently and non-normalized entropies:
-        NMI = I(X;Y) / (H(X) + H(Y))
-        """
-        mi = self.calculate_mutual_information()  # sklearn uses natural log for MI
-        # H(X)
-        sensitive_series = self._get_sensitive_attribute_series()
-        px = sensitive_series.value_counts(normalize=True).values
-        hx = -np.sum(px * np.log(px + 1e-12))
-        # H(Y)
-        py = self.df[self.target_attribute].value_counts(normalize=True).values
-        hy = -np.sum(py * np.log(py + 1e-12))
-        denom = hx + hy
-        return mi / denom if denom > 0 else 0.0
-
-    def calculate_kendall_tau(self):
-        """
-        Calculate the Kendall's Tau correlation coefficient between sensitive attribute and target attribute.
-
-        Returns:
-        - float: The calculated Kendall's Tau.
-        """
-        sensitive_series = self._get_sensitive_attribute_series()
-        return kendalltau(sensitive_series, self.df[self.target_attribute]).correlation
-
-    def calculate_correlation_ratio(self):
-        """
-        Calculate the Correlation Ratio between the sensitive attribute and the target attribute.
-
-        Returns:
-        - float: The calculated Correlation Ratio.
-        """
-        sensitive_series = self._get_sensitive_attribute_series()
-        categories = sensitive_series.unique()
-        mean_total = self.df[self.target_attribute].mean()
-        numerator = 0
-        denominator = 0
-        for category in categories:
-            subset_mask = sensitive_series == category
-            subset = self.df[subset_mask]
-            mean_subset = subset[self.target_attribute].mean()
-            numerator += len(subset) * (mean_subset - mean_total) ** 2
-            denominator += len(subset) * (subset[self.target_attribute] - mean_subset).var()
-        denominator += len(self.df) * (self.df[self.target_attribute] - mean_total).var()
-        return np.sqrt(numerator / denominator)
-
-    # ------------------- Additional Metrics (bias_symptoms parity) -------------------
-    def _get_groups(self, privileged_condition, unprivileged_condition):
-        unpriv_group = self.df.query(unprivileged_condition)
-        priv_group = self.df.query(privileged_condition)
-        unpriv_group_pos = unpriv_group[self.target_attribute] == 1
-        priv_group_pos = priv_group[self.target_attribute] == 1
-        return unpriv_group, unpriv_group_pos, priv_group, priv_group_pos
-
-    def _compute_probs(self, privileged_condition, unprivileged_condition):
-        unpriv_group, unpriv_group_pos, priv_group, priv_group_pos = self._get_groups(privileged_condition, unprivileged_condition)
-        unpriv_prob = unpriv_group_pos.mean() if len(unpriv_group) else 0
-        priv_prob = priv_group_pos.mean() if len(priv_group) else 0
-        return unpriv_prob, priv_prob
-
-    def statistical_parity(self, privileged_condition, unprivileged_condition):
-        unpriv_prob, priv_prob = self._compute_probs(privileged_condition, unprivileged_condition)
-        return abs(unpriv_prob - priv_prob)
-
-    def disparate_impact(self, privileged_condition, unprivileged_condition):
-        unpriv_prob, priv_prob = self._compute_probs(privileged_condition, unprivileged_condition)
-        return unpriv_prob / priv_prob if priv_prob != 0 else 0
-
-    def _group_ratio(self, privileged_condition, unprivileged_condition):
-        unpriv_group, unpriv_group_pos, priv_group, priv_group_pos = self._get_groups(privileged_condition, unprivileged_condition)
-        n = len(self.df)
-        total_pos = (self.df[self.target_attribute] == 1).sum()
-
-        def _ratio(group, group_pos):
-            if len(group) == 0 or total_pos == 0:
-                return 0
-            w_exp = (len(group) / n) * (total_pos / n)
-            w_obs = group_pos.sum() / n
-            return w_obs / w_exp if w_exp != 0 else 0
-
-        return _ratio(unpriv_group, unpriv_group_pos), _ratio(priv_group, priv_group_pos)
-
-    def infer_privileged_unprivileged_conditions(self):
-        """
-        Automatically infer privileged and unprivileged group conditions for the
-        sensitive attribute based on the mean value of the target attribute.
-
-        Logic:
-        1. If the sensitive attribute is numerical, split the data at the median.
-           The side with the higher mean target value is considered privileged.
-        2. If the sensitive attribute is categorical, the category with the
-           highest mean target value is privileged, while the category with the
-           lowest mean target value is unprivileged.
-        3. Handles one-hot encoded columns by detecting columns that start with the sensitive attribute name.
-
-        Returns
-        -------
-        tuple(str, str)
-            (privileged_condition, unprivileged_condition)
-        """
-        col = self.sensitive_attribute
-        y = self.target_attribute
+        # Store original column names for reference
+        self.original_columns = list(df.columns)
         
-        # Check if the original column exists (not one-hot encoded)
-        if col in self.df.columns:
-            series = self.df[col]
+        # Use provided original_df or fallback to the encoded df
+        if original_df is not None:
+            self.original_df = original_df.copy()
         else:
-            # Handle one-hot encoded columns
-            encoded_cols = [c for c in self.df.columns if c.startswith(f"{col}_")]
-            if not encoded_cols:
-                raise ValueError(f"Sensitive attribute '{col}' not found in dataset columns. Available columns: {list(self.df.columns)[:10]}...")
+            self.original_df = df.copy()  # Keep original for reference
             
-            # For one-hot encoded categorical data, find the category with highest mean target value
+        # Store mapping of original categorical columns to their encoded versions
+        self.categorical_mappings = {}
+
+    def _get_original_feature_name(self, encoded_feature_name: str) -> str:
+        """Get the original feature name from an encoded feature name."""
+        for original_col, mapping in self.categorical_mappings.items():
+            if encoded_feature_name in mapping['encoded_columns']:
+                return original_col
+        return encoded_feature_name  # If not encoded, return as is
+
+    def infer_group_conditions(self, feature_name: str) -> tuple[str, str]:
+        """
+        Automatically infers unprivileged and privileged group conditions for a given feature.
+        Works with both numerical and one-hot encoded categorical features.
+        
+        Args:
+            feature_name: Name of the feature to analyze
+            
+        Returns:
+            tuple: (unprivileged_condition, privileged_condition) as pandas query strings
+        """
+        if feature_name not in self.df.columns:
+            raise ValueError(f"Feature '{feature_name}' not found in the dataset columns: {list(self.df.columns)}")
+        
+        feature_series = self.df[feature_name]
+        
+        # Check if this is a binary/boolean feature (likely one-hot encoded)
+        unique_values = feature_series.unique()
+        if len(unique_values) == 2 and set(unique_values).issubset({0, 1, True, False}):
+            # Binary feature: privileged = 1/True, unprivileged = 0/False
+            privileged_condition = f"`{feature_name}` == 1"
+            unprivileged_condition = f"`{feature_name}` == 0"
+            return unprivileged_condition, privileged_condition
+        
+        # Check if this is a categorical feature with few unique values
+        elif len(unique_values) <= 10 and not pd.api.types.is_numeric_dtype(feature_series):
+            # Categorical feature: find categories with lowest/highest positive outcome rates
             category_means = {}
-            for encoded_col in encoded_cols:
-                # Extract category name from column name (remove prefix)
-                category = encoded_col.replace(f"{col}_", "")
-                # Calculate mean target value for this category
-                mask = self.df[encoded_col] == 1
-                if mask.sum() > 0:  # Ensure there are samples in this category
-                    category_means[category] = self.df[mask][y].mean()
+            for category in unique_values:
+                mask = feature_series == category
+                if mask.sum() > 0:  # Ensure category has instances
+                    category_means[category] = self.df[mask][self.target_attribute].mean()
             
             if not category_means:
-                raise ValueError(f"No valid categories found for one-hot encoded attribute '{col}'")
+                raise ValueError(f"No valid categories found for feature '{feature_name}'")
             
             # Find privileged (highest mean) and unprivileged (lowest mean) categories
             privileged_category = max(category_means.keys(), key=lambda k: category_means[k])
             unprivileged_category = min(category_means.keys(), key=lambda k: category_means[k])
             
-            privileged_condition = f"`{col}_{privileged_category}` == 1"
-            unprivileged_condition = f"`{col}_{unprivileged_category}` == 1"
-            
-            return privileged_condition, unprivileged_condition
-        
-        # Original logic for non-encoded columns
-        series = self.df[col]
-
-        # Numerical attribute: median split
-        if pd.api.types.is_numeric_dtype(series):
-            median_val = series.median()
-            cond_high = f"`{col}` >= {median_val}"
-            cond_low = f"`{col}` < {median_val}"
-            mean_high = self.df.query(cond_high)[y].mean()
-            mean_low = self.df.query(cond_low)[y].mean()
-            if mean_high >= mean_low:
-                return cond_high, cond_low
+            # Handle string categories that might need quotes
+            if isinstance(privileged_category, str):
+                privileged_condition = f"`{feature_name}` == '{privileged_category}'"
+                unprivileged_condition = f"`{feature_name}` == '{unprivileged_category}'"
             else:
-                return cond_low, cond_high
+                privileged_condition = f"`{feature_name}` == {privileged_category}"
+                unprivileged_condition = f"`{feature_name}` == {unprivileged_category}"
+            
+            return unprivileged_condition, privileged_condition
+        
+        # Numerical feature: split at median
+        else:
+            median_value = feature_series.median()
+            
+            # Calculate mean target value for each half
+            below_median_mask = feature_series <= median_value
+            above_median_mask = feature_series > median_value
+            
+            # Ensure both groups have instances
+            if below_median_mask.sum() == 0 or above_median_mask.sum() == 0:
+                raise ValueError(f"Cannot split feature '{feature_name}' at median - one group would be empty")
+            
+            below_median_mean = self.df[below_median_mask][self.target_attribute].mean()
+            above_median_mean = self.df[above_median_mask][self.target_attribute].mean()
+            
+            # Assign privileged/unprivileged based on positive outcome rates
+            if above_median_mean >= below_median_mean:
+                privileged_condition = f"`{feature_name}` > {median_value}"
+                unprivileged_condition = f"`{feature_name}` <= {median_value}"
+            else:
+                privileged_condition = f"`{feature_name}` <= {median_value}"
+                unprivileged_condition = f"`{feature_name}` > {median_value}"
+            
+            return unprivileged_condition, privileged_condition
 
-        # Categorical attribute
-        means = self.df.groupby(col)[y].mean()
-        privileged_cat = means.idxmax()
-        unprivileged_cat = means.idxmin()
-        priv_cond = f"`{col}` == {repr(privileged_cat)}"
-        unpriv_cond = f"`{col}` == {repr(unprivileged_cat)}"
-        return priv_cond, unpriv_cond
-
-    def calculate_symptoms(self, privileged_condition=None, unprivileged_condition=None):
+    def _get_groups_by_query(self, unprivileged_query: str, privileged_query: str) -> tuple[pd.DataFrame, pd.Series, pd.DataFrame, pd.Series]:
         """
-        Calculate all symptoms and store results.
+        Helper method to divide the DataFrame into unprivileged and privileged groups
+        based on provided Pandas query strings.
+
+        Parameters:
+        - unprivileged_query (str): A Pandas query string defining the unprivileged group.
+                                    E.g., "`age` < 30", "`gender` == 'Female'".
+        - privileged_query (str): A Pandas query string defining the privileged group.
 
         Returns:
-        - dict: Dictionary containing all calculated symptom values.
+        - tuple[pd.DataFrame, pd.Series, pd.DataFrame, pd.Series]:
+            (unprivileged_group_df, unprivileged_group_positive_series, privileged_group_df, privileged_group_positive_series)
         """
-        unpriv_prob = priv_prob = None
-        unpriv_ratio = priv_ratio = None
-        dsp = di = pos_prob_diff = None
-        if privileged_condition and unprivileged_condition:
-            unpriv_prob, priv_prob = self._compute_probs(privileged_condition, unprivileged_condition)
-            unpriv_ratio, priv_ratio = self._group_ratio(privileged_condition, unprivileged_condition)
-            dsp = self.statistical_parity(privileged_condition, unprivileged_condition)
-            di = self.disparate_impact(privileged_condition, unprivileged_condition)
-            pos_prob_diff = unpriv_prob - priv_prob if unpriv_prob is not None else None
+        # Execute queries to get group DataFrames
+        unpriv_group_df = self.df.query(unprivileged_query)
+        priv_group_df = self.df.query(privileged_query)
+        
+        # Filter for positive outcomes within each group, returning a Series of positive labels.
+        # This approach ensures consistency with len() for counting positive instances.
+        unpriv_group_positive_series = unpriv_group_df[self.target_attribute][unpriv_group_df[self.target_attribute] == self.positive_label]
+        priv_group_positive_series = priv_group_df[self.target_attribute][priv_group_df[self.target_attribute] == self.positive_label]
+        
+        return unpriv_group_df, unpriv_group_positive_series, priv_group_df, priv_group_positive_series
 
-        symptoms = {
-            'APD': self.calculate_apd(privileged_condition, unprivileged_condition) if privileged_condition and unprivileged_condition else None,
-            'Gini Index': self.calculate_gini_index(),
-            'Shannon Entropy': self.calculate_shannon_entropy(),
-            'Simpson Diversity': self.calculate_simpson_diversity(),
-            'Imbalance Ratio': self.calculate_imbalance_ratio(),
-            'Skewness': self.calculate_skewness(),
-            'Mutual Information': self.calculate_mutual_information(),
-            'Normalized Mutual Information': self.calculate_normalized_mutual_information(),
-            'Kendall Tau': self.calculate_kendall_tau(),
-            'Correlation Ratio': self.calculate_correlation_ratio(),
-            'Unprivileged Pos Prob': unpriv_prob,
-            'Privileged Pos Prob': priv_prob,
-            'Unprivileged Unbalance': unpriv_ratio,
-            'Privileged Unbalance': priv_ratio,
-            'Data Statistical Parity': dsp,
-            'Disparate Impact': di,
-            'Pos Probability Diff': pos_prob_diff
-        }
+    def _compute_probs_by_query(self, unprivileged_query: str, privileged_query: str) -> tuple[float, float]:
+        """
+        Calculates the probability of a positive outcome for the unprivileged and privileged groups.
+
+        Parameters:
+        - unprivileged_query (str): Query string for the unprivileged group.
+        - privileged_query (str): Query string for the privileged group.
+
+        Returns:
+        - tuple[float, float]: (unprivileged_group_probability, privileged_group_probability)
+        """
+        unpriv_group_df, unpriv_group_positive_series, priv_group_df, priv_group_positive_series = \
+            self._get_groups_by_query(unprivileged_query, privileged_query)
+        
+        # Calculate probabilities, handling division by zero
+        unpriv_prob = len(unpriv_group_positive_series) / len(unpriv_group_df) if len(unpriv_group_df) > 0 else 0.0
+        priv_prob = len(priv_group_positive_series) / len(priv_group_df) if len(priv_group_df) > 0 else 0.0
+        
+        return unpriv_prob, priv_prob
+
+    def infer_group_conditions(self, feature_name: str) -> tuple[str, str]:
+        """
+        Automatically infers unprivileged and privileged group conditions (as query strings)
+        for a given feature.
+
+        - For numerical features: splits data at the median. The half with the lower
+          positive outcome rate is considered unprivileged.
+        - For categorical features: identifies categories with the highest and lowest
+          positive outcome rates, designating the lowest as unprivileged.
+
+        Parameters:
+        - feature_name (str): The name of the feature to be treated as a sensitive attribute.
+
+        Returns:
+        - tuple[str, str]: (unprivileged_query_string, privileged_query_string)
+
+        Raises:
+        - ValueError: If the feature is not found or if groups cannot be meaningfully inferred.
+        """
+        if feature_name not in self.df.columns:
+            raise ValueError(f"Feature '{feature_name}' not found in the dataset.")
+            
+        series = self.df[feature_name]
+        y_series = self.df[self.target_attribute]
+
+        # Handle numerical attributes
+        if pd.api.types.is_numeric_dtype(series):
+            # If numerical and effectively binary, treat as categorical with 2 values
+            if series.nunique() == 2:
+                val1, val2 = series.unique()
+                mean1 = y_series[series == val1].mean()
+                mean2 = y_series[series == val2].mean()
+                
+                if mean1 < mean2:
+                    return f"`{feature_name}` == {val1}", f"`{feature_name}` == {val2}"
+                else:
+                    return f"`{feature_name}` == {val2}", f"`{feature_name}` == {val1}"
+            
+            # For continuous/multi-valued numerical attributes, split by median
+            median_value = series.median()
+            
+            # Handle potential empty groups if median split is extreme (e.g., all values same)
+            # Ensure there's data in both halves before calculating means
+            low_group_mask = series < median_value
+            high_group_mask = series >= median_value
+
+            mean_low_half = y_series[low_group_mask].mean() if low_group_mask.any() else -np.inf # Use -inf to ensure it's "lower" if other is finite
+            mean_high_half = y_series[high_group_mask].mean() if high_group_mask.any() else -np.inf
+
+            # Determine which half has a lower mean target attribute value (thus unprivileged)
+            if mean_low_half < mean_high_half:
+                unprivileged_query = f"`{feature_name}` < {median_value}"
+                privileged_query = f"`{feature_name}` >= {median_value}"
+            else:
+                unprivileged_query = f"`{feature_name}` >= {median_value}"
+                privileged_query = f"`{feature_name}` < {median_value}"
+            
+            # Basic validation: ensure both groups have members (after split)
+            if not self.df.query(unprivileged_query).empty and not self.df.query(privileged_query).empty:
+                 return unprivileged_query, privileged_query
+            else:
+                raise ValueError(f"Cannot form distinct groups for numerical feature '{feature_name}' using median split (one group is empty).")
+
+
+        # Handle categorical attributes
+        elif pd.api.types.is_categorical_dtype(series) or pd.api.types.is_object_dtype(series):
+            means = self.df.groupby(feature_name)[y_series.name].mean()
+            if means.empty:
+                raise ValueError(f"Cannot infer groups for categorical feature '{feature_name}' (no data in categories).")
+            
+            privileged_cat = means.idxmax()
+            unprivileged_cat = means.idxmin()
+
+            # Construct query strings, quoting string values for Pandas query syntax
+            unpriv_query = f"`{feature_name}` == {repr(unprivileged_cat)}" if isinstance(unprivileged_cat, str) else f"`{feature_name}` == {unprivileged_cat}"
+            priv_query = f"`{feature_name}` == {repr(privileged_cat)}" if isinstance(privileged_cat, str) else f"`{feature_name}` == {privileged_cat}"
+            
+            # Ensure unprivileged and privileged categories are actually different
+            if unprivileged_cat == privileged_cat:
+                raise ValueError(f"All categories for '{feature_name}' have the same target attribute mean, cannot distinguish privileged/unprivileged.")
+            
+            return unpriv_query, priv_query
+        else:
+            raise ValueError(f"Feature '{feature_name}' has an unsupported dtype for group inference: {series.dtype}.")
+
+    # --- Fairness Metrics (depend on group queries) ---
+
+    def calculate_statistical_parity(self, unprivileged_query: str, privileged_query: str) -> float:
+        """
+        Calculates Statistical Parity (SP).
+        SP = P(Y=positive | Unprivileged Group) - P(Y=positive | Privileged Group).
+        A value of 0 indicates perfect parity. Positive values indicate higher positive
+        outcome rate for the unprivileged group, negative for the privileged group.
+        Matches original snippet's non-absolute definition.
+        """
+        unpriv_prob, priv_prob = self._compute_probs_by_query(unprivileged_query, privileged_query)
+        return unpriv_prob - priv_prob
+
+    def calculate_disparate_impact(self, unprivileged_query: str, privileged_query: str) -> float:
+        """
+        Calculates Disparate Impact (DI).
+        DI = P(Y=positive | Unprivileged Group) / P(Y=positive | Privileged Group).
+        A value of 1 indicates perfect parity. Values significantly above/below 1 indicate bias.
+        Matches the second definition from the original snippet (which overwrites the first).
+        """
+        unpriv_prob, priv_prob = self._compute_probs_by_query(unprivileged_query, privileged_query)
+        return unpriv_prob / priv_prob if priv_prob != 0 else 0.0
+
+    def calculate_absolute_probability_difference(self, unprivileged_query: str, privileged_query: str) -> float:
+        """
+        Calculates Absolute Probability Difference (APD).
+        APD = |P(Y=positive | Unprivileged Group) - P(Y=positive | Privileged Group)|.
+        This is the absolute value of Statistical Parity. Not in original snippets, but in your prior code.
+        """
+        unpriv_prob, priv_prob = self._compute_probs_by_query(unprivileged_query, privileged_query)
+        return abs(unpriv_prob - priv_prob)
+
+    def calculate_group_ratio(self, unprivileged_query: str, privileged_query: str) -> tuple[float, float]:
+        """
+        Calculates a specific group ratio (w_obs / w_exp) for unprivileged and privileged groups.
+        This ratio compares observed positive outcomes to expected positive outcomes within each group.
+        Matches the definition from the original snippet.
+
+        Returns:
+        - tuple[float, float]: (unprivileged_group_ratio, privileged_group_ratio)
+        """
+        unpriv_group_df, unpriv_group_positive_series, priv_group_df, priv_group_positive_series = \
+            self._get_groups_by_query(unprivileged_query, privileged_query)
+        
+        n_total = len(self.df)
+        total_positives = (self.df[self.target_attribute] == self.positive_label).sum()
+
+        def _ratio_calc(group_df: pd.DataFrame, group_pos_series: pd.Series) -> float:
+            """Internal helper for calculating single group ratio."""
+            if len(group_df) == 0 or n_total == 0 or total_positives == 0:
+                return 0.0
+            
+            w_exp = (len(group_df) / n_total) * (total_positives / n_total)
+            w_obs = len(group_pos_series) / n_total
+            
+            return w_obs / w_exp if w_exp != 0 else 0.0
+
+        unpriv_ratio = _ratio_calc(unpriv_group_df, unpriv_group_positive_series)
+        priv_ratio = _ratio_calc(priv_group_df, priv_group_positive_series)
+            
+        return unpriv_ratio, priv_ratio
+
+    # --- Comprehensive Symptom Calculation Method ---
+
+    def calculate_symptoms_for_feature(self, feature_name: str) -> dict:
+        """
+        Calculate comprehensive symptoms for a given feature, including:
+        - Distribution/diversity metrics of the feature itself.
+        - Relationship metrics between the feature and the target attribute.
+        - Fairness metrics, if group conditions can be inferred for the feature.
+
+        Parameters:
+        - feature_name (str): The name of the feature for which to calculate symptoms.
+
+        Returns:
+        - dict: A dictionary containing all calculated symptom values. Values might be None
+                if a metric is not applicable (e.g., non-numeric for Kurtosis) or
+                if group conditions cannot be inferred.
+        """
+        symptoms = {}
+        
+        # Check if this is a categorical feature that was one-hot encoded
+        encoded_columns = [col for col in self.df.columns if col.startswith(f"{feature_name}_")]
+        is_one_hot_encoded = len(encoded_columns) > 0
+        
+        if is_one_hot_encoded:
+            # Use original data for distribution metrics
+            if feature_name in self.original_df.columns:
+                feature_series = self.original_df[feature_name]
+            else:
+                raise KeyError(f"Original feature '{feature_name}' not found in original DataFrame")
+                
+            # --- Part 1: Distribution/Diversity Metrics (using original data) ---
+            symptoms['Gini Index'] = gini_diversity_index(feature_series)
+            symptoms['Shannon Entropy'] = shannon_entropy_index(feature_series)
+            symptoms['Simpson Diversity'] = simpson_diversity_index(feature_series)
+            
+            # Imbalance Ratio: min count / max count for categories
+            if feature_series.nunique() > 1:
+                counts = feature_series.value_counts()
+                symptoms['Imbalance Ratio'] = counts.min() / counts.max()
+            else:
+                symptoms['Imbalance Ratio'] = 0.0
+                
+            # Kurtosis and Skewness (not applicable to categorical)
+            symptoms['Kurtosis'] = None
+            symptoms['Skewness'] = None
+            
+            # --- Part 2: Relationship Metrics (using original data) ---
+            symptoms['Mutual Information'] = mutual_info_score(feature_series, self.original_df[self.target_attribute])
+            
+            # Normalized Mutual Information
+            mi = symptoms['Mutual Information']
+            px = feature_series.value_counts(normalize=True).values
+            hx = -np.sum(px * np.log(px + 1e-12)) if len(px) > 1 else 0.0
+            py = self.original_df[self.target_attribute].value_counts(normalize=True).values
+            hy = -np.sum(py * np.log(py + 1e-12)) if len(py) > 1 else 0.0
+            denom = hx + hy
+            symptoms['Normalized Mutual Information'] = mi / denom if denom > 0 else 0.0
+            
+            # Kendall Tau (not applicable to categorical vs target)
+            symptoms['Kendall Tau'] = None
+            
+            # Correlation Ratio (categorical vs target)
+            if pd.api.types.is_numeric_dtype(self.original_df[self.target_attribute]):
+                categories = feature_series.unique()
+                mean_total = self.original_df[self.target_attribute].mean()
+                numerator = 0
+                denominator_var_within = 0
+                
+                for category in categories:
+                    subset_mask = feature_series == category
+                    subset = self.original_df[subset_mask]
+                    if len(subset) > 0:
+                        mean_subset = subset[self.target_attribute].mean()
+                        numerator += len(subset) * (mean_subset - mean_total) ** 2
+                        denominator_var_within += (subset[self.target_attribute] - mean_subset).pow(2).sum()
+
+                total_sum_of_squares = numerator + denominator_var_within
+                symptoms['Correlation Ratio'] = np.sqrt(numerator / total_sum_of_squares) if total_sum_of_squares > 0 else 0.0
+            else:
+                symptoms['Correlation Ratio'] = None
+                
+            # --- Part 3: Fairness Metrics (aggregate results from all one-hot columns) ---
+            # Initialize aggregated fairness metrics
+            fairness_metrics = {
+                'APD': [],
+                'Statistical Parity': [],
+                'Disparate Impact': [],
+                'Unprivileged Unbalance': [],
+                'Privileged Unbalance': [],
+                'Unprivileged Pos Prob': [],
+                'Privileged Pos Prob': [],
+                'Pos Probability Diff': []
+            }
+            
+            # Calculate fairness metrics for each one-hot encoded column
+            for encoded_col in encoded_columns:
+                try:
+                    # For binary one-hot columns, we can define groups as 0 vs 1
+                    unprivileged_query = f"{encoded_col} == 0"
+                    privileged_query = f"{encoded_col} == 1"
+                    
+                    # Calculate metrics for this encoded column
+                    apd = self.calculate_absolute_probability_difference(unprivileged_query, privileged_query)
+                    stat_parity = self.calculate_statistical_parity(unprivileged_query, privileged_query)
+                    disp_impact = self.calculate_disparate_impact(unprivileged_query, privileged_query)
+                    
+                    unpriv_ratio, priv_ratio = self.calculate_group_ratio(unprivileged_query, privileged_query)
+                    unpriv_prob, priv_prob = self._compute_probs_by_query(unprivileged_query, privileged_query)
+                    
+                    # Store non-None values
+                    if apd is not None:
+                        fairness_metrics['APD'].append(apd)
+                    if stat_parity is not None:
+                        fairness_metrics['Statistical Parity'].append(stat_parity)
+                    if disp_impact is not None:
+                        fairness_metrics['Disparate Impact'].append(disp_impact)
+                    if unpriv_ratio is not None:
+                        fairness_metrics['Unprivileged Unbalance'].append(unpriv_ratio)
+                    if priv_ratio is not None:
+                        fairness_metrics['Privileged Unbalance'].append(priv_ratio)
+                    if unpriv_prob is not None:
+                        fairness_metrics['Unprivileged Pos Prob'].append(unpriv_prob)
+                    if priv_prob is not None:
+                        fairness_metrics['Privileged Pos Prob'].append(priv_prob)
+                    if unpriv_prob is not None and priv_prob is not None:
+                        fairness_metrics['Pos Probability Diff'].append(unpriv_prob - priv_prob)
+                        
+                except Exception as e:
+                    # Skip this encoded column if calculation fails
+                    continue
+            
+            # Aggregate fairness metrics (using mean of non-None values)
+            for metric_name, values in fairness_metrics.items():
+                if values:
+                    symptoms[metric_name] = np.mean(values)
+                else:
+                    symptoms[metric_name] = None
+                    
+        else:
+            # Original logic for non-encoded features
+            if feature_name in self.df.columns:
+                feature_series = self.df[feature_name]
+            else:
+                raise KeyError(f"Feature '{feature_name}' not found in DataFrame columns. "
+                             f"Available columns: {list(self.df.columns)}")
+
+            # --- Part 1: Distribution/Diversity Metrics of the Feature Itself ---
+            symptoms['Gini Index'] = gini_diversity_index(feature_series)
+            symptoms['Shannon Entropy'] = shannon_entropy_index(feature_series)
+            symptoms['Simpson Diversity'] = simpson_diversity_index(feature_series)
+            
+            # Imbalance Ratio: min count / max count for categories
+            if feature_series.nunique() > 1:
+                counts = feature_series.value_counts()
+                symptoms['Imbalance Ratio'] = counts.min() / counts.max()
+            else:
+                symptoms['Imbalance Ratio'] = 0.0
+
+            # Kurtosis and Skewness (applicable only to numerical features)
+            if pd.api.types.is_numeric_dtype(feature_series):
+                symptoms['Kurtosis'] = kurtosis(feature_series, fisher=False, bias=False)
+                symptoms['Skewness'] = skew(feature_series, bias=False)
+            else:
+                symptoms['Kurtosis'] = None
+                symptoms['Skewness'] = None
+
+            # --- Part 2: Relationship Metrics between the Feature and the Target ---
+            symptoms['Mutual Information'] = mutual_info_score(feature_series, self.df[self.target_attribute])
+            
+            # Normalized Mutual Information
+            mi = symptoms['Mutual Information']
+            px = feature_series.value_counts(normalize=True).values
+            hx = -np.sum(px * np.log(px + 1e-12)) if len(px) > 1 else 0.0
+            py = self.df[self.target_attribute].value_counts(normalize=True).values
+            hy = -np.sum(py * np.log(py + 1e-12)) if len(py) > 1 else 0.0
+            denom = hx + hy
+            symptoms['Normalized Mutual Information'] = mi / denom if denom > 0 else 0.0
+
+            # Kendall Tau (applicable if both are numerical or ordinal)
+            if pd.api.types.is_numeric_dtype(feature_series) and pd.api.types.is_numeric_dtype(self.df[self.target_attribute]):
+                symptoms['Kendall Tau'] = kendalltau(feature_series, self.df[self.target_attribute]).correlation
+            else:
+                symptoms['Kendall Tau'] = None
+            
+            # Correlation Ratio
+            if (pd.api.types.is_categorical_dtype(feature_series) or pd.api.types.is_object_dtype(feature_series)) \
+               and pd.api.types.is_numeric_dtype(self.df[self.target_attribute]):
+                categories = feature_series.unique()
+                mean_total = self.df[self.target_attribute].mean()
+                numerator = 0
+                denominator_var_within = 0
+                
+                for category in categories:
+                    subset_mask = feature_series == category
+                    subset = self.df[subset_mask]
+                    if len(subset) > 0:
+                        mean_subset = subset[self.target_attribute].mean()
+                        numerator += len(subset) * (mean_subset - mean_total) ** 2
+                        denominator_var_within += (subset[self.target_attribute] - mean_subset).pow(2).sum()
+
+                total_sum_of_squares = numerator + denominator_var_within
+                symptoms['Correlation Ratio'] = np.sqrt(numerator / total_sum_of_squares) if total_sum_of_squares > 0 else 0.0
+            elif pd.api.types.is_numeric_dtype(feature_series) and pd.api.types.is_numeric_dtype(self.df[self.target_attribute]):
+                symptoms['Correlation Ratio'] = feature_series.corr(self.df[self.target_attribute], method='pearson')
+            else:
+                symptoms['Correlation Ratio'] = None
+
+            # --- Part 3: Fairness Metrics (require group definitions) ---
+            unprivileged_query, privileged_query = None, None
+            try:
+                unprivileged_query, privileged_query = self.infer_group_conditions(feature_name)
+            except ValueError as e:
+                pass
+
+            if unprivileged_query and privileged_query:
+                symptoms['APD'] = self.calculate_absolute_probability_difference(unprivileged_query, privileged_query)
+                symptoms['Statistical Parity'] = self.calculate_statistical_parity(unprivileged_query, privileged_query)
+                symptoms['Disparate Impact'] = self.calculate_disparate_impact(unprivileged_query, privileged_query)
+                
+                unpriv_ratio, priv_ratio = self.calculate_group_ratio(unprivileged_query, privileged_query)
+                symptoms['Unprivileged Unbalance'] = unpriv_ratio
+                symptoms['Privileged Unbalance'] = priv_ratio
+
+                unpriv_prob, priv_prob = self._compute_probs_by_query(unprivileged_query, privileged_query)
+                symptoms['Unprivileged Pos Prob'] = unpriv_prob
+                symptoms['Privileged Pos Prob'] = priv_prob
+                symptoms['Pos Probability Diff'] = unpriv_prob - priv_prob
+            else:
+                symptoms['APD'] = None
+                symptoms['Statistical Parity'] = None
+                symptoms['Disparate Impact'] = None
+                symptoms['Unprivileged Unbalance'] = None
+                symptoms['Privileged Unbalance'] = None
+                symptoms['Unprivileged Pos Prob'] = None
+                symptoms['Privileged Pos Prob'] = None
+                symptoms['Pos Probability Diff'] = None
+                
         return symptoms
-
-    def detect_bias_symptoms(self, symptoms):
-        """
-        Calculate symptoms and return a dictionary indicating if the dataset is affected by bias.
-
-        Returns:
-        - dict: Dictionary with symptom names as keys and boolean values indicating if the dataset is affected by bias.
-        """
-        # Initialize flags for all symptoms
-        dsp_flag = False
-        gini_flag = False
-        shannon_flag = False
-        simpson_flag = False
-        ir_flag = False
-        skewness_flag = False
-        mutual_info_flag = False
-        kendall_tau_flag = False
-        unpriv_unbalance_flag = False
-        priv_unbalance_flag = False
-        upp_flag = False
-        
-        # Data Statistical Parity (DSP) - 1 indicates complete bias, 0 indicates optimal fairness
-        if 'Data Statistical Parity' in symptoms and symptoms['Data Statistical Parity'] is not None:
-            dsp_flag = abs(symptoms['Data Statistical Parity']) >= 1.0
-        
-        # Gini Index - After 0-1 normalisation, 0 indicates completely unbalanced variable (bias), 1 indicates completely balanced
-        if symptoms['Gini Index'] is not None:
-            gini_flag = symptoms['Gini Index'] <= 0.0
-        
-        # Shannon Diversity - After 0-1 normalisation, 0 indicates completely unbalanced variable (bias), 1 indicates completely balanced
-        if symptoms['Shannon Entropy'] is not None:
-            shannon_flag = symptoms['Shannon Entropy'] <= 0.0
-        
-        # Simpson Diversity - After 0-1 normalisation, 0 indicates completely unbalanced variable (bias), 1 indicates completely balanced
-        if symptoms['Simpson Diversity'] is not None:
-            simpson_flag = symptoms['Simpson Diversity'] <= 0.0
-        
-        # Imbalance Ratio - After 0-1 normalisation, 1 indicates completely unbalanced variable (bias), 0 indicates completely balanced
-        if symptoms['Imbalance Ratio'] is not None:
-            ir_flag = symptoms['Imbalance Ratio'] >= 1.0
-        
-        # Skewness - Value other than 0 indicates imbalance, tends to 0 for balanced data
-        if symptoms['Skewness'] is not None:
-            skewness_flag = abs(symptoms['Skewness']) > 0.0
-        
-        # Mutual Information - Greater than 0 indicates dependence, 0 indicates complete independence
-        if symptoms['Mutual Information'] is not None:
-            mutual_info_flag = symptoms['Mutual Information'] > 0.0
-        
-        # Kendall's Tau - 0 implies no correlation, no specific bias identification found
-        if symptoms['Kendall Tau'] is not None:
-            kendall_tau_flag = abs(symptoms['Kendall Tau']) > 0.5
-        
-        # Unprivileged Group Unbalance - Greater than 1 indicates over-sampling, less than 1 indicates under-sampling, 1 indicates balance
-        if symptoms['Unprivileged Unbalance'] is not None:
-            unpriv_unbalance_flag = symptoms['Unprivileged Unbalance'] != 1.0
-        
-        # Privileged Group Unbalance - Greater than 1 indicates over-sampling, less than 1 indicates under-sampling, 1 indicates balance
-        if symptoms['Privileged Unbalance'] is not None:
-            priv_unbalance_flag = symptoms['Privileged Unbalance'] != 1.0
-
-        # Unprivileged Positive Probability (UPP) - Second most important variable for predicting SP and AO
-        if symptoms['Unprivileged Pos Prob'] is not None:
-            upp_flag = symptoms['Unprivileged Pos Prob'] != 0.5
-
-        # Create bias detection dictionary with all symptoms
-        bias_detection = {
-            'Data Statistical Parity': dsp_flag,
-            'Gini Index': gini_flag,
-            'Shannon Entropy': shannon_flag,
-            'Simpson Diversity': simpson_flag,
-            'Imbalance Ratio': ir_flag,
-            'Skewness': skewness_flag,
-            'Mutual Information': mutual_info_flag,
-            'Kendall Tau': kendall_tau_flag,
-            'Unprivileged Unbalance': unpriv_unbalance_flag,
-            'Privileged Unbalance': priv_unbalance_flag,
-            'Unprivileged Pos Prob': upp_flag
-        }
-
-        return bias_detection

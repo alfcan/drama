@@ -24,6 +24,46 @@ class MutationOperator:
         """
         self.dataframe = dataframe
 
+    def _show_comparison(self, original_df, modified_df, modified_indices, feature_name, operation_name):
+        """
+        Display a comparison of original vs modified values for the specified rows and feature.
+        
+        Parameters:
+        - original_df (pd.DataFrame): The original dataframe
+        - modified_df (pd.DataFrame): The modified dataframe
+        - modified_indices (list): List of indices that were modified
+        - feature_name (str): The name of the feature that was modified
+        - operation_name (str): The name of the operation performed
+        """
+        print(f"\n{'='*60}")
+        print(f"COMPARISON: {operation_name} on feature '{feature_name}'")
+        print(f"{'='*60}")
+        print(f"Modified {len(modified_indices)} rows out of {len(original_df)} total rows")
+        print(f"{'='*60}")
+        
+        # Create comparison dataframe
+        comparison_data = []
+        for idx in sorted(modified_indices):
+            original_value = original_df.loc[idx, feature_name]
+            modified_value = modified_df.loc[idx, feature_name]
+            
+            comparison_data.append({
+                'Row_Index': idx,
+                'Original_Value': original_value,
+                'Modified_Value': modified_value,
+                'Change': f"{original_value} → {modified_value}"
+            })
+        
+        comparison_df = pd.DataFrame(comparison_data)
+        
+        # Display the comparison
+        print("\nPRE- AND POST-CHANGE COMPARISON:")
+        print("-" * 60)
+        for _, row in comparison_df.iterrows():
+            print(f"Row {row['Row_Index']:4d}: {row['Change']}")
+        
+        print(f"\n{'='*60}\n")
+
     def increment_decrement_feature(self, feature_name, percentage=20):
         """
         Value Increment/Decrement (Numeric)
@@ -81,6 +121,9 @@ class MutationOperator:
         # Convert the column back to its original dtype
         modified_df[feature_name] = modified_df[feature_name].astype(original_dtype)
         
+        # Show comparison of changes
+        self._show_comparison(self.dataframe, modified_df, rows_to_modify, feature_name, "Increment/Decrement Feature")
+        
         return modified_df
     
     def scale_values(self, feature_name, percentage=20):
@@ -119,7 +162,16 @@ class MutationOperator:
         # Apply scaling with random factor between 0.8 and 1.2 to selected rows only
         for idx in rows_to_modify:
             scale_factor = random.uniform(0.8, 1.2)
-            modified_df.loc[idx, feature_name] *= scale_factor
+            original_value = modified_df.loc[idx, feature_name]
+            scaled_value = original_value * scale_factor
+            
+            if pd.api.types.is_integer_dtype(modified_df[feature_name]):
+                modified_df.loc[idx, feature_name] = int(round(scaled_value))
+            else:
+                modified_df.loc[idx, feature_name] = scaled_value
+        
+        # Show comparison of changes
+        self._show_comparison(self.dataframe, modified_df, rows_to_modify, feature_name, "Scale Values")
         
         return modified_df
     
@@ -151,6 +203,9 @@ class MutationOperator:
         if len(unique_categories) < 2:
             raise ValueError(f"Feature {feature_name} must have at least 2 categories for flipping.")
         
+        # Track all modified indices
+        all_modified_indices = []
+        
         # For each category, reassign 15% of its instances to another category
         for category in unique_categories:
             # Get indices of instances with this category
@@ -164,6 +219,7 @@ class MutationOperator:
             
             # Randomly select instances to flip
             indices_to_flip = random.sample(category_indices, min(num_to_flip, len(category_indices)))
+            all_modified_indices.extend(indices_to_flip)
             
             # Get other categories to flip to
             other_categories = [cat for cat in unique_categories if cat != category]
@@ -172,6 +228,9 @@ class MutationOperator:
             for idx in indices_to_flip:
                 new_category = random.choice(other_categories)
                 modified_df.loc[idx, feature_name] = new_category
+        
+        # Show comparison of changes
+        self._show_comparison(self.dataframe, modified_df, all_modified_indices, feature_name, "Category Flip")
         
         return modified_df
     
@@ -215,6 +274,9 @@ class MutationOperator:
             if isinstance(modified_df.at[idx, text_column], str):  # Make sure the value is a string, in the case of NaN values
                 modified_df.at[idx, text_column] = self._synonym_replacement(modified_df.at[idx, text_column], word_percentage)
 
+        # Show comparison of changes
+        self._show_comparison(self.dataframe, modified_df, rows_to_modify, text_column, "Replace Synonyms")
+
         return modified_df
     
     def add_noise(self, text_column, percentage=10):
@@ -222,6 +284,9 @@ class MutationOperator:
         Noise Injection (Textual)
         Simulates common typographical errors by injecting controlled noise (e.g., random 
         character swaps, insertions) into textual features.
+        
+        For categorical features, creates a single mutation per unique category and applies
+        it consistently to maintain category structure while introducing controlled noise.
         
         Configuration: Inject character-level noise (e.g., swaps, insertions) into 10% of 
         the instances to simulate typographical mistakes.
@@ -242,17 +307,38 @@ class MutationOperator:
         if percentage < 0 or percentage > 100:
             raise ValueError("Percentage must be between 0 and 100.")
 
+        unique_categories = modified_df[text_column].unique()
+        is_categorical = len(unique_categories) <= 45  # Threshold for categorical vs free text
+        
         # Calculate number of rows to modify
         num_rows = len(modified_df)
         num_rows_to_modify = int(num_rows * (percentage / 100))
         
         # Sample the rows to modify
         rows_to_modify = modified_df.sample(n=num_rows_to_modify).index
+        
+        if is_categorical:
+            category_mutation_map = {}
+            for category in unique_categories:
+                if isinstance(category, str):
+                    mutated_value = self._introduce_noise(category)
+                    category_mutation_map[category] = mutated_value
+                else:
+                    category_mutation_map[category] = category
+                        
+            for idx in rows_to_modify:
+                original_value = modified_df.at[idx, text_column]
+                if original_value in category_mutation_map:
+                    modified_df.at[idx, text_column] = category_mutation_map[original_value]
+        
+        else:
+            # Original behavior for free text features
+            for idx in rows_to_modify:
+                if isinstance(modified_df.at[idx, text_column], str):
+                    modified_df.at[idx, text_column] = self._introduce_noise(modified_df.at[idx, text_column])
 
-        # Apply noise injection to selected rows
-        for idx in rows_to_modify:
-            if isinstance(modified_df.at[idx, text_column], str):
-                modified_df.at[idx, text_column] = self._introduce_noise(modified_df.at[idx, text_column])
+        # Show comparison of changes
+        self._show_comparison(self.dataframe, modified_df, rows_to_modify, text_column, "Add Noise")
 
         return modified_df
     
@@ -320,7 +406,7 @@ class MutationOperator:
             elif operation == 'insert':
                 # Insert a random character
                 idx = random.randint(0, len(text_list))
-                char = random.choice(string.ascii_lowercase + string.punctuation + ' ')
+                char = random.choice(string.ascii_lowercase + ' ')
                 text_list.insert(idx, char)
                 
             elif operation == 'delete' and len(text_list) > 1:
@@ -331,7 +417,7 @@ class MutationOperator:
             elif operation == 'substitute':
                 # Substitute a character with a random one
                 idx = random.randint(0, len(text_list) - 1)
-                char = random.choice(string.ascii_lowercase + string.punctuation + ' ')
+                char = random.choice(string.ascii_lowercase + ' ')
                 text_list[idx] = char
         
         return ''.join(text_list)

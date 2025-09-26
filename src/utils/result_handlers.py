@@ -24,12 +24,16 @@ def export_streamlined_results(results, file_path):
                 pre_value = pre_symptoms[symptom_name]
                 post_value = post_symptoms[symptom_name]
                 
+                # Skip if either value is None
+                if pre_value is None or post_value is None:
+                    continue
+                
                 streamlined_entry = {
-                    'column': result['column'],
+                    'column': result['mutation_source_feature'],
                     'dataset': result['dataset'],
-                    'column_type': result['column_type'],
+                    'column_type': result['mutation_source_feature_type'],
                     'mutation_type': result['mutation_type'],
-                    'is_sensitive': result['is_sensitive'],
+                    'is_sensitive': False,  # This field doesn't exist in the result dict, setting to False
                     'sensitive_attr_analyzed': result['sensitive_attr_analyzed'],
                     'symptom_name': symptom_name,
                     'pre_symptom_value': pre_value,
