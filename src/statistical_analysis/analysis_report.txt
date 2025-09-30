@@ -1,0 +1,90 @@
+================================================================================
+COMPREHENSIVE MUTATION ANALYSIS REPORT
+================================================================================
+
+DATASET SUMMARY
+----------------------------------------
+File: results.csv
+Total observations: 31,422
+Datasets analyzed: 4
+Mutation types: 5
+Sensitive attributes: 51
+Fairness symptoms: 18
+Non-zero differences: 2,016 (6.4%)
+
+Difference Statistics (non-zero only):
+  Mean: 0.028114
+  Median: 0.000000
+  Std Dev: 2.631007
+  Range: [-26.420664, 105.389513]
+
+DATASET MAPPING ANALYSIS
+----------------------------------------
+Total significant combinations: 20
+Datasets with significant effects: 4
+Most affected dataset: bank (7 combinations)
+
+Significant combinations per dataset:
+  adult: 6 combinations
+    • add_noise_native.country
+    • category_flip_race
+    • category_flip_sex
+    • increment_decrement_feature_age
+    • scale_values_fnlwgt
+    ... and 1 more
+  bank: 7 combinations
+    • add_noise_default
+    • add_noise_marital
+    • add_noise_month
+    • add_noise_poutcome
+    • replace_synonyms_default
+    ... and 2 more
+  compas: 3 combinations
+    • add_noise_score_text
+    • add_noise_v_score_text
+    • replace_synonyms_v_score_text
+  diabetic: 4 combinations
+    • add_noise_chlorpropamide
+    • category_flip_acarbose
+    • category_flip_chlorpropamide
+    • replace_synonyms_chlorpropamide
+
+CONSENSUS ANALYSIS
+----------------------------------------
+Mutation agreement rate: 60.0%
+Column agreement rate: 0.0%
+
+MUTATIONS SIGNIFICANT IN BOTH TESTS (3):
+  ✓ category_flip
+  ✓ add_noise
+  ✓ replace_synonyms
+
+SENSITIVE ATTRIBUTES SIGNIFICANT IN BOTH TESTS (0):
+  None
+
+SIGN TEST RESULTS
+----------------------------------------
+Significant mutations: 0
+Significant columns: 0
+
+WILCOXON TEST RESULTS
+----------------------------------------
+Significant mutations: 3
+  • add_noise
+  • category_flip
+  • replace_synonyms
+Significant columns: 12
+  • acarbose
+  • chlorpropamide
+  • default
+  • fnlwgt
+  • hours.per.week
+  • housing
+  • marital
+  • poutcome
+  • previous
+  • score_text
+  • v_score_text
+  • workclass
+
+================================================================================

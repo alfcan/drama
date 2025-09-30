@@ -1,0 +1,3265 @@
+{
+  "sign_test_results": {
+    "total_tests": 90,
+    "significant_tests": 29,
+    "mutations_with_effects": [
+      "scale_values",
+      "increment_decrement_feature",
+      "replace_synonyms",
+      "category_flip",
+      "add_noise"
+    ],
+    "symptoms_most_affected": {
+      "Correlation Ratio": 3,
+      "Imbalance Ratio": 3,
+      "Mutual Information": 3,
+      "Normalized Mutual Information": 3,
+      "Pos Probability Diff": 1,
+      "Shannon Entropy": 3,
+      "Simpson Diversity": 4,
+      "Statistical Parity": 1,
+      "APD": 1,
+      "Disparate Impact": 2,
+      "Gini Index": 1,
+      "Unprivileged Pos Prob": 1,
+      "Unprivileged Unbalance": 1,
+      "Kendall Tau": 1,
+      "Skewness": 1
+    },
+    "columns_most_affected": {},
+    "significance_rate": 0.32222222222222224
+  },
+  "wilcoxon_test_results": {
+    "total_mutations_tested": 5,
+    "significant_mutations": [
+      "add_noise",
+      "category_flip",
+      "replace_synonyms"
+    ],
+    "total_columns_tested": 51,
+    "significant_columns": [
+      "acarbose",
+      "chlorpropamide",
+      "default",
+      "fnlwgt",
+      "hours.per.week",
+      "housing",
+      "marital",
+      "poutcome",
+      "previous",
+      "score_text",
+      "v_score_text",
+      "workclass"
+    ],
+    "total_combinations_tested": 255,
+    "significant_combinations": [
+      "add_noise_chlorpropamide",
+      "add_noise_default",
+      "add_noise_marital",
+      "add_noise_month",
+      "add_noise_native.country",
+      "add_noise_poutcome",
+      "add_noise_score_text",
+      "add_noise_v_score_text",
+      "category_flip_acarbose",
+      "category_flip_chlorpropamide",
+      "category_flip_race",
+      "category_flip_sex",
+      "increment_decrement_feature_age",
+      "replace_synonyms_chlorpropamide",
+      "replace_synonyms_default",
+      "replace_synonyms_poutcome",
+      "replace_synonyms_v_score_text",
+      "scale_values_fnlwgt",
+      "scale_values_hours.per.week",
+      "scale_values_previous"
+    ],
+    "mutation_results": {
+      "add_noise": {
+        "statistic": 42510.0,
+        "p_value": 0.004558068175880959,
+        "n_pairs": 7158,
+        "n_non_zero_pairs": 448,
+        "significant": true,
+        "mean_difference": -0.021764739557977236,
+        "median_difference": -1.3601221123124477e-05,
+        "std_difference": 0.13131240227988736
+      },
+      "category_flip": {
+        "statistic": 38413.0,
+        "p_value": 1.552228239529647e-07,
+        "n_pairs": 7158,
+        "n_non_zero_pairs": 462,
+        "significant": true,
+        "mean_difference": 0.032032237157956445,
+        "median_difference": 0.0007777495545325,
+        "std_difference": 0.12303544662553019
+      },
+      "increment_decrement_feature": {
+        "statistic": 25925.5,
+        "p_value": 0.28492778234876137,
+        "n_pairs": 4974,
+        "n_non_zero_pairs": 333,
+        "significant": false,
+        "mean_difference": -0.1282076133392218,
+        "median_difference": -3.6547885376325695e-05,
+        "std_difference": 2.866388807419388
+      },
+      "replace_synonyms": {
+        "statistic": 44439.0,
+        "p_value": 0.00028036731514815834,
+        "n_pairs": 7158,
+        "n_non_zero_pairs": 469,
+        "significant": true,
+        "mean_difference": -0.05124180293606534,
+        "median_difference": 9.065690522912418e-06,
+        "std_difference": 0.18576521210614358
+      },
+      "scale_values": {
+        "statistic": 23152.0,
+        "p_value": 0.9854358649207187,
+        "n_pairs": 4974,
+        "n_non_zero_pairs": 304,
+        "significant": false,
+        "mean_difference": 0.3893283388849925,
+        "median_difference": -5.049036442017452e-06,
+        "std_difference": 6.062857127144328
+      }
+    },
+    "column_results": {
+      "A1Cresult": {
+        "statistic": 404.0,
+        "p_value": 0.20012401210716058,
+        "n_pairs": 699,
+        "n_non_zero_pairs": 45,
+        "significant": false,
+        "mean_difference": -0.04460888993917839,
+        "median_difference": -0.00053524431302,
+        "std_difference": 0.12246678449789203
+      },
+      "acarbose": {
+        "statistic": 268.0,
+        "p_value": 0.004857855183360189,
+        "n_pairs": 699,
+        "n_non_zero_pairs": 45,
+        "significant": true,
+        "mean_difference": 0.038957840839996524,
+        "median_difference": 0.0074952701071203,
+        "std_difference": 0.12361690643250534
+      },
+      "age": {
+        "statistic": 2063.0,
+        "p_value": 0.11216770469507653,
+        "n_pairs": 1855,
+        "n_non_zero_pairs": 100,
+        "significant": false,
+        "mean_difference": -0.0011045345200372952,
+        "median_difference": -0.00029734346585905,
+        "std_difference": 0.035235223428279776
+      },
+      "age_cat": {
+        "statistic": 72.0,
+        "p_value": 0.1372833251953125,
+        "n_pairs": 411,
+        "n_non_zero_pairs": 21,
+        "significant": false,
+        "mean_difference": -0.1096239766520074,
+        "median_difference": -0.0005212292563787,
+        "std_difference": 0.20919741456260954
+      },
+      "balance": {
+        "statistic": 306.0,
+        "p_value": 0.8827909983351506,
+        "n_pairs": 490,
+        "n_non_zero_pairs": 35,
+        "significant": false,
+        "mean_difference": -0.7148277306639553,
+        "median_difference": 5.0747790476535215e-06,
+        "std_difference": 3.812214324680057
+      },
+      "c_charge_degree": {
+        "statistic": 224.0,
+        "p_value": 0.861205254269412,
+        "n_pairs": 411,
+        "n_non_zero_pairs": 30,
+        "significant": false,
+        "mean_difference": -0.005988542932022324,
+        "median_difference": -2.9647203934018065e-05,
+        "std_difference": 0.09706545166177644
+      },
+      "campaign": {
+        "statistic": 131.0,
+        "p_value": 0.1634230013485901,
+        "n_pairs": 490,
+        "n_non_zero_pairs": 27,
+        "significant": false,
+        "mean_difference": -0.2449482630097036,
+        "median_difference": 0.0005961429970601,
+        "std_difference": 1.4063343739614091
+      },
+      "capital.gain": {
+        "statistic": 78.0,
+        "p_value": 0.5152778625488281,
+        "n_pairs": 392,
+        "n_non_zero_pairs": 19,
+        "significant": false,
+        "mean_difference": -0.29656515843983194,
+        "median_difference": -0.0012501119310049,
+        "std_difference": 2.1082838551477163
+      },
+      "capital.loss": {
+        "statistic": 75.0,
+        "p_value": 0.4413337707519531,
+        "n_pairs": 392,
+        "n_non_zero_pairs": 19,
+        "significant": false,
+        "mean_difference": 0.002554100564087337,
+        "median_difference": -0.0003979226341057,
+        "std_difference": 0.2075154921403599
+      },
+      "chlorpropamide": {
+        "statistic": 106.0,
+        "p_value": 9.350644604127981e-06,
+        "n_pairs": 699,
+        "n_non_zero_pairs": 43,
+        "significant": true,
+        "mean_difference": 0.16936105361255357,
+        "median_difference": 0.0472331180450678,
+        "std_difference": 0.24509598521889694
+      },
+      "contact": {
+        "statistic": 498.0,
+        "p_value": 0.8257835272955286,
+        "n_pairs": 735,
+        "n_non_zero_pairs": 45,
+        "significant": false,
+        "mean_difference": -0.006230872022768063,
+        "median_difference": 0.0002233082622566,
+        "std_difference": 0.14737418142333134
+      },
+      "day": {
+        "statistic": 252.0,
+        "p_value": 0.20311967353242077,
+        "n_pairs": 490,
+        "n_non_zero_pairs": 36,
+        "significant": false,
+        "mean_difference": -0.01438106042253031,
+        "median_difference": -0.00110985090201075,
+        "std_difference": 0.050698342655335044
+      },
+      "default": {
+        "statistic": 176.0,
+        "p_value": 0.00033528534281165455,
+        "n_pairs": 735,
+        "n_non_zero_pairs": 43,
+        "significant": true,
+        "mean_difference": 0.07408631801997896,
+        "median_difference": 0.0499446351576762,
+        "std_difference": 0.12348317519762297
+      },
+      "diabetesMed": {
+        "statistic": 450.0,
+        "p_value": 0.7812165358774805,
+        "n_pairs": 699,
+        "n_non_zero_pairs": 43,
+        "significant": false,
+        "mean_difference": -0.006716268481831396,
+        "median_difference": 0.0001396267667904,
+        "std_difference": 0.09333337108364657
+      },
+      "duration": {
+        "statistic": 315.0,
+        "p_value": 0.7773107939634833,
+        "n_pairs": 490,
+        "n_non_zero_pairs": 36,
+        "significant": false,
+        "mean_difference": 0.013080659901936322,
+        "median_difference": 3.5081893277055798e-06,
+        "std_difference": 0.15007539269136955
+      },
+      "education": {
+        "statistic": 1799.0,
+        "p_value": 0.3173624212454017,
+        "n_pairs": 1323,
+        "n_non_zero_pairs": 90,
+        "significant": false,
+        "mean_difference": -0.02685176040277454,
+        "median_difference": -0.00055126381131355,
+        "std_difference": 0.1841387675155361
+      },
+      "education.num": {
+        "statistic": 283.0,
+        "p_value": 0.4320867991802423,
+        "n_pairs": 392,
+        "n_non_zero_pairs": 36,
+        "significant": false,
+        "mean_difference": 0.0028163142873616305,
+        "median_difference": 0.0005677109115718,
+        "std_difference": 0.016314243421884058
+      },
+      "fnlwgt": {
+        "statistic": 148.5,
+        "p_value": 0.0037435060456660328,
+        "n_pairs": 392,
+        "n_non_zero_pairs": 36,
+        "significant": true,
+        "mean_difference": 0.004097013051785305,
+        "median_difference": 0.0017240236058616,
+        "std_difference": 0.08595448468650677
+      },
+      "gender": {
+        "statistic": 433.0,
+        "p_value": 0.629084585815343,
+        "n_pairs": 699,
+        "n_non_zero_pairs": 43,
+        "significant": false,
+        "mean_difference": -0.10108471853127887,
+        "median_difference": 5.696127312467339e-05,
+        "std_difference": 0.24918850502570827
+      },
+      "glipizide": {
+        "statistic": 372.0,
+        "p_value": 0.10051169012978099,
+        "n_pairs": 699,
+        "n_non_zero_pairs": 45,
+        "significant": false,
+        "mean_difference": 0.00658267033094985,
+        "median_difference": 0.0007882377672497,
+        "std_difference": 0.11266509690080696
+      },
+      "hours.per.week": {
+        "statistic": 164.0,
+        "p_value": 0.007921091886512261,
+        "n_pairs": 392,
+        "n_non_zero_pairs": 36,
+        "significant": true,
+        "mean_difference": 0.020486165168198914,
+        "median_difference": 0.011667757478846751,
+        "std_difference": 0.039292232214437846
+      },
+      "housing": {
+        "statistic": 305.0,
+        "p_value": 0.042492325583807576,
+        "n_pairs": 735,
+        "n_non_zero_pairs": 43,
+        "significant": true,
+        "mean_difference": -0.10378175163267862,
+        "median_difference": -0.001470841889058,
+        "std_difference": 0.23264494309338848
+      },
+      "job": {
+        "statistic": 440.0,
+        "p_value": 0.3816793880421814,
+        "n_pairs": 735,
+        "n_non_zero_pairs": 45,
+        "significant": false,
+        "mean_difference": -0.02599140728201011,
+        "median_difference": 0.0003405531335236,
+        "std_difference": 0.09623248506838866
+      },
+      "juv_fel_count": {
+        "statistic": 91.0,
+        "p_value": 0.8905677795410156,
+        "n_pairs": 274,
+        "n_non_zero_pairs": 19,
+        "significant": false,
+        "mean_difference": 7.029354389159908,
+        "median_difference": -2.535097850286293e-07,
+        "std_difference": 24.555875873475205
+      },
+      "juv_misd_count": {
+        "statistic": 74.0,
+        "p_value": 0.4180412292480469,
+        "n_pairs": 274,
+        "n_non_zero_pairs": 19,
+        "significant": false,
+        "mean_difference": 0.6633360273659812,
+        "median_difference": -1.8231288113096374e-05,
+        "std_difference": 2.861886505904617
+      },
+      "juv_other_count": {
+        "statistic": 78.0,
+        "p_value": 0.5152778625488281,
+        "n_pairs": 274,
+        "n_non_zero_pairs": 19,
+        "significant": false,
+        "mean_difference": 0.6266000058717573,
+        "median_difference": -4.61520495935531e-07,
+        "std_difference": 2.775535524120547
+      },
+      "loan": {
+        "statistic": 413.0,
+        "p_value": 0.4687443708653327,
+        "n_pairs": 735,
+        "n_non_zero_pairs": 43,
+        "significant": false,
+        "mean_difference": 0.013662340440945712,
+        "median_difference": 0.0002757007019863,
+        "std_difference": 0.0902774309695153
+      },
+      "marital": {
+        "statistic": 280.0,
+        "p_value": 0.007343376401776973,
+        "n_pairs": 735,
+        "n_non_zero_pairs": 45,
+        "significant": true,
+        "mean_difference": -0.040570508948848165,
+        "median_difference": -0.0025826807977033,
+        "std_difference": 0.12419434880703495
+      },
+      "marital.status": {
+        "statistic": 82.0,
+        "p_value": 0.2572479248046875,
+        "n_pairs": 588,
+        "n_non_zero_pairs": 21,
+        "significant": false,
+        "mean_difference": -0.028612986120648214,
+        "median_difference": -0.0014219694276573,
+        "std_difference": 0.10521800863294738
+      },
+      "metformin": {
+        "statistic": 460.0,
+        "p_value": 0.516306234717167,
+        "n_pairs": 699,
+        "n_non_zero_pairs": 45,
+        "significant": false,
+        "mean_difference": -0.008560875118350976,
+        "median_difference": 0.0011946250611478,
+        "std_difference": 0.08620353441072147
+      },
+      "miglitol": {
+        "statistic": 149.0,
+        "p_value": 0.08587924432113722,
+        "n_pairs": 699,
+        "n_non_zero_pairs": 30,
+        "significant": false,
+        "mean_difference": 0.06590746190003424,
+        "median_difference": 0.0021079687183365,
+        "std_difference": 0.15019077123153562
+      },
+      "month": {
+        "statistic": 379.0,
+        "p_value": 0.11796717748659796,
+        "n_pairs": 735,
+        "n_non_zero_pairs": 45,
+        "significant": false,
+        "mean_difference": -0.021630476214430122,
+        "median_difference": -0.0013374393809706,
+        "std_difference": 0.09095585166328575
+      },
+      "native.country": {
+        "statistic": 67.0,
+        "p_value": 0.16495704650878906,
+        "n_pairs": 588,
+        "n_non_zero_pairs": 20,
+        "significant": false,
+        "mean_difference": 0.030852964579868237,
+        "median_difference": 0.0010624972123747,
+        "std_difference": 0.074386000433818
+      },
+      "num_medications": {
+        "statistic": 263.0,
+        "p_value": 0.27138615711749847,
+        "n_pairs": 466,
+        "n_non_zero_pairs": 36,
+        "significant": false,
+        "mean_difference": -0.0032975017423129073,
+        "median_difference": -5.505001159444899e-05,
+        "std_difference": 0.01357468550325558
+      },
+      "num_procedures": {
+        "statistic": 103.0,
+        "p_value": 0.956329345703125,
+        "n_pairs": 466,
+        "n_non_zero_pairs": 20,
+        "significant": false,
+        "mean_difference": 0.003755981825784061,
+        "median_difference": 1.155011462822407e-05,
+        "std_difference": 0.04263522596891066
+      },
+      "number_emergency": {
+        "statistic": 72.0,
+        "p_value": 0.37359619140625,
+        "n_pairs": 466,
+        "n_non_zero_pairs": 19,
+        "significant": false,
+        "mean_difference": -1.4612072526916509,
+        "median_difference": -0.0002103460688529,
+        "std_difference": 6.050443830194341
+      },
+      "number_inpatient": {
+        "statistic": 74.0,
+        "p_value": 0.4180412292480469,
+        "n_pairs": 466,
+        "n_non_zero_pairs": 19,
+        "significant": false,
+        "mean_difference": 0.16147647646755922,
+        "median_difference": 1.1559079639844594e-05,
+        "std_difference": 0.5486590564760494
+      },
+      "number_outpatient": {
+        "statistic": 91.0,
+        "p_value": 0.8905677795410156,
+        "n_pairs": 466,
+        "n_non_zero_pairs": 19,
+        "significant": false,
+        "mean_difference": -0.48702172919984016,
+        "median_difference": -3.993164157473084e-06,
+        "std_difference": 4.352309769387766
+      },
+      "occupation": {
+        "statistic": 479.0,
+        "p_value": 0.8518702802204895,
+        "n_pairs": 588,
+        "n_non_zero_pairs": 44,
+        "significant": false,
+        "mean_difference": 0.010963480513779015,
+        "median_difference": 0.00029236173573784997,
+        "std_difference": 0.17830629085286623
+      },
+      "pdays": {
+        "statistic": 88.0,
+        "p_value": 0.7982521057128906,
+        "n_pairs": 490,
+        "n_non_zero_pairs": 19,
+        "significant": false,
+        "mean_difference": 0.006613256579602705,
+        "median_difference": -0.0001389117078748,
+        "std_difference": 0.0811705341950765
+      },
+      "poutcome": {
+        "statistic": 280.0,
+        "p_value": 0.007343376401776973,
+        "n_pairs": 735,
+        "n_non_zero_pairs": 45,
+        "significant": true,
+        "mean_difference": -0.021030807512811375,
+        "median_difference": -0.0192920216994208,
+        "std_difference": 0.06682568497570283
+      },
+      "previous": {
+        "statistic": 45.0,
+        "p_value": 0.044559478759765625,
+        "n_pairs": 490,
+        "n_non_zero_pairs": 19,
+        "significant": true,
+        "mean_difference": -0.6368134299966347,
+        "median_difference": -0.0003696665039554,
+        "std_difference": 2.526867931845349
+      },
+      "priors_count": {
+        "statistic": 185.0,
+        "p_value": 0.9234301386057244,
+        "n_pairs": 274,
+        "n_non_zero_pairs": 27,
+        "significant": false,
+        "mean_difference": 0.0023992373844670244,
+        "median_difference": -8.084871979535668e-07,
+        "std_difference": 0.012292904790164351
+      },
+      "race": {
+        "statistic": 3979.0,
+        "p_value": 0.17962153549611615,
+        "n_pairs": 1698,
+        "n_non_zero_pairs": 135,
+        "significant": false,
+        "mean_difference": 0.002730969519893236,
+        "median_difference": 0.0003238409314962,
+        "std_difference": 0.11223584150104614
+      },
+      "relationship": {
+        "statistic": 448.0,
+        "p_value": 0.43274468005316835,
+        "n_pairs": 588,
+        "n_non_zero_pairs": 45,
+        "significant": false,
+        "mean_difference": -0.0262123586111087,
+        "median_difference": 6.0949353680200824e-05,
+        "std_difference": 0.11265791672296839
+      },
+      "rosiglitazone": {
+        "statistic": 441.0,
+        "p_value": 0.3878525441607248,
+        "n_pairs": 699,
+        "n_non_zero_pairs": 45,
+        "significant": false,
+        "mean_difference": 0.0018020089331608092,
+        "median_difference": 0.0001422174957258,
+        "std_difference": 0.14557020662971326
+      },
+      "score_text": {
+        "statistic": 286.0,
+        "p_value": 0.008971700051107121,
+        "n_pairs": 411,
+        "n_non_zero_pairs": 45,
+        "significant": true,
+        "mean_difference": -0.08946936479629441,
+        "median_difference": -0.0009413157522672,
+        "std_difference": 0.1982944915914599
+      },
+      "sex": {
+        "statistic": 1696.0,
+        "p_value": 0.452409897277424,
+        "n_pairs": 999,
+        "n_non_zero_pairs": 86,
+        "significant": false,
+        "mean_difference": -0.04002438610424332,
+        "median_difference": -9.047582766775763e-05,
+        "std_difference": 0.15604925739893455
+      },
+      "time_in_hospital": {
+        "statistic": 224.0,
+        "p_value": 0.08677436396376964,
+        "n_pairs": 466,
+        "n_non_zero_pairs": 36,
+        "significant": false,
+        "mean_difference": -0.006199513000832756,
+        "median_difference": -0.0003887191066217,
+        "std_difference": 0.024309849963776976
+      },
+      "v_score_text": {
+        "statistic": 250.0,
+        "p_value": 0.0025319880439014304,
+        "n_pairs": 411,
+        "n_non_zero_pairs": 45,
+        "significant": true,
+        "mean_difference": -0.05633485053352007,
+        "median_difference": -0.0021777310912082,
+        "std_difference": 0.13941841328099822
+      },
+      "workclass": {
+        "statistic": 302.0,
+        "p_value": 0.014986718039181026,
+        "n_pairs": 588,
+        "n_non_zero_pairs": 45,
+        "significant": true,
+        "mean_difference": -0.04749806840068256,
+        "median_difference": -0.0089090977426259,
+        "std_difference": 0.1347198611726017
+      }
+    },
+    "combined_results": {
+      "add_noise": {
+        "A1Cresult": {
+          "statistic": 26.0,
+          "p_value": 0.05342623055066986,
+          "n_pairs": 233,
+          "n_non_zero_pairs": 15,
+          "significant": false,
+          "mean_difference": -0.06699096024001833,
+          "median_difference": -0.0024603266240561,
+          "std_difference": 0.13206897405302792
+        },
+        "acarbose": {
+          "statistic": 39.0,
+          "p_value": 0.2328848852887021,
+          "n_pairs": 233,
+          "n_non_zero_pairs": 15,
+          "significant": false,
+          "mean_difference": 0.025928100245719517,
+          "median_difference": 0.001290053180256,
+          "std_difference": 0.07153834545602411
+        },
+        "age": {
+          "statistic": 6.0,
+          "p_value": 0.21875,
+          "n_pairs": 233,
+          "n_non_zero_pairs": 7,
+          "significant": false,
+          "mean_difference": -0.0501799992176389,
+          "median_difference": -0.0178554078082026,
+          "std_difference": 0.08408049695619096
+        },
+        "age_cat": {
+          "statistic": 4.0,
+          "p_value": 0.109375,
+          "n_pairs": 137,
+          "n_non_zero_pairs": 7,
+          "significant": false,
+          "mean_difference": -0.12380278291436332,
+          "median_difference": -0.084704993991206,
+          "std_difference": 0.14020752344514875
+        },
+        "balance": {
+          "statistic": null,
+          "p_value": null,
+          "n_pairs": 0,
+          "n_non_zero_pairs": 0,
+          "significant": false,
+          "error": "Insufficient non-zero differences for test"
+        },
+        "c_charge_degree": {
+          "statistic": null,
+          "p_value": null,
+          "n_pairs": 137,
+          "n_non_zero_pairs": 0,
+          "significant": false,
+          "error": "Insufficient non-zero differences for test"
+        },
+        "campaign": {
+          "statistic": null,
+          "p_value": null,
+          "n_pairs": 0,
+          "n_non_zero_pairs": 0,
+          "significant": false,
+          "error": "Insufficient non-zero differences for test"
+        },
+        "capital.gain": {
+          "statistic": null,
+          "p_value": null,
+          "n_pairs": 0,
+          "n_non_zero_pairs": 0,
+          "significant": false,
+          "error": "Insufficient non-zero differences for test"
+        },
+        "capital.loss": {
+          "statistic": null,
+          "p_value": null,
+          "n_pairs": 0,
+          "n_non_zero_pairs": 0,
+          "significant": false,
+          "error": "Insufficient non-zero differences for test"
+        },
+        "chlorpropamide": {
+          "statistic": 13.0,
+          "p_value": 0.007586051542774687,
+          "n_pairs": 233,
+          "n_non_zero_pairs": 15,
+          "significant": true,
+          "mean_difference": 0.1377108690021783,
+          "median_difference": 0.0329197039078448,
+          "std_difference": 0.20902167036964894
+        },
+        "contact": {
+          "statistic": 46.0,
+          "p_value": 0.42643498438261274,
+          "n_pairs": 245,
+          "n_non_zero_pairs": 15,
+          "significant": false,
+          "mean_difference": -0.018336306565843022,
+          "median_difference": 0.0002233082622566,
+          "std_difference": 0.05408280287980339
+        },
+        "day": {
+          "statistic": null,
+          "p_value": null,
+          "n_pairs": 0,
+          "n_non_zero_pairs": 0,
+          "significant": false,
+          "error": "Insufficient non-zero differences for test"
+        },
+        "default": {
+          "statistic": 25.0,
+          "p_value": 0.046782132998777204,
+          "n_pairs": 245,
+          "n_non_zero_pairs": 15,
+          "significant": true,
+          "mean_difference": 0.060725973180111845,
+          "median_difference": 0.0550069635593557,
+          "std_difference": 0.08589142785222259
+        },
+        "diabetesMed": {
+          "statistic": 59.0,
+          "p_value": 0.954698429734882,
+          "n_pairs": 233,
+          "n_non_zero_pairs": 15,
+          "significant": false,
+          "mean_difference": -0.023645677065640677,
+          "median_difference": 0.0003838349208369,
+          "std_difference": 0.06268904058700878
+        },
+        "duration": {
+          "statistic": null,
+          "p_value": null,
+          "n_pairs": 0,
+          "n_non_zero_pairs": 0,
+          "significant": false,
+          "error": "Insufficient non-zero differences for test"
+        },
+        "education": {
+          "statistic": 191.0,
+          "p_value": 0.39330935109549536,
+          "n_pairs": 441,
+          "n_non_zero_pairs": 30,
+          "significant": false,
+          "mean_difference": -0.013264828190872411,
+          "median_difference": -0.00027716432544215,
+          "std_difference": 0.06301568180728906
+        },
+        "education.num": {
+          "statistic": null,
+          "p_value": null,
+          "n_pairs": 0,
+          "n_non_zero_pairs": 0,
+          "significant": false,
+          "error": "Insufficient non-zero differences for test"
+        },
+        "fnlwgt": {
+          "statistic": null,
+          "p_value": null,
+          "n_pairs": 0,
+          "n_non_zero_pairs": 0,
+          "significant": false,
+          "error": "Insufficient non-zero differences for test"
+        },
+        "gender": {
+          "statistic": 39.0,
+          "p_value": 0.2328848852887021,
+          "n_pairs": 233,
+          "n_non_zero_pairs": 15,
+          "significant": false,
+          "mean_difference": -0.12118084861232163,
+          "median_difference": -0.0004412197174627,
+          "std_difference": 0.2474132783304207
+        },
+        "glipizide": {
+          "statistic": 32.0,
+          "p_value": 0.11169650413134607,
+          "n_pairs": 233,
+          "n_non_zero_pairs": 15,
+          "significant": false,
+          "mean_difference": 0.022736246874093154,
+          "median_difference": 0.0010645456031514,
+          "std_difference": 0.05304808825704664
+        },
+        "hours.per.week": {
+          "statistic": null,
+          "p_value": null,
+          "n_pairs": 0,
+          "n_non_zero_pairs": 0,
+          "significant": false,
+          "error": "Insufficient non-zero differences for test"
+        },
+        "housing": {
+          "statistic": 33.0,
+          "p_value": 0.12507733264310023,
+          "n_pairs": 245,
+          "n_non_zero_pairs": 15,
+          "significant": false,
+          "mean_difference": -0.12441911347643066,
+          "median_difference": -0.001470841889058,
+          "std_difference": 0.23798659310313347
+        },
+        "job": {
+          "statistic": 48.0,
+          "p_value": 0.4954339467055269,
+          "n_pairs": 245,
+          "n_non_zero_pairs": 15,
+          "significant": false,
+          "mean_difference": -0.02156882183650369,
+          "median_difference": -0.0003669424564855,
+          "std_difference": 0.06017895534391446
+        },
+        "juv_fel_count": {
+          "statistic": null,
+          "p_value": null,
+          "n_pairs": 0,
+          "n_non_zero_pairs": 0,
+          "significant": false,
+          "error": "Insufficient non-zero differences for test"
+        },
+        "juv_misd_count": {
+          "statistic": null,
+          "p_value": null,
+          "n_pairs": 0,
+          "n_non_zero_pairs": 0,
+          "significant": false,
+          "error": "Insufficient non-zero differences for test"
+        },
+        "juv_other_count": {
+          "statistic": null,
+          "p_value": null,
+          "n_pairs": 0,
+          "n_non_zero_pairs": 0,
+          "significant": false,
+          "error": "Insufficient non-zero differences for test"
+        },
+        "loan": {
+          "statistic": 51.0,
+          "p_value": 0.6091628911933872,
+          "n_pairs": 245,
+          "n_non_zero_pairs": 15,
+          "significant": false,
+          "mean_difference": 0.0007112776513206203,
+          "median_difference": 0.015369119896982,
+          "std_difference": 0.06198615405661036
+        },
+        "marital": {
+          "statistic": 18.0,
+          "p_value": 0.017036420262282723,
+          "n_pairs": 245,
+          "n_non_zero_pairs": 15,
+          "significant": true,
+          "mean_difference": -0.04795246939326485,
+          "median_difference": -0.006972058177489,
+          "std_difference": 0.08784684416836745
+        },
+        "marital.status": {
+          "statistic": 7.0,
+          "p_value": 0.296875,
+          "n_pairs": 196,
+          "n_non_zero_pairs": 7,
+          "significant": false,
+          "mean_difference": -0.0247407690559538,
+          "median_difference": -0.0012563628335517,
+          "std_difference": 0.04699056999807528
+        },
+        "metformin": {
+          "statistic": 57.0,
+          "p_value": 0.8646775535945274,
+          "n_pairs": 233,
+          "n_non_zero_pairs": 15,
+          "significant": false,
+          "mean_difference": -0.014459566264941432,
+          "median_difference": 0.0005722899631687,
+          "std_difference": 0.05153915663611746
+        },
+        "miglitol": {
+          "statistic": null,
+          "p_value": null,
+          "n_pairs": 233,
+          "n_non_zero_pairs": 0,
+          "significant": false,
+          "error": "Insufficient non-zero differences for test"
+        },
+        "month": {
+          "statistic": 25.0,
+          "p_value": 0.046782132998777204,
+          "n_pairs": 245,
+          "n_non_zero_pairs": 15,
+          "significant": true,
+          "mean_difference": -0.02533281157829448,
+          "median_difference": -0.0013374393809706,
+          "std_difference": 0.06223993182718342
+        },
+        "native.country": {
+          "statistic": 2.0,
+          "p_value": 0.046875,
+          "n_pairs": 196,
+          "n_non_zero_pairs": 7,
+          "significant": true,
+          "mean_difference": 0.030210801256736832,
+          "median_difference": 0.0010809163006352,
+          "std_difference": 0.05604865636090032
+        },
+        "num_medications": {
+          "statistic": null,
+          "p_value": null,
+          "n_pairs": 0,
+          "n_non_zero_pairs": 0,
+          "significant": false,
+          "error": "Insufficient non-zero differences for test"
+        },
+        "num_procedures": {
+          "statistic": null,
+          "p_value": null,
+          "n_pairs": 0,
+          "n_non_zero_pairs": 0,
+          "significant": false,
+          "error": "Insufficient non-zero differences for test"
+        },
+        "number_emergency": {
+          "statistic": null,
+          "p_value": null,
+          "n_pairs": 0,
+          "n_non_zero_pairs": 0,
+          "significant": false,
+          "error": "Insufficient non-zero differences for test"
+        },
+        "number_inpatient": {
+          "statistic": null,
+          "p_value": null,
+          "n_pairs": 0,
+          "n_non_zero_pairs": 0,
+          "significant": false,
+          "error": "Insufficient non-zero differences for test"
+        },
+        "number_outpatient": {
+          "statistic": null,
+          "p_value": null,
+          "n_pairs": 0,
+          "n_non_zero_pairs": 0,
+          "significant": false,
+          "error": "Insufficient non-zero differences for test"
+        },
+        "occupation": {
+          "statistic": 58.0,
+          "p_value": 0.9095427776952096,
+          "n_pairs": 196,
+          "n_non_zero_pairs": 15,
+          "significant": false,
+          "mean_difference": 0.03964779121688422,
+          "median_difference": 0.000145871430545,
+          "std_difference": 0.3000805108992592
+        },
+        "pdays": {
+          "statistic": null,
+          "p_value": null,
+          "n_pairs": 0,
+          "n_non_zero_pairs": 0,
+          "significant": false,
+          "error": "Insufficient non-zero differences for test"
+        },
+        "poutcome": {
+          "statistic": 12.0,
+          "p_value": 0.006395825971507906,
+          "n_pairs": 245,
+          "n_non_zero_pairs": 15,
+          "significant": true,
+          "mean_difference": -0.02520602311672141,
+          "median_difference": -0.0246255742319123,
+          "std_difference": 0.029704131420192403
+        },
+        "previous": {
+          "statistic": null,
+          "p_value": null,
+          "n_pairs": 0,
+          "n_non_zero_pairs": 0,
+          "significant": false,
+          "error": "Insufficient non-zero differences for test"
+        },
+        "priors_count": {
+          "statistic": null,
+          "p_value": null,
+          "n_pairs": 0,
+          "n_non_zero_pairs": 0,
+          "significant": false,
+          "error": "Insufficient non-zero differences for test"
+        },
+        "race": {
+          "statistic": 470.0,
+          "p_value": 0.5918400189092564,
+          "n_pairs": 566,
+          "n_non_zero_pairs": 45,
+          "significant": false,
+          "mean_difference": 0.000638790188353244,
+          "median_difference": 0.0002121569864842,
+          "std_difference": 0.04513348383378815
+        },
+        "relationship": {
+          "statistic": 53.0,
+          "p_value": 0.6908856447493348,
+          "n_pairs": 196,
+          "n_non_zero_pairs": 15,
+          "significant": false,
+          "mean_difference": -0.008071239479698827,
+          "median_difference": -0.0075154004531745,
+          "std_difference": 0.07168861616815138
+        },
+        "rosiglitazone": {
+          "statistic": 56.0,
+          "p_value": 0.8202444727582786,
+          "n_pairs": 233,
+          "n_non_zero_pairs": 15,
+          "significant": false,
+          "mean_difference": -0.017368381180382964,
+          "median_difference": 0.0001422174957258,
+          "std_difference": 0.11621260559982034
+        },
+        "score_text": {
+          "statistic": 21.0,
+          "p_value": 0.02672591027647051,
+          "n_pairs": 137,
+          "n_non_zero_pairs": 15,
+          "significant": true,
+          "mean_difference": -0.08330840060180039,
+          "median_difference": -0.0012495618890408,
+          "std_difference": 0.15944616247297383
+        },
+        "sex": {
+          "statistic": 184.0,
+          "p_value": 0.3184650095464179,
+          "n_pairs": 333,
+          "n_non_zero_pairs": 30,
+          "significant": false,
+          "mean_difference": -0.04769411294754819,
+          "median_difference": -9.047582766775763e-05,
+          "std_difference": 0.1251239976157482
+        },
+        "time_in_hospital": {
+          "statistic": null,
+          "p_value": null,
+          "n_pairs": 0,
+          "n_non_zero_pairs": 0,
+          "significant": false,
+          "error": "Insufficient non-zero differences for test"
+        },
+        "v_score_text": {
+          "statistic": 6.0,
+          "p_value": 0.002157762679075225,
+          "n_pairs": 137,
+          "n_non_zero_pairs": 15,
+          "significant": true,
+          "mean_difference": -0.053010957913931296,
+          "median_difference": -0.0053298939540671,
+          "std_difference": 0.08244577450812195
+        },
+        "workclass": {
+          "statistic": 32.0,
+          "p_value": 0.11147974006584337,
+          "n_pairs": 196,
+          "n_non_zero_pairs": 15,
+          "significant": false,
+          "mean_difference": -0.08800810729641712,
+          "median_difference": -0.0013316925844618,
+          "std_difference": 0.19051269743009985
+        }
+      },
+      "category_flip": {
+        "A1Cresult": {
+          "statistic": 40.0,
+          "p_value": 0.25560482473873214,
+          "n_pairs": 233,
+          "n_non_zero_pairs": 15,
+          "significant": false,
+          "mean_difference": 0.012483548719659879,
+          "median_difference": 2.282701062329695e-05,
+          "std_difference": 0.027654375871746063
+        },
+        "acarbose": {
+          "statistic": 19.0,
+          "p_value": 0.019853072388466352,
+          "n_pairs": 233,
+          "n_non_zero_pairs": 15,
+          "significant": true,
+          "mean_difference": 0.0936058674873277,
+          "median_difference": 0.0170966977982111,
+          "std_difference": 0.14355250983467155
+        },
+        "age": {
+          "statistic": 6.0,
+          "p_value": 0.21875,
+          "n_pairs": 233,
+          "n_non_zero_pairs": 7,
+          "significant": false,
+          "mean_difference": 0.0344762776494837,
+          "median_difference": 0.0210799066421961,
+          "std_difference": 0.03943127379673259
+        },
+        "age_cat": {
+          "statistic": 6.0,
+          "p_value": 0.21875,
+          "n_pairs": 137,
+          "n_non_zero_pairs": 7,
+          "significant": false,
+          "mean_difference": 0.04116872424061191,
+          "median_difference": 0.0424730654626123,
+          "std_difference": 0.04920060639829555
+        },
+        "balance": {
+          "statistic": null,
+          "p_value": null,
+          "n_pairs": 0,
+          "n_non_zero_pairs": 0,
+          "significant": false,
+          "error": "Insufficient non-zero differences for test"
+        },
+        "c_charge_degree": {
+          "statistic": 57.0,
+          "p_value": 0.8646775535945274,
+          "n_pairs": 137,
+          "n_non_zero_pairs": 15,
+          "significant": false,
+          "mean_difference": 0.028388879934124703,
+          "median_difference": -0.0003556261368607,
+          "std_difference": 0.08132708740194448
+        },
+        "campaign": {
+          "statistic": null,
+          "p_value": null,
+          "n_pairs": 0,
+          "n_non_zero_pairs": 0,
+          "significant": false,
+          "error": "Insufficient non-zero differences for test"
+        },
+        "capital.gain": {
+          "statistic": null,
+          "p_value": null,
+          "n_pairs": 0,
+          "n_non_zero_pairs": 0,
+          "significant": false,
+          "error": "Insufficient non-zero differences for test"
+        },
+        "capital.loss": {
+          "statistic": null,
+          "p_value": null,
+          "n_pairs": 0,
+          "n_non_zero_pairs": 0,
+          "significant": false,
+          "error": "Insufficient non-zero differences for test"
+        },
+        "chlorpropamide": {
+          "statistic": 12.0,
+          "p_value": 0.01611328125,
+          "n_pairs": 233,
+          "n_non_zero_pairs": 13,
+          "significant": true,
+          "mean_difference": 0.2594138308120765,
+          "median_difference": 0.1461029192295981,
+          "std_difference": 0.31493241807645006
+        },
+        "contact": {
+          "statistic": 41.0,
+          "p_value": 0.2804339073312231,
+          "n_pairs": 245,
+          "n_non_zero_pairs": 15,
+          "significant": false,
+          "mean_difference": 0.02081987696878954,
+          "median_difference": 0.0195648186586631,
+          "std_difference": 0.08413955682425707
+        },
+        "day": {
+          "statistic": null,
+          "p_value": null,
+          "n_pairs": 0,
+          "n_non_zero_pairs": 0,
+          "significant": false,
+          "error": "Insufficient non-zero differences for test"
+        },
+        "default": {
+          "statistic": 20.0,
+          "p_value": 0.076904296875,
+          "n_pairs": 245,
+          "n_non_zero_pairs": 13,
+          "significant": false,
+          "mean_difference": 0.11583852653759942,
+          "median_difference": 0.0762623608637531,
+          "std_difference": 0.18631583932963205
+        },
+        "diabetesMed": {
+          "statistic": 21.0,
+          "p_value": 0.08935546875,
+          "n_pairs": 233,
+          "n_non_zero_pairs": 13,
+          "significant": false,
+          "mean_difference": 0.05769321107572285,
+          "median_difference": 0.0042050481106169,
+          "std_difference": 0.08430744167428238
+        },
+        "duration": {
+          "statistic": null,
+          "p_value": null,
+          "n_pairs": 0,
+          "n_non_zero_pairs": 0,
+          "significant": false,
+          "error": "Insufficient non-zero differences for test"
+        },
+        "education": {
+          "statistic": 218.0,
+          "p_value": 0.7655072544526795,
+          "n_pairs": 441,
+          "n_non_zero_pairs": 30,
+          "significant": false,
+          "mean_difference": -0.016749908802780808,
+          "median_difference": -0.0006289268025213501,
+          "std_difference": 0.16004653547164174
+        },
+        "education.num": {
+          "statistic": null,
+          "p_value": null,
+          "n_pairs": 0,
+          "n_non_zero_pairs": 0,
+          "significant": false,
+          "error": "Insufficient non-zero differences for test"
+        },
+        "fnlwgt": {
+          "statistic": null,
+          "p_value": null,
+          "n_pairs": 0,
+          "n_non_zero_pairs": 0,
+          "significant": false,
+          "error": "Insufficient non-zero differences for test"
+        },
+        "gender": {
+          "statistic": 26.0,
+          "p_value": 0.186767578125,
+          "n_pairs": 233,
+          "n_non_zero_pairs": 13,
+          "significant": false,
+          "mean_difference": 0.00506421771320237,
+          "median_difference": 0.000139806940881,
+          "std_difference": 0.01703743175354141
+        },
+        "glipizide": {
+          "statistic": 37.0,
+          "p_value": 0.191356864878787,
+          "n_pairs": 233,
+          "n_non_zero_pairs": 15,
+          "significant": false,
+          "mean_difference": 0.042954292822386324,
+          "median_difference": 0.0002988665542971,
+          "std_difference": 0.09859833248905282
+        },
+        "hours.per.week": {
+          "statistic": null,
+          "p_value": null,
+          "n_pairs": 0,
+          "n_non_zero_pairs": 0,
+          "significant": false,
+          "error": "Insufficient non-zero differences for test"
+        },
+        "housing": {
+          "statistic": 43.0,
+          "p_value": 0.87890625,
+          "n_pairs": 245,
+          "n_non_zero_pairs": 13,
+          "significant": false,
+          "mean_difference": -0.006343621311638121,
+          "median_difference": 0.0026177330546039,
+          "std_difference": 0.034698581455294045
+        },
+        "job": {
+          "statistic": 55.0,
+          "p_value": 0.7763811150102832,
+          "n_pairs": 245,
+          "n_non_zero_pairs": 15,
+          "significant": false,
+          "mean_difference": 0.006708217021721286,
+          "median_difference": 0.0003462931280112,
+          "std_difference": 0.03302823243192663
+        },
+        "juv_fel_count": {
+          "statistic": null,
+          "p_value": null,
+          "n_pairs": 0,
+          "n_non_zero_pairs": 0,
+          "significant": false,
+          "error": "Insufficient non-zero differences for test"
+        },
+        "juv_misd_count": {
+          "statistic": null,
+          "p_value": null,
+          "n_pairs": 0,
+          "n_non_zero_pairs": 0,
+          "significant": false,
+          "error": "Insufficient non-zero differences for test"
+        },
+        "juv_other_count": {
+          "statistic": null,
+          "p_value": null,
+          "n_pairs": 0,
+          "n_non_zero_pairs": 0,
+          "significant": false,
+          "error": "Insufficient non-zero differences for test"
+        },
+        "loan": {
+          "statistic": 23.0,
+          "p_value": 0.123046875,
+          "n_pairs": 245,
+          "n_non_zero_pairs": 13,
+          "significant": false,
+          "mean_difference": 0.06466980484224996,
+          "median_difference": 0.0400998065251832,
+          "std_difference": 0.11130866396461558
+        },
+        "marital": {
+          "statistic": 54.0,
+          "p_value": 0.7332196494460775,
+          "n_pairs": 245,
+          "n_non_zero_pairs": 15,
+          "significant": false,
+          "mean_difference": 0.018051328107404594,
+          "median_difference": -0.0013368277627729,
+          "std_difference": 0.040971256697697384
+        },
+        "marital.status": {
+          "statistic": 7.0,
+          "p_value": 0.296875,
+          "n_pairs": 196,
+          "n_non_zero_pairs": 7,
+          "significant": false,
+          "mean_difference": 0.03597581588451377,
+          "median_difference": 0.05462565726518,
+          "std_difference": 0.0741603007572694
+        },
+        "metformin": {
+          "statistic": 38.0,
+          "p_value": 0.21138429779617696,
+          "n_pairs": 233,
+          "n_non_zero_pairs": 15,
+          "significant": false,
+          "mean_difference": 0.035461598553163304,
+          "median_difference": 0.0011946250611478,
+          "std_difference": 0.07562452507491936
+        },
+        "miglitol": {
+          "statistic": 37.0,
+          "p_value": 0.191356864878787,
+          "n_pairs": 233,
+          "n_non_zero_pairs": 15,
+          "significant": false,
+          "mean_difference": 0.09578118669572494,
+          "median_difference": 0.0038246417296653,
+          "std_difference": 0.19205242288735333
+        },
+        "month": {
+          "statistic": 59.0,
+          "p_value": 0.954698429734882,
+          "n_pairs": 245,
+          "n_non_zero_pairs": 15,
+          "significant": false,
+          "mean_difference": -0.0005097271042400407,
+          "median_difference": -0.0003508207943488,
+          "std_difference": 0.06083545888006038
+        },
+        "native.country": {
+          "statistic": 8.0,
+          "p_value": 0.375,
+          "n_pairs": 196,
+          "n_non_zero_pairs": 7,
+          "significant": false,
+          "mean_difference": 0.06016304038348743,
+          "median_difference": 0.0047493528857258,
+          "std_difference": 0.11019448517322301
+        },
+        "num_medications": {
+          "statistic": null,
+          "p_value": null,
+          "n_pairs": 0,
+          "n_non_zero_pairs": 0,
+          "significant": false,
+          "error": "Insufficient non-zero differences for test"
+        },
+        "num_procedures": {
+          "statistic": null,
+          "p_value": null,
+          "n_pairs": 0,
+          "n_non_zero_pairs": 0,
+          "significant": false,
+          "error": "Insufficient non-zero differences for test"
+        },
+        "number_emergency": {
+          "statistic": null,
+          "p_value": null,
+          "n_pairs": 0,
+          "n_non_zero_pairs": 0,
+          "significant": false,
+          "error": "Insufficient non-zero differences for test"
+        },
+        "number_inpatient": {
+          "statistic": null,
+          "p_value": null,
+          "n_pairs": 0,
+          "n_non_zero_pairs": 0,
+          "significant": false,
+          "error": "Insufficient non-zero differences for test"
+        },
+        "number_outpatient": {
+          "statistic": null,
+          "p_value": null,
+          "n_pairs": 0,
+          "n_non_zero_pairs": 0,
+          "significant": false,
+          "error": "Insufficient non-zero differences for test"
+        },
+        "occupation": {
+          "statistic": 47.0,
+          "p_value": 0.45993945452344553,
+          "n_pairs": 196,
+          "n_non_zero_pairs": 15,
+          "significant": false,
+          "mean_difference": 0.008492635201107714,
+          "median_difference": 0.0016029822539667,
+          "std_difference": 0.033752917881816544
+        },
+        "pdays": {
+          "statistic": null,
+          "p_value": null,
+          "n_pairs": 0,
+          "n_non_zero_pairs": 0,
+          "significant": false,
+          "error": "Insufficient non-zero differences for test"
+        },
+        "poutcome": {
+          "statistic": 55.0,
+          "p_value": 0.7763811150102832,
+          "n_pairs": 245,
+          "n_non_zero_pairs": 15,
+          "significant": false,
+          "mean_difference": 0.007822466520238507,
+          "median_difference": -0.0183797880449833,
+          "std_difference": 0.08566138009758525
+        },
+        "previous": {
+          "statistic": null,
+          "p_value": null,
+          "n_pairs": 0,
+          "n_non_zero_pairs": 0,
+          "significant": false,
+          "error": "Insufficient non-zero differences for test"
+        },
+        "priors_count": {
+          "statistic": null,
+          "p_value": null,
+          "n_pairs": 0,
+          "n_non_zero_pairs": 0,
+          "significant": false,
+          "error": "Insufficient non-zero differences for test"
+        },
+        "race": {
+          "statistic": 340.0,
+          "p_value": 0.04511418139352728,
+          "n_pairs": 566,
+          "n_non_zero_pairs": 45,
+          "significant": true,
+          "mean_difference": 0.02267093176333312,
+          "median_difference": 0.0049484841360387,
+          "std_difference": 0.12872812773788886
+        },
+        "relationship": {
+          "statistic": 58.0,
+          "p_value": 0.9095427776952096,
+          "n_pairs": 196,
+          "n_non_zero_pairs": 15,
+          "significant": false,
+          "mean_difference": -0.028239290073518608,
+          "median_difference": 0.0109850569608012,
+          "std_difference": 0.14086450753843793
+        },
+        "rosiglitazone": {
+          "statistic": 46.0,
+          "p_value": 0.42643498438261274,
+          "n_pairs": 233,
+          "n_non_zero_pairs": 15,
+          "significant": false,
+          "mean_difference": 0.045651330699223204,
+          "median_difference": 7.147560041660043e-05,
+          "std_difference": 0.11081860536911807
+        },
+        "score_text": {
+          "statistic": 56.0,
+          "p_value": 0.8202444727582786,
+          "n_pairs": 137,
+          "n_non_zero_pairs": 15,
+          "significant": false,
+          "mean_difference": 0.00089672613876026,
+          "median_difference": -0.0007465406615851,
+          "std_difference": 0.024114985139511328
+        },
+        "sex": {
+          "statistic": 97.0,
+          "p_value": 0.04614519063936714,
+          "n_pairs": 333,
+          "n_non_zero_pairs": 26,
+          "significant": true,
+          "mean_difference": 0.02783151497566196,
+          "median_difference": 0.0197427353623484,
+          "std_difference": 0.11030754480662931
+        },
+        "time_in_hospital": {
+          "statistic": null,
+          "p_value": null,
+          "n_pairs": 0,
+          "n_non_zero_pairs": 0,
+          "significant": false,
+          "error": "Insufficient non-zero differences for test"
+        },
+        "v_score_text": {
+          "statistic": 59.0,
+          "p_value": 0.954698429734882,
+          "n_pairs": 137,
+          "n_non_zero_pairs": 15,
+          "significant": false,
+          "mean_difference": 0.010977295791241732,
+          "median_difference": -0.0009676499122608,
+          "std_difference": 0.05109523399254835
+        },
+        "workclass": {
+          "statistic": 49.0,
+          "p_value": 0.5317988106355197,
+          "n_pairs": 196,
+          "n_non_zero_pairs": 15,
+          "significant": false,
+          "mean_difference": -0.005831240180738101,
+          "median_difference": -0.0053579150129924,
+          "std_difference": 0.09149431077523419
+        }
+      },
+      "increment_decrement_feature": {
+        "A1Cresult": {
+          "statistic": null,
+          "p_value": null,
+          "n_pairs": 0,
+          "n_non_zero_pairs": 0,
+          "significant": false,
+          "error": "Insufficient non-zero differences for test"
+        },
+        "acarbose": {
+          "statistic": null,
+          "p_value": null,
+          "n_pairs": 0,
+          "n_non_zero_pairs": 0,
+          "significant": false,
+          "error": "Insufficient non-zero differences for test"
+        },
+        "age": {
+          "statistic": 287.0,
+          "p_value": 0.024697289308198894,
+          "n_pairs": 578,
+          "n_non_zero_pairs": 43,
+          "significant": true,
+          "mean_difference": -0.002773618456269068,
+          "median_difference": -0.0007094917665722,
+          "std_difference": 0.008600568630471225
+        },
+        "age_cat": {
+          "statistic": null,
+          "p_value": null,
+          "n_pairs": 0,
+          "n_non_zero_pairs": 0,
+          "significant": false,
+          "error": "Insufficient non-zero differences for test"
+        },
+        "balance": {
+          "statistic": 79.0,
+          "p_value": 0.7770146132489808,
+          "n_pairs": 245,
+          "n_non_zero_pairs": 18,
+          "significant": false,
+          "mean_difference": -1.317532062234428,
+          "median_difference": 0.0031030139121301,
+          "std_difference": 5.308723507198376
+        },
+        "c_charge_degree": {
+          "statistic": null,
+          "p_value": null,
+          "n_pairs": 0,
+          "n_non_zero_pairs": 0,
+          "significant": false,
+          "error": "Insufficient non-zero differences for test"
+        },
+        "campaign": {
+          "statistic": 70.0,
+          "p_value": 0.4994529087491246,
+          "n_pairs": 245,
+          "n_non_zero_pairs": 18,
+          "significant": false,
+          "mean_difference": -0.4214232849706005,
+          "median_difference": 0.0009271269091166499,
+          "std_difference": 1.6981640071720734
+        },
+        "capital.gain": {
+          "statistic": 21.0,
+          "p_value": 0.556640625,
+          "n_pairs": 196,
+          "n_non_zero_pairs": 10,
+          "significant": false,
+          "mean_difference": -0.8618380643149661,
+          "median_difference": -0.0025724425349841,
+          "std_difference": 2.702939577854964
+        },
+        "capital.loss": {
+          "statistic": 22.0,
+          "p_value": 0.625,
+          "n_pairs": 196,
+          "n_non_zero_pairs": 10,
+          "significant": false,
+          "mean_difference": -0.033611426534171304,
+          "median_difference": -0.0002690811167748,
+          "std_difference": 0.26336870032646675
+        },
+        "chlorpropamide": {
+          "statistic": null,
+          "p_value": null,
+          "n_pairs": 0,
+          "n_non_zero_pairs": 0,
+          "significant": false,
+          "error": "Insufficient non-zero differences for test"
+        },
+        "contact": {
+          "statistic": null,
+          "p_value": null,
+          "n_pairs": 0,
+          "n_non_zero_pairs": 0,
+          "significant": false,
+          "error": "Insufficient non-zero differences for test"
+        },
+        "day": {
+          "statistic": 76.0,
+          "p_value": 0.6789292607174644,
+          "n_pairs": 245,
+          "n_non_zero_pairs": 18,
+          "significant": false,
+          "mean_difference": -0.013690532478275851,
+          "median_difference": 4.668474821644997e-05,
+          "std_difference": 0.04898784092628405
+        },
+        "default": {
+          "statistic": null,
+          "p_value": null,
+          "n_pairs": 0,
+          "n_non_zero_pairs": 0,
+          "significant": false,
+          "error": "Insufficient non-zero differences for test"
+        },
+        "diabetesMed": {
+          "statistic": null,
+          "p_value": null,
+          "n_pairs": 0,
+          "n_non_zero_pairs": 0,
+          "significant": false,
+          "error": "Insufficient non-zero differences for test"
+        },
+        "duration": {
+          "statistic": 59.0,
+          "p_value": 0.24824114336090153,
+          "n_pairs": 245,
+          "n_non_zero_pairs": 18,
+          "significant": false,
+          "mean_difference": -0.022388481576067997,
+          "median_difference": -0.00206342723536525,
+          "std_difference": 0.07545867607680906
+        },
+        "education": {
+          "statistic": null,
+          "p_value": null,
+          "n_pairs": 0,
+          "n_non_zero_pairs": 0,
+          "significant": false,
+          "error": "Insufficient non-zero differences for test"
+        },
+        "education.num": {
+          "statistic": 53.0,
+          "p_value": 0.15675847885606103,
+          "n_pairs": 196,
+          "n_non_zero_pairs": 18,
+          "significant": false,
+          "mean_difference": 0.0029616402860283336,
+          "median_difference": 0.0029455227313810502,
+          "std_difference": 0.010523136973125827
+        },
+        "fnlwgt": {
+          "statistic": 55.5,
+          "p_value": 0.19111569075500145,
+          "n_pairs": 196,
+          "n_non_zero_pairs": 18,
+          "significant": false,
+          "mean_difference": -0.01796281537953874,
+          "median_difference": 0.0016692125896823,
+          "std_difference": 0.09157949158249734
+        },
+        "gender": {
+          "statistic": null,
+          "p_value": null,
+          "n_pairs": 0,
+          "n_non_zero_pairs": 0,
+          "significant": false,
+          "error": "Insufficient non-zero differences for test"
+        },
+        "glipizide": {
+          "statistic": null,
+          "p_value": null,
+          "n_pairs": 0,
+          "n_non_zero_pairs": 0,
+          "significant": false,
+          "error": "Insufficient non-zero differences for test"
+        },
+        "hours.per.week": {
+          "statistic": 46.0,
+          "p_value": 0.08524079068164889,
+          "n_pairs": 196,
+          "n_non_zero_pairs": 18,
+          "significant": false,
+          "mean_difference": 0.01663489043929108,
+          "median_difference": 0.0097399701752078,
+          "std_difference": 0.03964257711081656
+        },
+        "housing": {
+          "statistic": null,
+          "p_value": null,
+          "n_pairs": 0,
+          "n_non_zero_pairs": 0,
+          "significant": false,
+          "error": "Insufficient non-zero differences for test"
+        },
+        "job": {
+          "statistic": null,
+          "p_value": null,
+          "n_pairs": 0,
+          "n_non_zero_pairs": 0,
+          "significant": false,
+          "error": "Insufficient non-zero differences for test"
+        },
+        "juv_fel_count": {
+          "statistic": 24.0,
+          "p_value": 0.76953125,
+          "n_pairs": 137,
+          "n_non_zero_pairs": 10,
+          "significant": false,
+          "mean_difference": 2.671086568596223,
+          "median_difference": -0.0004722673929862643,
+          "std_difference": 8.247871581525585
+        },
+        "juv_misd_count": {
+          "statistic": 23.0,
+          "p_value": 0.6953125,
+          "n_pairs": 137,
+          "n_non_zero_pairs": 10,
+          "significant": false,
+          "mean_difference": 1.2901505105596636,
+          "median_difference": -7.847968753726074e-05,
+          "std_difference": 3.93068926227799
+        },
+        "juv_other_count": {
+          "statistic": 19.0,
+          "p_value": 0.431640625,
+          "n_pairs": 137,
+          "n_non_zero_pairs": 10,
+          "significant": false,
+          "mean_difference": 1.2450734005657662,
+          "median_difference": -0.0005765558836474526,
+          "std_difference": 3.8056073258859073
+        },
+        "loan": {
+          "statistic": null,
+          "p_value": null,
+          "n_pairs": 0,
+          "n_non_zero_pairs": 0,
+          "significant": false,
+          "error": "Insufficient non-zero differences for test"
+        },
+        "marital": {
+          "statistic": null,
+          "p_value": null,
+          "n_pairs": 0,
+          "n_non_zero_pairs": 0,
+          "significant": false,
+          "error": "Insufficient non-zero differences for test"
+        },
+        "marital.status": {
+          "statistic": null,
+          "p_value": null,
+          "n_pairs": 0,
+          "n_non_zero_pairs": 0,
+          "significant": false,
+          "error": "Insufficient non-zero differences for test"
+        },
+        "metformin": {
+          "statistic": null,
+          "p_value": null,
+          "n_pairs": 0,
+          "n_non_zero_pairs": 0,
+          "significant": false,
+          "error": "Insufficient non-zero differences for test"
+        },
+        "miglitol": {
+          "statistic": null,
+          "p_value": null,
+          "n_pairs": 0,
+          "n_non_zero_pairs": 0,
+          "significant": false,
+          "error": "Insufficient non-zero differences for test"
+        },
+        "month": {
+          "statistic": null,
+          "p_value": null,
+          "n_pairs": 0,
+          "n_non_zero_pairs": 0,
+          "significant": false,
+          "error": "Insufficient non-zero differences for test"
+        },
+        "native.country": {
+          "statistic": null,
+          "p_value": null,
+          "n_pairs": 0,
+          "n_non_zero_pairs": 0,
+          "significant": false,
+          "error": "Insufficient non-zero differences for test"
+        },
+        "num_medications": {
+          "statistic": 85.0,
+          "p_value": 0.9826190527521459,
+          "n_pairs": 233,
+          "n_non_zero_pairs": 18,
+          "significant": false,
+          "mean_difference": -0.005895960910337721,
+          "median_difference": 1.4350074346605908e-05,
+          "std_difference": 0.018998171917768848
+        },
+        "num_procedures": {
+          "statistic": 21.0,
+          "p_value": 0.556640625,
+          "n_pairs": 233,
+          "n_non_zero_pairs": 10,
+          "significant": false,
+          "mean_difference": 0.012649932982678516,
+          "median_difference": 0.00018990117491734566,
+          "std_difference": 0.043730674789827624
+        },
+        "number_emergency": {
+          "statistic": 23.0,
+          "p_value": 0.6953125,
+          "n_pairs": 233,
+          "n_non_zero_pairs": 10,
+          "significant": false,
+          "mean_difference": -2.7450476576646783,
+          "median_difference": -0.0002251008351447423,
+          "std_difference": 8.326931326401228
+        },
+        "number_inpatient": {
+          "statistic": 24.0,
+          "p_value": 0.76953125,
+          "n_pairs": 233,
+          "n_non_zero_pairs": 10,
+          "significant": false,
+          "mean_difference": 0.25076424804507536,
+          "median_difference": -0.0001326590507358794,
+          "std_difference": 0.7469796059341753
+        },
+        "number_outpatient": {
+          "statistic": 21.0,
+          "p_value": 0.556640625,
+          "n_pairs": 233,
+          "n_non_zero_pairs": 10,
+          "significant": false,
+          "mean_difference": -1.7365819952602517,
+          "median_difference": -0.00017395743621245,
+          "std_difference": 5.31003612937679
+        },
+        "occupation": {
+          "statistic": null,
+          "p_value": null,
+          "n_pairs": 0,
+          "n_non_zero_pairs": 0,
+          "significant": false,
+          "error": "Insufficient non-zero differences for test"
+        },
+        "pdays": {
+          "statistic": 21.0,
+          "p_value": 0.556640625,
+          "n_pairs": 245,
+          "n_non_zero_pairs": 10,
+          "significant": false,
+          "mean_difference": 0.0052906168044384895,
+          "median_difference": -0.0016807063350613,
+          "std_difference": 0.11311849056311857
+        },
+        "poutcome": {
+          "statistic": null,
+          "p_value": null,
+          "n_pairs": 0,
+          "n_non_zero_pairs": 0,
+          "significant": false,
+          "error": "Insufficient non-zero differences for test"
+        },
+        "previous": {
+          "statistic": 21.0,
+          "p_value": 0.556640625,
+          "n_pairs": 245,
+          "n_non_zero_pairs": 10,
+          "significant": false,
+          "mean_difference": -1.145925660531049,
+          "median_difference": -0.0054843946291704,
+          "std_difference": 3.4823754663611095
+        },
+        "priors_count": {
+          "statistic": 83.0,
+          "p_value": 0.9132599547277199,
+          "n_pairs": 137,
+          "n_non_zero_pairs": 18,
+          "significant": false,
+          "mean_difference": 0.0009985578715609603,
+          "median_difference": 0.00013610292846654354,
+          "std_difference": 0.009400730772759675
+        },
+        "race": {
+          "statistic": null,
+          "p_value": null,
+          "n_pairs": 0,
+          "n_non_zero_pairs": 0,
+          "significant": false,
+          "error": "Insufficient non-zero differences for test"
+        },
+        "relationship": {
+          "statistic": null,
+          "p_value": null,
+          "n_pairs": 0,
+          "n_non_zero_pairs": 0,
+          "significant": false,
+          "error": "Insufficient non-zero differences for test"
+        },
+        "rosiglitazone": {
+          "statistic": null,
+          "p_value": null,
+          "n_pairs": 0,
+          "n_non_zero_pairs": 0,
+          "significant": false,
+          "error": "Insufficient non-zero differences for test"
+        },
+        "score_text": {
+          "statistic": null,
+          "p_value": null,
+          "n_pairs": 0,
+          "n_non_zero_pairs": 0,
+          "significant": false,
+          "error": "Insufficient non-zero differences for test"
+        },
+        "sex": {
+          "statistic": null,
+          "p_value": null,
+          "n_pairs": 0,
+          "n_non_zero_pairs": 0,
+          "significant": false,
+          "error": "Insufficient non-zero differences for test"
+        },
+        "time_in_hospital": {
+          "statistic": 41.0,
+          "p_value": 0.05251225006808179,
+          "n_pairs": 233,
+          "n_non_zero_pairs": 18,
+          "significant": false,
+          "mean_difference": -0.004700527760329883,
+          "median_difference": -0.00122618898197155,
+          "std_difference": 0.01125181771653624
+        },
+        "v_score_text": {
+          "statistic": null,
+          "p_value": null,
+          "n_pairs": 0,
+          "n_non_zero_pairs": 0,
+          "significant": false,
+          "error": "Insufficient non-zero differences for test"
+        },
+        "workclass": {
+          "statistic": null,
+          "p_value": null,
+          "n_pairs": 0,
+          "n_non_zero_pairs": 0,
+          "significant": false,
+          "error": "Insufficient non-zero differences for test"
+        }
+      },
+      "replace_synonyms": {
+        "A1Cresult": {
+          "statistic": 38.0,
+          "p_value": 0.21138429779617696,
+          "n_pairs": 233,
+          "n_non_zero_pairs": 15,
+          "significant": false,
+          "mean_difference": -0.0793192582971767,
+          "median_difference": -0.0007106610800565,
+          "std_difference": 0.1536553630326164
+        },
+        "acarbose": {
+          "statistic": 38.0,
+          "p_value": 0.21138429779617696,
+          "n_pairs": 233,
+          "n_non_zero_pairs": 15,
+          "significant": false,
+          "mean_difference": -0.0026604452130576475,
+          "median_difference": 0.008380486324948,
+          "std_difference": 0.1306290792390222
+        },
+        "age": {
+          "statistic": null,
+          "p_value": null,
+          "n_pairs": 233,
+          "n_non_zero_pairs": 0,
+          "significant": false,
+          "error": "Insufficient non-zero differences for test"
+        },
+        "age_cat": {
+          "statistic": 6.0,
+          "p_value": 0.21875,
+          "n_pairs": 137,
+          "n_non_zero_pairs": 7,
+          "significant": false,
+          "mean_difference": -0.24623787128227073,
+          "median_difference": -0.221756644444256,
+          "std_difference": 0.2743411002204978
+        },
+        "balance": {
+          "statistic": null,
+          "p_value": null,
+          "n_pairs": 0,
+          "n_non_zero_pairs": 0,
+          "significant": false,
+          "error": "Insufficient non-zero differences for test"
+        },
+        "c_charge_degree": {
+          "statistic": 53.0,
+          "p_value": 0.6908856447493348,
+          "n_pairs": 137,
+          "n_non_zero_pairs": 15,
+          "significant": false,
+          "mean_difference": -0.040365965798169354,
+          "median_difference": 0.0002060659948393,
+          "std_difference": 0.10183242788358907
+        },
+        "campaign": {
+          "statistic": null,
+          "p_value": null,
+          "n_pairs": 0,
+          "n_non_zero_pairs": 0,
+          "significant": false,
+          "error": "Insufficient non-zero differences for test"
+        },
+        "capital.gain": {
+          "statistic": null,
+          "p_value": null,
+          "n_pairs": 0,
+          "n_non_zero_pairs": 0,
+          "significant": false,
+          "error": "Insufficient non-zero differences for test"
+        },
+        "capital.loss": {
+          "statistic": null,
+          "p_value": null,
+          "n_pairs": 0,
+          "n_non_zero_pairs": 0,
+          "significant": false,
+          "error": "Insufficient non-zero differences for test"
+        },
+        "chlorpropamide": {
+          "statistic": 13.0,
+          "p_value": 0.007586051542774687,
+          "n_pairs": 233,
+          "n_non_zero_pairs": 15,
+          "significant": true,
+          "mean_difference": 0.12296549798334233,
+          "median_difference": 0.042441633785404,
+          "std_difference": 0.20150115992870304
+        },
+        "contact": {
+          "statistic": 48.0,
+          "p_value": 0.4954339467055269,
+          "n_pairs": 245,
+          "n_non_zero_pairs": 15,
+          "significant": false,
+          "mean_difference": -0.021176186471250684,
+          "median_difference": -0.001895008743868,
+          "std_difference": 0.2389046525728174
+        },
+        "day": {
+          "statistic": null,
+          "p_value": null,
+          "n_pairs": 0,
+          "n_non_zero_pairs": 0,
+          "significant": false,
+          "error": "Insufficient non-zero differences for test"
+        },
+        "default": {
+          "statistic": 14.0,
+          "p_value": 0.008971156804419322,
+          "n_pairs": 245,
+          "n_non_zero_pairs": 15,
+          "significant": true,
+          "mean_difference": 0.05126141547790836,
+          "median_difference": 0.0454344231215067,
+          "std_difference": 0.07902070682755138
+        },
+        "diabetesMed": {
+          "statistic": 45.0,
+          "p_value": 0.39415050825096176,
+          "n_pairs": 233,
+          "n_non_zero_pairs": 15,
+          "significant": false,
+          "mean_difference": -0.045608408847902446,
+          "median_difference": -0.0021322048969742,
+          "std_difference": 0.1016420888057018
+        },
+        "duration": {
+          "statistic": null,
+          "p_value": null,
+          "n_pairs": 0,
+          "n_non_zero_pairs": 0,
+          "significant": false,
+          "error": "Insufficient non-zero differences for test"
+        },
+        "education": {
+          "statistic": 182.0,
+          "p_value": 0.2989181967168031,
+          "n_pairs": 441,
+          "n_non_zero_pairs": 30,
+          "significant": false,
+          "mean_difference": -0.0505405442146704,
+          "median_difference": -0.00086803098079095,
+          "std_difference": 0.2712872309565604
+        },
+        "education.num": {
+          "statistic": null,
+          "p_value": null,
+          "n_pairs": 0,
+          "n_non_zero_pairs": 0,
+          "significant": false,
+          "error": "Insufficient non-zero differences for test"
+        },
+        "fnlwgt": {
+          "statistic": null,
+          "p_value": null,
+          "n_pairs": 0,
+          "n_non_zero_pairs": 0,
+          "significant": false,
+          "error": "Insufficient non-zero differences for test"
+        },
+        "gender": {
+          "statistic": 51.0,
+          "p_value": 0.6091628911933872,
+          "n_pairs": 233,
+          "n_non_zero_pairs": 15,
+          "significant": false,
+          "mean_difference": -0.17298433319545323,
+          "median_difference": 9.045816880145705e-05,
+          "std_difference": 0.3292238120957066
+        },
+        "glipizide": {
+          "statistic": 55.0,
+          "p_value": 0.7763811150102832,
+          "n_pairs": 233,
+          "n_non_zero_pairs": 15,
+          "significant": false,
+          "mean_difference": -0.045942528703629915,
+          "median_difference": 0.0007882377672497,
+          "std_difference": 0.1506816617269804
+        },
+        "hours.per.week": {
+          "statistic": null,
+          "p_value": null,
+          "n_pairs": 0,
+          "n_non_zero_pairs": 0,
+          "significant": false,
+          "error": "Insufficient non-zero differences for test"
+        },
+        "housing": {
+          "statistic": 31.0,
+          "p_value": 0.09947144034990626,
+          "n_pairs": 245,
+          "n_non_zero_pairs": 15,
+          "significant": false,
+          "mean_difference": -0.16759076940049505,
+          "median_difference": -0.0486274696200411,
+          "std_difference": 0.30177247004083246
+        },
+        "job": {
+          "statistic": 44.0,
+          "p_value": 0.3633911924921729,
+          "n_pairs": 245,
+          "n_non_zero_pairs": 15,
+          "significant": false,
+          "mean_difference": -0.06311361703124793,
+          "median_difference": 0.0003405531335236,
+          "std_difference": 0.14747735263150685
+        },
+        "juv_fel_count": {
+          "statistic": null,
+          "p_value": null,
+          "n_pairs": 0,
+          "n_non_zero_pairs": 0,
+          "significant": false,
+          "error": "Insufficient non-zero differences for test"
+        },
+        "juv_misd_count": {
+          "statistic": null,
+          "p_value": null,
+          "n_pairs": 0,
+          "n_non_zero_pairs": 0,
+          "significant": false,
+          "error": "Insufficient non-zero differences for test"
+        },
+        "juv_other_count": {
+          "statistic": null,
+          "p_value": null,
+          "n_pairs": 0,
+          "n_non_zero_pairs": 0,
+          "significant": false,
+          "error": "Insufficient non-zero differences for test"
+        },
+        "loan": {
+          "statistic": 43.0,
+          "p_value": 0.3341793830599731,
+          "n_pairs": 245,
+          "n_non_zero_pairs": 15,
+          "significant": false,
+          "mean_difference": -0.017593065917226217,
+          "median_difference": -0.0005055401945298,
+          "std_difference": 0.07966037966781302
+        },
+        "marital": {
+          "statistic": 28.0,
+          "p_value": 0.06908791715591993,
+          "n_pairs": 245,
+          "n_non_zero_pairs": 15,
+          "significant": false,
+          "mean_difference": -0.09181038556068423,
+          "median_difference": -0.003578033699888,
+          "std_difference": 0.1803525037096197
+        },
+        "marital.status": {
+          "statistic": 3.0,
+          "p_value": 0.078125,
+          "n_pairs": 196,
+          "n_non_zero_pairs": 7,
+          "significant": false,
+          "mean_difference": -0.09707400519050462,
+          "median_difference": -0.0030260673728117,
+          "std_difference": 0.1372674237634663
+        },
+        "metformin": {
+          "statistic": 54.0,
+          "p_value": 0.7332196494460775,
+          "n_pairs": 233,
+          "n_non_zero_pairs": 15,
+          "significant": false,
+          "mean_difference": -0.04668465764327479,
+          "median_difference": 0.0013022941492669,
+          "std_difference": 0.10634119268068316
+        },
+        "miglitol": {
+          "statistic": 39.0,
+          "p_value": 0.2328848852887021,
+          "n_pairs": 233,
+          "n_non_zero_pairs": 15,
+          "significant": false,
+          "mean_difference": 0.03603373710434352,
+          "median_difference": 0.0003912957070077,
+          "std_difference": 0.08904642377469715
+        },
+        "month": {
+          "statistic": 39.0,
+          "p_value": 0.2328848852887021,
+          "n_pairs": 245,
+          "n_non_zero_pairs": 15,
+          "significant": false,
+          "mean_difference": -0.03904888996075584,
+          "median_difference": -0.0017096127082831,
+          "std_difference": 0.13269620472329058
+        },
+        "native.country": {
+          "statistic": 8.0,
+          "p_value": 0.6875,
+          "n_pairs": 196,
+          "n_non_zero_pairs": 6,
+          "significant": false,
+          "mean_difference": -0.002592933314034217,
+          "median_difference": -0.0006655942354237501,
+          "std_difference": 0.011818515630376615
+        },
+        "num_medications": {
+          "statistic": null,
+          "p_value": null,
+          "n_pairs": 0,
+          "n_non_zero_pairs": 0,
+          "significant": false,
+          "error": "Insufficient non-zero differences for test"
+        },
+        "num_procedures": {
+          "statistic": null,
+          "p_value": null,
+          "n_pairs": 0,
+          "n_non_zero_pairs": 0,
+          "significant": false,
+          "error": "Insufficient non-zero differences for test"
+        },
+        "number_emergency": {
+          "statistic": null,
+          "p_value": null,
+          "n_pairs": 0,
+          "n_non_zero_pairs": 0,
+          "significant": false,
+          "error": "Insufficient non-zero differences for test"
+        },
+        "number_inpatient": {
+          "statistic": null,
+          "p_value": null,
+          "n_pairs": 0,
+          "n_non_zero_pairs": 0,
+          "significant": false,
+          "error": "Insufficient non-zero differences for test"
+        },
+        "number_outpatient": {
+          "statistic": null,
+          "p_value": null,
+          "n_pairs": 0,
+          "n_non_zero_pairs": 0,
+          "significant": false,
+          "error": "Insufficient non-zero differences for test"
+        },
+        "occupation": {
+          "statistic": 50.0,
+          "p_value": 0.8752607089468505,
+          "n_pairs": 196,
+          "n_non_zero_pairs": 14,
+          "significant": false,
+          "mean_difference": -0.01712237526168589,
+          "median_difference": 0.00015208534461461098,
+          "std_difference": 0.07179130228066778
+        },
+        "pdays": {
+          "statistic": null,
+          "p_value": null,
+          "n_pairs": 0,
+          "n_non_zero_pairs": 0,
+          "significant": false,
+          "error": "Insufficient non-zero differences for test"
+        },
+        "poutcome": {
+          "statistic": 21.0,
+          "p_value": 0.02672591027647051,
+          "n_pairs": 245,
+          "n_non_zero_pairs": 15,
+          "significant": true,
+          "mean_difference": -0.04570886594195123,
+          "median_difference": -0.0315282602836969,
+          "std_difference": 0.06520430247837847
+        },
+        "previous": {
+          "statistic": null,
+          "p_value": null,
+          "n_pairs": 0,
+          "n_non_zero_pairs": 0,
+          "significant": false,
+          "error": "Insufficient non-zero differences for test"
+        },
+        "priors_count": {
+          "statistic": null,
+          "p_value": null,
+          "n_pairs": 0,
+          "n_non_zero_pairs": 0,
+          "significant": false,
+          "error": "Insufficient non-zero differences for test"
+        },
+        "race": {
+          "statistic": 486.0,
+          "p_value": 0.7221653308603904,
+          "n_pairs": 566,
+          "n_non_zero_pairs": 45,
+          "significant": false,
+          "mean_difference": -0.015116813392006656,
+          "median_difference": 0.0004023975539906,
+          "std_difference": 0.13790713390392137
+        },
+        "relationship": {
+          "statistic": 47.0,
+          "p_value": 0.4602110981447485,
+          "n_pairs": 196,
+          "n_non_zero_pairs": 15,
+          "significant": false,
+          "mean_difference": -0.04232654628010866,
+          "median_difference": 0.0002128191770321,
+          "std_difference": 0.11946230634592168
+        },
+        "rosiglitazone": {
+          "statistic": 54.0,
+          "p_value": 0.7332196494460775,
+          "n_pairs": 233,
+          "n_non_zero_pairs": 15,
+          "significant": false,
+          "mean_difference": -0.02287692271935783,
+          "median_difference": 0.0011630595558994,
+          "std_difference": 0.19418226571493594
+        },
+        "score_text": {
+          "statistic": 27.0,
+          "p_value": 0.06084060818276913,
+          "n_pairs": 137,
+          "n_non_zero_pairs": 15,
+          "significant": false,
+          "mean_difference": -0.18599641992584312,
+          "median_difference": -0.0071763344174217,
+          "std_difference": 0.2807165037216244
+        },
+        "sex": {
+          "statistic": 146.0,
+          "p_value": 0.07519789163196525,
+          "n_pairs": 333,
+          "n_non_zero_pairs": 30,
+          "significant": false,
+          "mean_difference": -0.091163106863523,
+          "median_difference": -0.00215811623802125,
+          "std_difference": 0.19579311852617245
+        },
+        "time_in_hospital": {
+          "statistic": null,
+          "p_value": null,
+          "n_pairs": 0,
+          "n_non_zero_pairs": 0,
+          "significant": false,
+          "error": "Insufficient non-zero differences for test"
+        },
+        "v_score_text": {
+          "statistic": 24.0,
+          "p_value": 0.04084746866268344,
+          "n_pairs": 137,
+          "n_non_zero_pairs": 15,
+          "significant": true,
+          "mean_difference": -0.12697088947787066,
+          "median_difference": -0.0027306574361765,
+          "std_difference": 0.20363938423871858
+        },
+        "workclass": {
+          "statistic": 27.0,
+          "p_value": 0.06068447949150637,
+          "n_pairs": 196,
+          "n_non_zero_pairs": 15,
+          "significant": false,
+          "mean_difference": -0.04865485772489248,
+          "median_difference": -0.0235502499767395,
+          "std_difference": 0.09356791228899672
+        }
+      },
+      "scale_values": {
+        "A1Cresult": {
+          "statistic": null,
+          "p_value": null,
+          "n_pairs": 0,
+          "n_non_zero_pairs": 0,
+          "significant": false,
+          "error": "Insufficient non-zero differences for test"
+        },
+        "acarbose": {
+          "statistic": null,
+          "p_value": null,
+          "n_pairs": 0,
+          "n_non_zero_pairs": 0,
+          "significant": false,
+          "error": "Insufficient non-zero differences for test"
+        },
+        "age": {
+          "statistic": 432.0,
+          "p_value": 0.6205230784687912,
+          "n_pairs": 578,
+          "n_non_zero_pairs": 43,
+          "significant": false,
+          "mean_difference": 0.002761353316114578,
+          "median_difference": -0.0003073165699511,
+          "std_difference": 0.031462190201191946
+        },
+        "age_cat": {
+          "statistic": null,
+          "p_value": null,
+          "n_pairs": 0,
+          "n_non_zero_pairs": 0,
+          "significant": false,
+          "error": "Insufficient non-zero differences for test"
+        },
+        "balance": {
+          "statistic": 58.0,
+          "p_value": 0.3808963098517203,
+          "n_pairs": 245,
+          "n_non_zero_pairs": 17,
+          "significant": false,
+          "mean_difference": -0.07667020311874906,
+          "median_difference": -0.0007192178296982,
+          "std_difference": 0.3118767330046665
+        },
+        "c_charge_degree": {
+          "statistic": null,
+          "p_value": null,
+          "n_pairs": 0,
+          "n_non_zero_pairs": 0,
+          "significant": false,
+          "error": "Insufficient non-zero differences for test"
+        },
+        "campaign": {
+          "statistic": 11.0,
+          "p_value": 0.203125,
+          "n_pairs": 245,
+          "n_non_zero_pairs": 9,
+          "significant": false,
+          "mean_difference": 0.10800178091209016,
+          "median_difference": 0.0001224837260205,
+          "std_difference": 0.2992706413895446
+        },
+        "capital.gain": {
+          "statistic": 19.0,
+          "p_value": 0.734375,
+          "n_pairs": 196,
+          "n_non_zero_pairs": 9,
+          "significant": false,
+          "mean_difference": 0.3315158480880951,
+          "median_difference": -0.0009925637186816,
+          "std_difference": 0.9688167433749364
+        },
+        "capital.loss": {
+          "statistic": 17.0,
+          "p_value": 0.5703125,
+          "n_pairs": 196,
+          "n_non_zero_pairs": 9,
+          "significant": false,
+          "mean_difference": 0.04273801956215249,
+          "median_difference": -0.000721797601289,
+          "std_difference": 0.12412111030481356
+        },
+        "chlorpropamide": {
+          "statistic": null,
+          "p_value": null,
+          "n_pairs": 0,
+          "n_non_zero_pairs": 0,
+          "significant": false,
+          "error": "Insufficient non-zero differences for test"
+        },
+        "contact": {
+          "statistic": null,
+          "p_value": null,
+          "n_pairs": 0,
+          "n_non_zero_pairs": 0,
+          "significant": false,
+          "error": "Insufficient non-zero differences for test"
+        },
+        "day": {
+          "statistic": 50.0,
+          "p_value": 0.12191842401177105,
+          "n_pairs": 245,
+          "n_non_zero_pairs": 18,
+          "significant": false,
+          "mean_difference": -0.015071588366784766,
+          "median_difference": -0.00130452133429275,
+          "std_difference": 0.05376821543335784
+        },
+        "default": {
+          "statistic": null,
+          "p_value": null,
+          "n_pairs": 0,
+          "n_non_zero_pairs": 0,
+          "significant": false,
+          "error": "Insufficient non-zero differences for test"
+        },
+        "diabetesMed": {
+          "statistic": null,
+          "p_value": null,
+          "n_pairs": 0,
+          "n_non_zero_pairs": 0,
+          "significant": false,
+          "error": "Insufficient non-zero differences for test"
+        },
+        "duration": {
+          "statistic": 63.0,
+          "p_value": 0.3269143921593606,
+          "n_pairs": 245,
+          "n_non_zero_pairs": 18,
+          "significant": false,
+          "mean_difference": 0.04854980137994065,
+          "median_difference": 0.00013329147161535458,
+          "std_difference": 0.1949665826242727
+        },
+        "education": {
+          "statistic": null,
+          "p_value": null,
+          "n_pairs": 0,
+          "n_non_zero_pairs": 0,
+          "significant": false,
+          "error": "Insufficient non-zero differences for test"
+        },
+        "education.num": {
+          "statistic": 77.0,
+          "p_value": 0.7111189887153913,
+          "n_pairs": 196,
+          "n_non_zero_pairs": 18,
+          "significant": false,
+          "mean_difference": 0.0026709882886949273,
+          "median_difference": -0.00128986586134385,
+          "std_difference": 0.020908947617351056
+        },
+        "fnlwgt": {
+          "statistic": 20.0,
+          "p_value": 0.004318587599012244,
+          "n_pairs": 196,
+          "n_non_zero_pairs": 18,
+          "significant": true,
+          "mean_difference": 0.026156841483109348,
+          "median_difference": 0.0021944984916648,
+          "std_difference": 0.07611582408353043
+        },
+        "gender": {
+          "statistic": null,
+          "p_value": null,
+          "n_pairs": 0,
+          "n_non_zero_pairs": 0,
+          "significant": false,
+          "error": "Insufficient non-zero differences for test"
+        },
+        "glipizide": {
+          "statistic": null,
+          "p_value": null,
+          "n_pairs": 0,
+          "n_non_zero_pairs": 0,
+          "significant": false,
+          "error": "Insufficient non-zero differences for test"
+        },
+        "hours.per.week": {
+          "statistic": 38.0,
+          "p_value": 0.038487619904044985,
+          "n_pairs": 196,
+          "n_non_zero_pairs": 18,
+          "significant": true,
+          "mean_difference": 0.02433743989710675,
+          "median_difference": 0.011667757478846751,
+          "std_difference": 0.039694230489518444
+        },
+        "housing": {
+          "statistic": null,
+          "p_value": null,
+          "n_pairs": 0,
+          "n_non_zero_pairs": 0,
+          "significant": false,
+          "error": "Insufficient non-zero differences for test"
+        },
+        "job": {
+          "statistic": null,
+          "p_value": null,
+          "n_pairs": 0,
+          "n_non_zero_pairs": 0,
+          "significant": false,
+          "error": "Insufficient non-zero differences for test"
+        },
+        "juv_fel_count": {
+          "statistic": 19.0,
+          "p_value": 0.734375,
+          "n_pairs": 137,
+          "n_non_zero_pairs": 9,
+          "significant": false,
+          "mean_difference": 11.871874189786226,
+          "median_difference": -6.85210642965145e-08,
+          "std_difference": 35.07242022174015
+        },
+        "juv_misd_count": {
+          "statistic": 18.0,
+          "p_value": 0.65234375,
+          "n_pairs": 137,
+          "n_non_zero_pairs": 9,
+          "significant": false,
+          "mean_difference": -0.03312450951588805,
+          "median_difference": -8.687793554840173e-07,
+          "std_difference": 0.0998477219418374
+        },
+        "juv_other_count": {
+          "statistic": 17.0,
+          "p_value": 0.5703125,
+          "n_pairs": 137,
+          "n_non_zero_pairs": 9,
+          "significant": false,
+          "mean_difference": -0.06059265489936373,
+          "median_difference": 9.0291213249577e-06,
+          "std_difference": 0.17526151020018707
+        },
+        "loan": {
+          "statistic": null,
+          "p_value": null,
+          "n_pairs": 0,
+          "n_non_zero_pairs": 0,
+          "significant": false,
+          "error": "Insufficient non-zero differences for test"
+        },
+        "marital": {
+          "statistic": null,
+          "p_value": null,
+          "n_pairs": 0,
+          "n_non_zero_pairs": 0,
+          "significant": false,
+          "error": "Insufficient non-zero differences for test"
+        },
+        "marital.status": {
+          "statistic": null,
+          "p_value": null,
+          "n_pairs": 0,
+          "n_non_zero_pairs": 0,
+          "significant": false,
+          "error": "Insufficient non-zero differences for test"
+        },
+        "metformin": {
+          "statistic": null,
+          "p_value": null,
+          "n_pairs": 0,
+          "n_non_zero_pairs": 0,
+          "significant": false,
+          "error": "Insufficient non-zero differences for test"
+        },
+        "miglitol": {
+          "statistic": null,
+          "p_value": null,
+          "n_pairs": 0,
+          "n_non_zero_pairs": 0,
+          "significant": false,
+          "error": "Insufficient non-zero differences for test"
+        },
+        "month": {
+          "statistic": null,
+          "p_value": null,
+          "n_pairs": 0,
+          "n_non_zero_pairs": 0,
+          "significant": false,
+          "error": "Insufficient non-zero differences for test"
+        },
+        "native.country": {
+          "statistic": null,
+          "p_value": null,
+          "n_pairs": 0,
+          "n_non_zero_pairs": 0,
+          "significant": false,
+          "error": "Insufficient non-zero differences for test"
+        },
+        "num_medications": {
+          "statistic": 52.0,
+          "p_value": 0.1443920169989066,
+          "n_pairs": 233,
+          "n_non_zero_pairs": 18,
+          "significant": false,
+          "mean_difference": -0.0006990425742880929,
+          "median_difference": -0.00015555408934350001,
+          "std_difference": 0.0020383423270129066
+        },
+        "num_procedures": {
+          "statistic": 21.0,
+          "p_value": 0.556640625,
+          "n_pairs": 233,
+          "n_non_zero_pairs": 10,
+          "significant": false,
+          "mean_difference": -0.005137969331110396,
+          "median_difference": -0.0002838004338991445,
+          "std_difference": 0.04182515560599855
+        },
+        "number_emergency": {
+          "statistic": 14.0,
+          "p_value": 0.359375,
+          "n_pairs": 233,
+          "n_non_zero_pairs": 9,
+          "significant": false,
+          "mean_difference": -0.03471791383273106,
+          "median_difference": -0.0002103460688529,
+          "std_difference": 0.11472443687288583
+        },
+        "number_inpatient": {
+          "statistic": 6.0,
+          "p_value": 0.0546875,
+          "n_pairs": 233,
+          "n_non_zero_pairs": 9,
+          "significant": false,
+          "mean_difference": 0.06226784138143018,
+          "median_difference": 1.242046105143571e-05,
+          "std_difference": 0.16895659886844977
+        },
+        "number_outpatient": {
+          "statistic": 17.0,
+          "p_value": 0.5703125,
+          "n_pairs": 233,
+          "n_non_zero_pairs": 9,
+          "significant": false,
+          "mean_difference": 0.9013785664228394,
+          "median_difference": -2.842695770947229e-07,
+          "std_difference": 2.603736393292095
+        },
+        "occupation": {
+          "statistic": null,
+          "p_value": null,
+          "n_pairs": 0,
+          "n_non_zero_pairs": 0,
+          "significant": false,
+          "error": "Insufficient non-zero differences for test"
+        },
+        "pdays": {
+          "statistic": 19.0,
+          "p_value": 0.734375,
+          "n_pairs": 245,
+          "n_non_zero_pairs": 9,
+          "significant": false,
+          "mean_difference": 0.008082856329785173,
+          "median_difference": -2.9284741831653045e-06,
+          "std_difference": 0.020605623477488805
+        },
+        "poutcome": {
+          "statistic": null,
+          "p_value": null,
+          "n_pairs": 0,
+          "n_non_zero_pairs": 0,
+          "significant": false,
+          "error": "Insufficient non-zero differences for test"
+        },
+        "previous": {
+          "statistic": 0.0,
+          "p_value": 0.00390625,
+          "n_pairs": 245,
+          "n_non_zero_pairs": 9,
+          "significant": true,
+          "mean_difference": -0.07113317384728546,
+          "median_difference": -0.0002175449651442,
+          "std_difference": 0.1989842358062793
+        },
+        "priors_count": {
+          "statistic": 20.0,
+          "p_value": 0.8203125,
+          "n_pairs": 137,
+          "n_non_zero_pairs": 9,
+          "significant": false,
+          "mean_difference": 0.005200596410279153,
+          "median_difference": -5.0404274431928666e-05,
+          "std_difference": 0.017031980512199205
+        },
+        "race": {
+          "statistic": null,
+          "p_value": null,
+          "n_pairs": 0,
+          "n_non_zero_pairs": 0,
+          "significant": false,
+          "error": "Insufficient non-zero differences for test"
+        },
+        "relationship": {
+          "statistic": null,
+          "p_value": null,
+          "n_pairs": 0,
+          "n_non_zero_pairs": 0,
+          "significant": false,
+          "error": "Insufficient non-zero differences for test"
+        },
+        "rosiglitazone": {
+          "statistic": null,
+          "p_value": null,
+          "n_pairs": 0,
+          "n_non_zero_pairs": 0,
+          "significant": false,
+          "error": "Insufficient non-zero differences for test"
+        },
+        "score_text": {
+          "statistic": null,
+          "p_value": null,
+          "n_pairs": 0,
+          "n_non_zero_pairs": 0,
+          "significant": false,
+          "error": "Insufficient non-zero differences for test"
+        },
+        "sex": {
+          "statistic": null,
+          "p_value": null,
+          "n_pairs": 0,
+          "n_non_zero_pairs": 0,
+          "significant": false,
+          "error": "Insufficient non-zero differences for test"
+        },
+        "time_in_hospital": {
+          "statistic": 69.0,
+          "p_value": 0.47218908417787975,
+          "n_pairs": 233,
+          "n_non_zero_pairs": 18,
+          "significant": false,
+          "mean_difference": -0.007698498241335627,
+          "median_difference": -9.083347834676795e-05,
+          "std_difference": 0.032944480844880275
+        },
+        "v_score_text": {
+          "statistic": null,
+          "p_value": null,
+          "n_pairs": 0,
+          "n_non_zero_pairs": 0,
+          "significant": false,
+          "error": "Insufficient non-zero differences for test"
+        },
+        "workclass": {
+          "statistic": null,
+          "p_value": null,
+          "n_pairs": 0,
+          "n_non_zero_pairs": 0,
+          "significant": false,
+          "error": "Insufficient non-zero differences for test"
+        }
+      }
+    }
+  },
+  "data_summary": {
+    "total_rows": 31422,
+    "unique_mutations": 5,
+    "unique_columns": 51,
+    "unique_symptoms": 18,
+    "unique_datasets": 4,
+    "datasets": [
+      "adult.csv",
+      "bank.csv",
+      "compas.csv",
+      "diabetic.csv"
+    ],
+    "mutation_types": [
+      "add_noise",
+      "category_flip",
+      "increment_decrement_feature",
+      "replace_synonyms",
+      "scale_values"
+    ],
+    "sensitive_attributes": [
+      "A1Cresult",
+      "acarbose",
+      "age",
+      "age_cat",
+      "balance",
+      "c_charge_degree",
+      "campaign",
+      "capital.gain",
+      "capital.loss",
+      "chlorpropamide",
+      "contact",
+      "day",
+      "default",
+      "diabetesMed",
+      "duration",
+      "education",
+      "education.num",
+      "fnlwgt",
+      "gender",
+      "glipizide",
+      "hours.per.week",
+      "housing",
+      "job",
+      "juv_fel_count",
+      "juv_misd_count",
+      "juv_other_count",
+      "loan",
+      "marital",
+      "marital.status",
+      "metformin",
+      "miglitol",
+      "month",
+      "native.country",
+      "num_medications",
+      "num_procedures",
+      "number_emergency",
+      "number_inpatient",
+      "number_outpatient",
+      "occupation",
+      "pdays",
+      "poutcome",
+      "previous",
+      "priors_count",
+      "race",
+      "relationship",
+      "rosiglitazone",
+      "score_text",
+      "sex",
+      "time_in_hospital",
+      "v_score_text",
+      "workclass"
+    ],
+    "symptoms": [
+      "APD",
+      "Correlation Ratio",
+      "Disparate Impact",
+      "Gini Index",
+      "Imbalance Ratio",
+      "Kendall Tau",
+      "Kurtosis",
+      "Mutual Information",
+      "Normalized Mutual Information",
+      "Pos Probability Diff",
+      "Privileged Pos Prob",
+      "Privileged Unbalance",
+      "Shannon Entropy",
+      "Simpson Diversity",
+      "Skewness",
+      "Statistical Parity",
+      "Unprivileged Pos Prob",
+      "Unprivileged Unbalance"
+    ],
+    "non_zero_differences": 2016,
+    "zero_differences": 29406,
+    "positive_differences": 1009,
+    "negative_differences": 1007,
+    "difference_stats": {
+      "mean": 0.028114367285250172,
+      "median": 3.2863659678132595e-08,
+      "std": 2.631007344703836,
+      "min": -26.42066390846324,
+      "max": 105.3895134883312,
+      "q25": -0.009140252617988426,
+      "q75": 0.009364035233054875
+    }
+  },
+  "consensus_analysis": {
+    "mutations": {
+      "scale_values": {
+        "sign_test_significant": true,
+        "wilcoxon_test_significant": false,
+        "both_significant": false,
+        "either_significant": true,
+        "consensus": "disagree"
+      },
+      "category_flip": {
+        "sign_test_significant": true,
+        "wilcoxon_test_significant": true,
+        "both_significant": true,
+        "either_significant": true,
+        "consensus": "agree"
+      },
+      "increment_decrement_feature": {
+        "sign_test_significant": true,
+        "wilcoxon_test_significant": false,
+        "both_significant": false,
+        "either_significant": true,
+        "consensus": "disagree"
+      },
+      "add_noise": {
+        "sign_test_significant": true,
+        "wilcoxon_test_significant": true,
+        "both_significant": true,
+        "either_significant": true,
+        "consensus": "agree"
+      },
+      "replace_synonyms": {
+        "sign_test_significant": true,
+        "wilcoxon_test_significant": true,
+        "both_significant": true,
+        "either_significant": true,
+        "consensus": "agree"
+      }
+    },
+    "columns": {
+      "default": {
+        "sign_test_significant": false,
+        "wilcoxon_test_significant": true,
+        "both_significant": false,
+        "either_significant": true,
+        "consensus": "disagree"
+      },
+      "housing": {
+        "sign_test_significant": false,
+        "wilcoxon_test_significant": true,
+        "both_significant": false,
+        "either_significant": true,
+        "consensus": "disagree"
+      },
+      "score_text": {
+        "sign_test_significant": false,
+        "wilcoxon_test_significant": true,
+        "both_significant": false,
+        "either_significant": true,
+        "consensus": "disagree"
+      },
+      "workclass": {
+        "sign_test_significant": false,
+        "wilcoxon_test_significant": true,
+        "both_significant": false,
+        "either_significant": true,
+        "consensus": "disagree"
+      },
+      "hours.per.week": {
+        "sign_test_significant": false,
+        "wilcoxon_test_significant": true,
+        "both_significant": false,
+        "either_significant": true,
+        "consensus": "disagree"
+      },
+      "v_score_text": {
+        "sign_test_significant": false,
+        "wilcoxon_test_significant": true,
+        "both_significant": false,
+        "either_significant": true,
+        "consensus": "disagree"
+      },
+      "acarbose": {
+        "sign_test_significant": false,
+        "wilcoxon_test_significant": true,
+        "both_significant": false,
+        "either_significant": true,
+        "consensus": "disagree"
+      },
+      "fnlwgt": {
+        "sign_test_significant": false,
+        "wilcoxon_test_significant": true,
+        "both_significant": false,
+        "either_significant": true,
+        "consensus": "disagree"
+      },
+      "poutcome": {
+        "sign_test_significant": false,
+        "wilcoxon_test_significant": true,
+        "both_significant": false,
+        "either_significant": true,
+        "consensus": "disagree"
+      },
+      "marital": {
+        "sign_test_significant": false,
+        "wilcoxon_test_significant": true,
+        "both_significant": false,
+        "either_significant": true,
+        "consensus": "disagree"
+      },
+      "previous": {
+        "sign_test_significant": false,
+        "wilcoxon_test_significant": true,
+        "both_significant": false,
+        "either_significant": true,
+        "consensus": "disagree"
+      },
+      "chlorpropamide": {
+        "sign_test_significant": false,
+        "wilcoxon_test_significant": true,
+        "both_significant": false,
+        "either_significant": true,
+        "consensus": "disagree"
+      }
+    },
+    "summary": {
+      "mutation_agreement_rate": 0.6,
+      "column_agreement_rate": 0.0,
+      "mutations_significant_in_both": [
+        "category_flip",
+        "add_noise",
+        "replace_synonyms"
+      ],
+      "columns_significant_in_both": [],
+      "total_mutations_analyzed": 5,
+      "total_columns_analyzed": 12
+    }
+  },
+  "dataset_mapping": {
+    "combination_to_dataset": {
+      "add_noise_chlorpropamide": "diabetic",
+      "add_noise_default": "bank",
+      "add_noise_marital": "bank",
+      "add_noise_month": "bank",
+      "add_noise_native.country": "adult",
+      "add_noise_poutcome": "bank",
+      "add_noise_score_text": "compas",
+      "add_noise_v_score_text": "compas",
+      "category_flip_acarbose": "diabetic",
+      "category_flip_chlorpropamide": "diabetic",
+      "category_flip_race": "adult",
+      "category_flip_sex": "adult",
+      "increment_decrement_feature_age": "adult",
+      "replace_synonyms_chlorpropamide": "diabetic",
+      "replace_synonyms_default": "bank",
+      "replace_synonyms_poutcome": "bank",
+      "replace_synonyms_v_score_text": "compas",
+      "scale_values_fnlwgt": "adult",
+      "scale_values_hours.per.week": "adult",
+      "scale_values_previous": "bank"
+    },
+    "dataset_to_combinations": {
+      "adult": [
+        "add_noise_native.country",
+        "category_flip_race",
+        "category_flip_sex",
+        "increment_decrement_feature_age",
+        "scale_values_fnlwgt",
+        "scale_values_hours.per.week"
+      ],
+      "bank": [
+        "add_noise_default",
+        "add_noise_marital",
+        "add_noise_month",
+        "add_noise_poutcome",
+        "replace_synonyms_default",
+        "replace_synonyms_poutcome",
+        "scale_values_previous"
+      ],
+      "compas": [
+        "add_noise_score_text",
+        "add_noise_v_score_text",
+        "replace_synonyms_v_score_text"
+      ],
+      "diabetic": [
+        "add_noise_chlorpropamide",
+        "category_flip_acarbose",
+        "category_flip_chlorpropamide",
+        "replace_synonyms_chlorpropamide"
+      ]
+    },
+    "summary": {
+      "total_significant_combinations": 20,
+      "datasets_with_significant_combinations": 4,
+      "combinations_per_dataset": {
+        "adult": 6,
+        "bank": 7,
+        "compas": 3,
+        "diabetic": 4
+      },
+      "most_affected_dataset": "bank",
+      "least_affected_dataset": "compas"
+    }
+  }
+}

@@ -54,15 +54,103 @@ class ComprehensiveMutationAnalysis:
         print("\n2. Running Wilcoxon Signed-Rank Test Analysis...")
         wilcoxon_results = self.wilcoxon_test.generate_summary()
         
+        # Generate dataset mapping for significant combinations
+        dataset_mapping = self._generate_dataset_mapping(wilcoxon_results.get('significant_combinations', []))
+        
         # Combine results
         combined_results = {
             'sign_test_results': sign_results,
             'wilcoxon_test_results': wilcoxon_results,
             'data_summary': self._generate_data_summary(),
-            'consensus_analysis': self._analyze_consensus(sign_results, wilcoxon_results)
+            'consensus_analysis': self._analyze_consensus(sign_results, wilcoxon_results),
+            'dataset_mapping': dataset_mapping
         }
         
         return combined_results
+    
+    def _generate_dataset_mapping(self, significant_combinations: List[str]) -> Dict[str, Any]:
+        """
+        Generate mapping of significant combinations to their source datasets using the dataset column.
+        
+        Args:
+            significant_combinations: List of significant mutation-column combinations
+            
+        Returns:
+            Dictionary containing dataset mapping information
+        """
+        mapping = {
+            'combination_to_dataset': {},
+            'dataset_to_combinations': {},
+            'summary': {}
+        }
+        
+        # Extract unique datasets from the data
+        unique_datasets = self.data['dataset'].unique()
+        
+        # Initialize dataset groups
+        for dataset in unique_datasets:
+            dataset_name = dataset.replace('.csv', '')  # Remove .csv extension for cleaner names
+            mapping['dataset_to_combinations'][dataset_name] = []
+        
+        # Get all unique mutation types from the data to properly parse combinations
+        unique_mutations = self.data['mutation_type'].unique()
+        
+        # Map each significant combination to its dataset
+        for combination in significant_combinations:
+            # Parse combination format: mutation_column
+            # Try to match against known mutation types to find the correct split point
+            mutation_type = None
+            column_name = None
+            
+            # Try each mutation type to see if the combination starts with it
+            for mut_type in unique_mutations:
+                if combination.startswith(mut_type + '_'):
+                    mutation_type = mut_type
+                    column_name = combination[len(mut_type) + 1:]  # +1 for the underscore
+                    break
+            
+            if mutation_type and column_name:
+                # Find the dataset for this mutation-column combination
+                matching_rows = self.data[
+                    (self.data['mutation_type'] == mutation_type) & 
+                    (self.data['column'] == column_name)
+                ]
+                
+                if len(matching_rows) > 0:
+                    # Use the first dataset found
+                    dataset = matching_rows['dataset'].iloc[0]
+                    dataset_name = dataset.replace('.csv', '')
+                    
+                    # Add to mapping
+                    mapping['combination_to_dataset'][combination] = dataset_name
+                    mapping['dataset_to_combinations'][dataset_name].append(combination)
+                else:
+                    # Handle case where combination is not found in data
+                    mapping['combination_to_dataset'][combination] = 'unknown'
+                    if 'unknown' not in mapping['dataset_to_combinations']:
+                        mapping['dataset_to_combinations']['unknown'] = []
+                    mapping['dataset_to_combinations']['unknown'].append(combination)
+            else:
+                # Handle case where we can't parse the combination
+                mapping['combination_to_dataset'][combination] = 'unknown'
+                if 'unknown' not in mapping['dataset_to_combinations']:
+                    mapping['dataset_to_combinations']['unknown'] = []
+                mapping['dataset_to_combinations']['unknown'].append(combination)
+        
+        # Generate summary statistics
+        dataset_counts = {dataset: len(combinations) 
+                         for dataset, combinations in mapping['dataset_to_combinations'].items() 
+                         if combinations}  # Only include datasets with combinations
+        
+        mapping['summary'] = {
+            'total_significant_combinations': len(significant_combinations),
+            'datasets_with_significant_combinations': len(dataset_counts),
+            'combinations_per_dataset': dataset_counts,
+            'most_affected_dataset': max(dataset_counts.items(), key=lambda x: x[1])[0] if dataset_counts else None,
+            'least_affected_dataset': min(dataset_counts.items(), key=lambda x: x[1])[0] if dataset_counts else None
+        }
+        
+        return mapping
     
     def _generate_data_summary(self) -> Dict[str, Any]:
         """Generate summary statistics about the dataset."""
@@ -71,6 +159,8 @@ class ComprehensiveMutationAnalysis:
             'unique_mutations': len(self.data['mutation_type'].unique()),
             'unique_columns': len(self.data['column'].unique()),
             'unique_symptoms': len(self.data['symptom_name'].unique()),
+            'unique_datasets': len(self.data['dataset'].unique()),
+            'datasets': sorted(self.data['dataset'].unique().tolist()),
             'mutation_types': sorted(self.data['mutation_type'].unique().tolist()),
             'sensitive_attributes': sorted(self.data['column'].unique().tolist()),
             'symptoms': sorted(self.data['symptom_name'].unique().tolist()),
@@ -187,6 +277,7 @@ class ComprehensiveMutationAnalysis:
         report.append("-" * 40)
         report.append(f"File: {Path(self.csv_path).name}")
         report.append(f"Total observations: {data_summary['total_rows']:,}")
+        report.append(f"Datasets analyzed: {data_summary['unique_datasets']}")
         report.append(f"Mutation types: {data_summary['unique_mutations']}")
         report.append(f"Sensitive attributes: {data_summary['unique_columns']}")
         report.append(f"Fairness symptoms: {data_summary['unique_symptoms']}")
@@ -199,6 +290,28 @@ class ComprehensiveMutationAnalysis:
             report.append(f"  Median: {stats['median']:.6f}")
             report.append(f"  Std Dev: {stats['std']:.6f}")
             report.append(f"  Range: [{stats['min']:.6f}, {stats['max']:.6f}]")
+        
+        # Dataset Mapping Analysis
+        if 'dataset_mapping' in results:
+            dataset_mapping = results['dataset_mapping']
+            report.append(f"\nDATASET MAPPING ANALYSIS")
+            report.append("-" * 40)
+            mapping_summary = dataset_mapping['summary']
+            report.append(f"Total significant combinations: {mapping_summary['total_significant_combinations']}")
+            report.append(f"Datasets with significant effects: {mapping_summary['datasets_with_significant_combinations']}")
+            
+            if mapping_summary['most_affected_dataset']:
+                report.append(f"Most affected dataset: {mapping_summary['most_affected_dataset']} ({mapping_summary['combinations_per_dataset'][mapping_summary['most_affected_dataset']]} combinations)")
+            
+            report.append(f"\nSignificant combinations per dataset:")
+            for dataset, count in sorted(mapping_summary['combinations_per_dataset'].items()):
+                report.append(f"  {dataset}: {count} combinations")
+                # Show the actual combinations for each dataset
+                combinations = dataset_mapping['dataset_to_combinations'][dataset]
+                for combo in combinations[:5]:  # Show first 5 combinations
+                    report.append(f"    • {combo}")
+                if len(combinations) > 5:
+                    report.append(f"    ... and {len(combinations) - 5} more")
         
         # Consensus Analysis
         consensus = results['consensus_analysis']
