@@ -1,0 +1,4 @@
+p-val,CLES,metric
+0.0244140625,0.6699999999999999,statistical_parity
+0.7841796875,0.39,equal_opportunity
+0.1376953125,0.5900000000000001,average_odds
