@@ -1,0 +1,477 @@
+column,dataset,column_type,mutation_type,is_sensitive,sensitive_attr_analyzed,symptom_name,pre_symptom_value,post_symptom_value,symptom_difference,symptom_abs_difference,symptom_percent_change
+age,adult.csv,numeric,increment_decrement_feature,False,age,Gini Index,0.991860669994249,0.9909115325033084,-0.0009491374909406103,0.0009491374909406103,-0.09569262293121408
+age,adult.csv,numeric,increment_decrement_feature,False,age,Shannon Entropy,0.9148863520405641,0.9009782889107453,-0.013908063129818848,0.013908063129818848,-1.5201957159813655
+age,adult.csv,numeric,increment_decrement_feature,False,age,Simpson Diversity,0.628598408154845,0.5829536055217887,-0.04564480263305637,0.04564480263305637,-7.261361473542344
+age,adult.csv,numeric,increment_decrement_feature,False,age,Imbalance Ratio,0.0011737089201877935,0.0011655011655011655,-8.207754686627954e-06,8.207754686627954e-06,-0.6993006993007016
+age,adult.csv,numeric,increment_decrement_feature,False,age,Kurtosis,2.8553258924923943,2.859097528212439,0.003771635720044575,0.003771635720044575,0.13209125199899127
+age,adult.csv,numeric,increment_decrement_feature,False,age,Skewness,0.5302277818340091,0.5257531370446017,-0.0044746447894074,0.0044746447894074,-0.8439099086679342
+age,adult.csv,numeric,increment_decrement_feature,False,age,Mutual Information,0.06756715824973153,0.06685766648315927,-0.0007094917665722567,0.0007094917665722567,-1.050054175654303
+age,adult.csv,numeric,increment_decrement_feature,False,age,Normalized Mutual Information,0.015102816611388828,0.014902136709954186,-0.0002006799014346427,0.0002006799014346427,-1.3287581157763164
+age,adult.csv,numeric,increment_decrement_feature,False,age,Kendall Tau,0.22844583776755628,0.22757889686099753,-0.0008669409065587552,0.0008669409065587552,-0.3794951639437913
+age,adult.csv,numeric,increment_decrement_feature,False,age,Correlation Ratio,0.2419981362661177,0.24128518448964914,-0.0007129517764685733,0.0007129517764685733,-0.2946104410013153
+age,adult.csv,numeric,increment_decrement_feature,False,age,APD,0.2289780853034576,0.2268104609222181,-0.0021676243812394913,0.0021676243812394913,-0.9466514572199368
+age,adult.csv,numeric,increment_decrement_feature,False,age,Statistical Parity,-0.2289780853034576,-0.2268104609222181,0.0021676243812394913,0.0021676243812394913,-0.9466514572199368
+age,adult.csv,numeric,increment_decrement_feature,False,age,Disparate Impact,0.3633910472513048,0.3685404465900021,0.005149399338697347,0.005149399338697347,1.417040782277791
+age,adult.csv,numeric,increment_decrement_feature,False,age,Unprivileged Unbalance,0.5250870079454659,0.5317880482374189,0.006701040291952953,0.006701040291952953,1.2761771269436748
+age,adult.csv,numeric,increment_decrement_feature,False,age,Privileged Unbalance,1.4449640735984879,1.4429570842438044,-0.002006989354683464,0.002006989354683464,-0.13889545016059313
+age,adult.csv,numeric,increment_decrement_feature,False,age,Unprivileged Pos Prob,0.1307059629883482,0.132374002591557,0.0016680396032087985,0.0016680396032087985,1.2761771269437006
+age,adult.csv,numeric,increment_decrement_feature,False,age,Privileged Pos Prob,0.3596840482918058,0.3591844635137751,-0.0004995847780306928,0.0004995847780306928,-0.13889545016057755
+age,adult.csv,numeric,increment_decrement_feature,False,age,Pos Probability Diff,-0.2289780853034576,-0.2268104609222181,0.0021676243812394913,0.0021676243812394913,-0.9466514572199368
+age,adult.csv,numeric,increment_decrement_feature,False,workclass,Gini Index,0.5115326371529745,0.5115326371529745,0.0,0.0,0.0
+age,adult.csv,numeric,increment_decrement_feature,False,workclass,Shannon Entropy,0.502765262650253,0.502765262650253,0.0,0.0,0.0
+age,adult.csv,numeric,increment_decrement_feature,False,workclass,Simpson Diversity,0.13013434760636855,0.13013434760636855,0.0,0.0,0.0
+age,adult.csv,numeric,increment_decrement_feature,False,workclass,Imbalance Ratio,0.0006281970743964821,0.0006281970743964821,0.0,0.0,0.0
+age,adult.csv,numeric,increment_decrement_feature,False,workclass,Mutual Information,0.0118559218256204,0.0118559218256204,0.0,0.0,0.0
+age,adult.csv,numeric,increment_decrement_feature,False,workclass,Normalized Mutual Information,0.007701229438935818,0.007701229438935818,0.0,0.0,0.0
+age,adult.csv,numeric,increment_decrement_feature,False,workclass,Correlation Ratio,0.16328282211596684,0.16328282211596684,0.0,0.0,0.0
+age,adult.csv,numeric,increment_decrement_feature,False,workclass,APD,0.11538771992537844,0.11538771992537844,0.0,0.0,0.0
+age,adult.csv,numeric,increment_decrement_feature,False,workclass,Statistical Parity,0.11538771992537844,0.11538771992537844,0.0,0.0,0.0
+age,adult.csv,numeric,increment_decrement_feature,False,workclass,Disparate Impact,1.5273853007089795,1.5273853007089795,0.0,0.0,0.0
+age,adult.csv,numeric,increment_decrement_feature,False,workclass,Unprivileged Unbalance,1.3425054243815908,1.3425054243815908,0.0,0.0,0.0
+age,adult.csv,numeric,increment_decrement_feature,False,workclass,Privileged Unbalance,0.8789566219855781,0.8789566219855781,0.0,0.0,0.0
+age,adult.csv,numeric,increment_decrement_feature,False,workclass,Unprivileged Pos Prob,0.3341797866937532,0.3341797866937532,0.0,0.0,0.0
+age,adult.csv,numeric,increment_decrement_feature,False,workclass,Privileged Pos Prob,0.21879206676837476,0.21879206676837476,0.0,0.0,0.0
+age,adult.csv,numeric,increment_decrement_feature,False,workclass,Pos Probability Diff,0.11538771992537844,0.11538771992537844,0.0,0.0,0.0
+age,adult.csv,numeric,increment_decrement_feature,False,fnlwgt,Gini Index,0.9999768901273637,0.9999768901273637,0.0,0.0,0.0
+age,adult.csv,numeric,increment_decrement_feature,False,fnlwgt,Shannon Entropy,0.9835460138026236,0.9835460138026236,0.0,0.0,0.0
+age,adult.csv,numeric,increment_decrement_feature,False,fnlwgt,Simpson Diversity,0.6810661433521836,0.6810661433521836,0.0,0.0,0.0
+age,adult.csv,numeric,increment_decrement_feature,False,fnlwgt,Imbalance Ratio,0.07692307692307693,0.07692307692307693,0.0,0.0,0.0
+age,adult.csv,numeric,increment_decrement_feature,False,fnlwgt,Kurtosis,9.394133360513433,9.394133360513433,0.0,0.0,0.0
+age,adult.csv,numeric,increment_decrement_feature,False,fnlwgt,Skewness,1.459219655773381,1.459219655773381,0.0,0.0,0.0
+age,adult.csv,numeric,increment_decrement_feature,False,fnlwgt,Mutual Information,0.4024365576956268,0.4024365576956268,0.0,0.0,0.0
+age,adult.csv,numeric,increment_decrement_feature,False,fnlwgt,Normalized Mutual Information,0.039016458198039526,0.039016458198039526,0.0,0.0,0.0
+age,adult.csv,numeric,increment_decrement_feature,False,fnlwgt,Kendall Tau,-0.008192727424707074,-0.008192727424707074,0.0,0.0,-0.0
+age,adult.csv,numeric,increment_decrement_feature,False,fnlwgt,Correlation Ratio,-0.008957423359171598,-0.008957423359171598,0.0,0.0,-0.0
+age,adult.csv,numeric,increment_decrement_feature,False,fnlwgt,APD,0.014057423247795214,0.014057423247795214,0.0,0.0,0.0
+age,adult.csv,numeric,increment_decrement_feature,False,fnlwgt,Statistical Parity,-0.014057423247795214,-0.014057423247795214,0.0,0.0,-0.0
+age,adult.csv,numeric,increment_decrement_feature,False,fnlwgt,Disparate Impact,0.945077720207254,0.945077720207254,0.0,0.0,0.0
+age,adult.csv,numeric,increment_decrement_feature,False,fnlwgt,Unprivileged Unbalance,0.9717634523175279,0.9717634523175279,0.0,0.0,0.0
+age,adult.csv,numeric,increment_decrement_feature,False,fnlwgt,Privileged Unbalance,1.028236547682472,1.028236547682472,0.0,0.0,0.0
+age,adult.csv,numeric,increment_decrement_feature,False,fnlwgt,Unprivileged Pos Prob,0.24189377362243883,0.24189377362243883,0.0,0.0,0.0
+age,adult.csv,numeric,increment_decrement_feature,False,fnlwgt,Privileged Pos Prob,0.25595119687023404,0.25595119687023404,0.0,0.0,0.0
+age,adult.csv,numeric,increment_decrement_feature,False,fnlwgt,Pos Probability Diff,-0.014057423247795214,-0.014057423247795214,0.0,0.0,-0.0
+age,adult.csv,numeric,increment_decrement_feature,False,education,Gini Index,0.8612386243974791,0.8612386243974791,0.0,0.0,0.0
+age,adult.csv,numeric,increment_decrement_feature,False,education,Shannon Entropy,0.728320591584038,0.728320591584038,0.0,0.0,0.0
+age,adult.csv,numeric,increment_decrement_feature,False,education,Simpson Diversity,0.2794940148333252,0.2794940148333252,0.0,0.0,0.0
+age,adult.csv,numeric,increment_decrement_feature,False,education,Imbalance Ratio,0.004573170731707317,0.004573170731707317,0.0,0.0,0.0
+age,adult.csv,numeric,increment_decrement_feature,False,education,Mutual Information,0.06473577771489569,0.06473577771489569,0.0,0.0,0.0
+age,adult.csv,numeric,increment_decrement_feature,False,education,Normalized Mutual Information,0.02508670256688532,0.02508670256688532,0.0,0.0,0.0
+age,adult.csv,numeric,increment_decrement_feature,False,education,Correlation Ratio,0.3673563037175991,0.3673563037175991,0.0,0.0,0.0
+age,adult.csv,numeric,increment_decrement_feature,False,education,APD,0.25580146894159317,0.25580146894159317,0.0,0.0,0.0
+age,adult.csv,numeric,increment_decrement_feature,False,education,Statistical Parity,-0.00532775359634538,-0.00532775359634538,0.0,0.0,-0.0
+age,adult.csv,numeric,increment_decrement_feature,False,education,Disparate Impact,2.145556190812997,2.145556190812997,0.0,0.0,0.0
+age,adult.csv,numeric,increment_decrement_feature,False,education,Unprivileged Unbalance,0.979160851618038,0.979160851618038,0.0,0.0,0.0
+age,adult.csv,numeric,increment_decrement_feature,False,education,Privileged Unbalance,1.0005641153331377,1.0005641153331377,0.0,0.0,0.0
+age,adult.csv,numeric,increment_decrement_feature,False,education,Unprivileged Pos Prob,0.2437351526406813,0.2437351526406813,0.0,0.0,0.0
+age,adult.csv,numeric,increment_decrement_feature,False,education,Privileged Pos Prob,0.24906290623702665,0.24906290623702665,0.0,0.0,0.0
+age,adult.csv,numeric,increment_decrement_feature,False,education,Pos Probability Diff,-0.00532775359634538,-0.00532775359634538,0.0,0.0,-0.0
+age,adult.csv,numeric,increment_decrement_feature,False,education.num,Gini Index,0.8612386243974791,0.8612386243974791,0.0,0.0,0.0
+age,adult.csv,numeric,increment_decrement_feature,False,education.num,Shannon Entropy,0.728320591584038,0.728320591584038,0.0,0.0,0.0
+age,adult.csv,numeric,increment_decrement_feature,False,education.num,Simpson Diversity,0.2794940148333252,0.2794940148333252,0.0,0.0,0.0
+age,adult.csv,numeric,increment_decrement_feature,False,education.num,Imbalance Ratio,0.004573170731707317,0.004573170731707317,0.0,0.0,0.0
+age,adult.csv,numeric,increment_decrement_feature,False,education.num,Kurtosis,3.6437231671037007,3.6437231671037007,0.0,0.0,0.0
+age,adult.csv,numeric,increment_decrement_feature,False,education.num,Skewness,-0.30537865469615505,-0.30537865469615505,0.0,0.0,-0.0
+age,adult.csv,numeric,increment_decrement_feature,False,education.num,Mutual Information,0.06473577771489569,0.06473577771489569,0.0,0.0,0.0
+age,adult.csv,numeric,increment_decrement_feature,False,education.num,Normalized Mutual Information,0.02508670256688532,0.02508670256688532,0.0,0.0,0.0
+age,adult.csv,numeric,increment_decrement_feature,False,education.num,Kendall Tau,0.2920954260366578,0.2920954260366578,0.0,0.0,0.0
+age,adult.csv,numeric,increment_decrement_feature,False,education.num,Correlation Ratio,0.3352861967526375,0.3352861967526375,0.0,0.0,0.0
+age,adult.csv,numeric,increment_decrement_feature,False,education.num,APD,0.20608576192963843,0.20608576192963843,0.0,0.0,0.0
+age,adult.csv,numeric,increment_decrement_feature,False,education.num,Statistical Parity,-0.20608576192963843,-0.20608576192963843,0.0,0.0,-0.0
+age,adult.csv,numeric,increment_decrement_feature,False,education.num,Disparate Impact,0.3969099861356628,0.3969099861356628,0.0,0.0,0.0
+age,adult.csv,numeric,increment_decrement_feature,False,education.num,Unprivileged Unbalance,0.5448710683863432,0.5448710683863432,0.0,0.0,0.0
+age,adult.csv,numeric,increment_decrement_feature,False,education.num,Privileged Unbalance,1.3727824630749093,1.3727824630749093,0.0,0.0,0.0
+age,adult.csv,numeric,increment_decrement_feature,False,education.num,Unprivileged Pos Prob,0.13563066048155512,0.13563066048155512,0.0,0.0,0.0
+age,adult.csv,numeric,increment_decrement_feature,False,education.num,Privileged Pos Prob,0.34171642241119354,0.34171642241119354,0.0,0.0,0.0
+age,adult.csv,numeric,increment_decrement_feature,False,education.num,Pos Probability Diff,-0.20608576192963843,-0.20608576192963843,0.0,0.0,-0.0
+age,adult.csv,numeric,increment_decrement_feature,False,marital.status,Gini Index,0.7667088706698012,0.7667088706698012,0.0,0.0,0.0
+age,adult.csv,numeric,increment_decrement_feature,False,marital.status,Shannon Entropy,0.6482058701072626,0.6482058701072626,0.0,0.0,0.0
+age,adult.csv,numeric,increment_decrement_feature,False,marital.status,Simpson Diversity,0.3194957394437228,0.3194957394437228,0.0,0.0,0.0
+age,adult.csv,numeric,increment_decrement_feature,False,marital.status,Imbalance Ratio,0.0014930678990401707,0.0014930678990401707,0.0,0.0,0.0
+age,adult.csv,numeric,increment_decrement_feature,False,marital.status,Mutual Information,0.10915045641349841,0.10915045641349841,0.0,0.0,0.0
+age,adult.csv,numeric,increment_decrement_feature,False,marital.status,Normalized Mutual Information,0.059890555232749366,0.059890555232749366,0.0,0.0,0.0
+age,adult.csv,numeric,increment_decrement_feature,False,marital.status,Correlation Ratio,0.44830013513496325,0.44830013513496325,0.0,0.0,0.0
+age,adult.csv,numeric,increment_decrement_feature,False,occupation,Gini Index,0.963407138668169,0.963407138668169,0.0,0.0,0.0
+age,adult.csv,numeric,increment_decrement_feature,False,occupation,Shannon Entropy,0.8921142297777456,0.8921142297777456,0.0,0.0,0.0
+age,adult.csv,numeric,increment_decrement_feature,False,occupation,Simpson Diversity,0.6528443721233026,0.6528443721233026,0.0,0.0,0.0
+age,adult.csv,numeric,increment_decrement_feature,False,occupation,Imbalance Ratio,0.002228826151560178,0.002228826151560178,0.0,0.0,0.0
+age,adult.csv,numeric,increment_decrement_feature,False,occupation,Mutual Information,0.06459747575603296,0.06459747575603296,0.0,0.0,0.0
+age,adult.csv,numeric,increment_decrement_feature,False,occupation,Normalized Mutual Information,0.02215665317284152,0.02215665317284152,0.0,0.0,0.0
+age,adult.csv,numeric,increment_decrement_feature,False,occupation,Correlation Ratio,0.3496576636781678,0.3496576636781678,0.0,0.0,0.0
+age,adult.csv,numeric,increment_decrement_feature,False,occupation,APD,0.024654394948023628,0.024654394948023628,0.0,0.0,0.0
+age,adult.csv,numeric,increment_decrement_feature,False,occupation,Statistical Parity,-0.024654394948023628,-0.024654394948023628,0.0,0.0,-0.0
+age,adult.csv,numeric,increment_decrement_feature,False,occupation,Disparate Impact,0.9089058232023539,0.9089058232023539,0.0,0.0,0.0
+age,adult.csv,numeric,increment_decrement_feature,False,occupation,Unprivileged Unbalance,0.9882310400248113,0.9882310400248113,0.0,0.0,0.0
+age,adult.csv,numeric,increment_decrement_feature,False,occupation,Privileged Unbalance,1.0872755073160059,1.0872755073160059,0.0,0.0,0.0
+age,adult.csv,numeric,increment_decrement_feature,False,occupation,Unprivileged Pos Prob,0.24599292648054782,0.24599292648054782,0.0,0.0,0.0
+age,adult.csv,numeric,increment_decrement_feature,False,occupation,Privileged Pos Prob,0.27064732142857145,0.27064732142857145,0.0,0.0,0.0
+age,adult.csv,numeric,increment_decrement_feature,False,occupation,Pos Probability Diff,-0.024654394948023628,-0.024654394948023628,0.0,0.0,-0.0
+age,adult.csv,numeric,increment_decrement_feature,False,relationship,Gini Index,0.8728142112560345,0.8728142112560345,0.0,0.0,0.0
+age,adult.csv,numeric,increment_decrement_feature,False,relationship,Shannon Entropy,0.8272244749530314,0.8272244749530314,0.0,0.0,0.0
+age,adult.csv,numeric,increment_decrement_feature,False,relationship,Simpson Diversity,0.5335281917999457,0.5335281917999457,0.0,0.0,0.0
+age,adult.csv,numeric,increment_decrement_feature,False,relationship,Imbalance Ratio,0.07133114017491776,0.07133114017491776,0.0,0.0,0.0
+age,adult.csv,numeric,increment_decrement_feature,False,relationship,Mutual Information,0.11518603232201104,0.11518603232201104,0.0,0.0,0.0
+age,adult.csv,numeric,increment_decrement_feature,False,relationship,Normalized Mutual Information,0.05637156937589073,0.05637156937589073,0.0,0.0,0.0
+age,adult.csv,numeric,increment_decrement_feature,False,relationship,Correlation Ratio,0.4546192002966443,0.4546192002966443,0.0,0.0,0.0
+age,adult.csv,numeric,increment_decrement_feature,False,relationship,APD,0.2711139532840415,0.2711139532840415,0.0,0.0,0.0
+age,adult.csv,numeric,increment_decrement_feature,False,relationship,Statistical Parity,-0.1348655311256389,-0.1348655311256389,0.0,0.0,-0.0
+age,adult.csv,numeric,increment_decrement_feature,False,relationship,Disparate Impact,1.5962503505719932,1.5962503505719932,0.0,0.0,0.0
+age,adult.csv,numeric,increment_decrement_feature,False,relationship,Unprivileged Unbalance,0.8181728685392136,0.8181728685392136,0.0,0.0,0.0
+age,adult.csv,numeric,increment_decrement_feature,False,relationship,Privileged Unbalance,1.3599701713910408,1.3599701713910408,0.0,0.0,0.0
+age,adult.csv,numeric,increment_decrement_feature,False,relationship,Unprivileged Pos Prob,0.20366162379790512,0.20366162379790512,0.0,0.0,0.0
+age,adult.csv,numeric,increment_decrement_feature,False,relationship,Privileged Pos Prob,0.33852715492354407,0.33852715492354407,0.0,0.0,0.0
+age,adult.csv,numeric,increment_decrement_feature,False,relationship,Pos Probability Diff,-0.1348655311256389,-0.1348655311256389,0.0,0.0,-0.0
+age,adult.csv,numeric,increment_decrement_feature,False,race,Gini Index,0.3137606853367786,0.3137606853367786,0.0,0.0,0.0
+age,adult.csv,numeric,increment_decrement_feature,False,race,Shannon Entropy,0.3337669828234106,0.3337669828234106,0.0,0.0,0.0
+age,adult.csv,numeric,increment_decrement_feature,False,race,Simpson Diversity,0.0837821805874609,0.0837821805874609,0.0,0.0,0.0
+age,adult.csv,numeric,increment_decrement_feature,False,race,Imbalance Ratio,0.008907569506034782,0.008907569506034782,0.0,0.0,0.0
+age,adult.csv,numeric,increment_decrement_feature,False,race,Mutual Information,0.005749041263423244,0.005749041263423244,0.0,0.0,0.0
+age,adult.csv,numeric,increment_decrement_feature,False,race,Normalized Mutual Information,0.005234369235336018,0.005234369235336018,0.0,0.0,0.0
+age,adult.csv,numeric,increment_decrement_feature,False,race,Correlation Ratio,0.10043360903234136,0.10043360903234136,0.0,0.0,0.0
+age,adult.csv,numeric,increment_decrement_feature,False,race,APD,0.13200442306144403,0.13200442306144403,0.0,0.0,0.0
+age,adult.csv,numeric,increment_decrement_feature,False,race,Statistical Parity,0.06165467885715183,0.06165467885715183,0.0,0.0,0.0
+age,adult.csv,numeric,increment_decrement_feature,False,race,Disparate Impact,1.787219680963051,1.787219680963051,0.0,0.0,0.0
+age,adult.csv,numeric,increment_decrement_feature,False,race,Unprivileged Unbalance,0.8965530267725809,0.8965530267725809,0.0,0.0,0.0
+age,adult.csv,numeric,increment_decrement_feature,False,race,Privileged Unbalance,0.6488667689556639,0.6488667689556639,0.0,0.0,0.0
+age,adult.csv,numeric,increment_decrement_feature,False,race,Unprivileged Pos Prob,0.22317220757935605,0.22317220757935605,0.0,0.0,0.0
+age,adult.csv,numeric,increment_decrement_feature,False,race,Privileged Pos Prob,0.16151752872220423,0.16151752872220423,0.0,0.0,0.0
+age,adult.csv,numeric,increment_decrement_feature,False,race,Pos Probability Diff,0.06165467885715183,0.06165467885715183,0.0,0.0,0.0
+age,adult.csv,numeric,increment_decrement_feature,False,sex,Gini Index,0.8765396342763025,0.8765396342763025,0.0,0.0,0.0
+age,adult.csv,numeric,increment_decrement_feature,False,sex,Shannon Entropy,0.9090126674749074,0.9090126674749074,0.0,0.0,0.0
+age,adult.csv,numeric,increment_decrement_feature,False,sex,Simpson Diversity,0.780214114373019,0.780214114373019,0.0,0.0,0.0
+age,adult.csv,numeric,increment_decrement_feature,False,sex,Imbalance Ratio,0.4799803729146222,0.4799803729146222,0.0,0.0,0.0
+age,adult.csv,numeric,increment_decrement_feature,False,sex,Mutual Information,0.02592814563687741,0.02592814563687741,0.0,0.0,0.0
+age,adult.csv,numeric,increment_decrement_feature,False,sex,Normalized Mutual Information,0.021765899620142866,0.021765899620142866,0.0,0.0,0.0
+age,adult.csv,numeric,increment_decrement_feature,False,sex,Correlation Ratio,0.21669868107558518,0.21669868107558518,0.0,0.0,0.0
+age,adult.csv,numeric,increment_decrement_feature,False,sex,APD,0.20015891077100018,0.20015891077100018,0.0,0.0,0.0
+age,adult.csv,numeric,increment_decrement_feature,False,sex,Statistical Parity,0.0,0.0,0.0,0.0,0.0
+age,adult.csv,numeric,increment_decrement_feature,False,sex,Disparate Impact,1.5614853872736632,1.5614853872736632,0.0,0.0,0.0
+age,adult.csv,numeric,increment_decrement_feature,False,sex,Unprivileged Unbalance,0.8587317437166315,0.8587317437166315,0.0,0.0,0.0
+age,adult.csv,numeric,increment_decrement_feature,False,sex,Privileged Unbalance,0.8587317437166315,0.8587317437166315,0.0,0.0,0.0
+age,adult.csv,numeric,increment_decrement_feature,False,sex,Unprivileged Pos Prob,0.213757639805864,0.213757639805864,0.0,0.0,0.0
+age,adult.csv,numeric,increment_decrement_feature,False,sex,Privileged Pos Prob,0.213757639805864,0.213757639805864,0.0,0.0,0.0
+age,adult.csv,numeric,increment_decrement_feature,False,sex,Pos Probability Diff,0.0,0.0,0.0,0.0,0.0
+age,adult.csv,numeric,increment_decrement_feature,False,capital.gain,Gini Index,0.16223148079047453,0.16223148079047453,0.0,0.0,0.0
+age,adult.csv,numeric,increment_decrement_feature,False,capital.gain,Shannon Entropy,0.12591562270653575,0.12591562270653575,0.0,0.0,0.0
+age,adult.csv,numeric,increment_decrement_feature,False,capital.gain,Simpson Diversity,0.0016383887656955885,0.0016383887656955885,0.0,0.0,0.0
+age,adult.csv,numeric,increment_decrement_feature,False,capital.gain,Imbalance Ratio,3.620040544454098e-05,3.620040544454098e-05,0.0,0.0,0.0
+age,adult.csv,numeric,increment_decrement_feature,False,capital.gain,Kurtosis,156.66637464088072,156.66637464088072,0.0,0.0,0.0
+age,adult.csv,numeric,increment_decrement_feature,False,capital.gain,Skewness,11.902681717422219,11.902681717422219,0.0,0.0,0.0
+age,adult.csv,numeric,increment_decrement_feature,False,capital.gain,Mutual Information,0.08383417491362383,0.08383417491362383,0.0,0.0,0.0
+age,adult.csv,numeric,increment_decrement_feature,False,capital.gain,Normalized Mutual Information,0.07215564024220553,0.07215564024220553,0.0,0.0,0.0
+age,adult.csv,numeric,increment_decrement_feature,False,capital.gain,Kendall Tau,0.2723928050679554,0.2723928050679554,0.0,0.0,0.0
+age,adult.csv,numeric,increment_decrement_feature,False,capital.gain,Correlation Ratio,0.2211962145480493,0.2211962145480493,0.0,0.0,0.0
+age,adult.csv,numeric,increment_decrement_feature,False,capital.loss,Gini Index,0.09329989000139498,0.09329989000139498,0.0,0.0,0.0
+age,adult.csv,numeric,increment_decrement_feature,False,capital.loss,Shannon Entropy,0.07978853912050043,0.07978853912050043,0.0,0.0,0.0
+age,adult.csv,numeric,increment_decrement_feature,False,capital.loss,Simpson Diversity,0.0011420331008997055,0.0011420331008997055,0.0,0.0,0.0
+age,adult.csv,numeric,increment_decrement_feature,False,capital.loss,Imbalance Ratio,3.480076561684357e-05,3.480076561684357e-05,0.0,0.0,0.0
+age,adult.csv,numeric,increment_decrement_feature,False,capital.loss,Kurtosis,22.51087137288026,22.51087137288026,0.0,0.0,0.0
+age,adult.csv,numeric,increment_decrement_feature,False,capital.loss,Skewness,4.526379640496808,4.526379640496808,0.0,0.0,0.0
+age,adult.csv,numeric,increment_decrement_feature,False,capital.loss,Mutual Information,0.037339723183131494,0.037339723183131494,0.0,0.0,0.0
+age,adult.csv,numeric,increment_decrement_feature,False,capital.loss,Normalized Mutual Information,0.040578649532057656,0.040578649532057656,0.0,0.0,0.0
+age,adult.csv,numeric,increment_decrement_feature,False,capital.loss,Kendall Tau,0.13870342428285526,0.13870342428285526,0.0,0.0,0.0
+age,adult.csv,numeric,increment_decrement_feature,False,capital.loss,Correlation Ratio,0.15005330839729406,0.15005330839729406,0.0,0.0,0.0
+age,adult.csv,numeric,increment_decrement_feature,False,hours.per.week,Gini Index,0.7652305572918887,0.7652305572918887,0.0,0.0,0.0
+age,adult.csv,numeric,increment_decrement_feature,False,hours.per.week,Shannon Entropy,0.5232967654004989,0.5232967654004989,0.0,0.0,0.0
+age,adult.csv,numeric,increment_decrement_feature,False,hours.per.week,Simpson Diversity,0.03351341702998991,0.03351341702998991,0.0,0.0,0.0
+age,adult.csv,numeric,increment_decrement_feature,False,hours.per.week,Imbalance Ratio,7.017051434987019e-05,7.017051434987019e-05,0.0,0.0,0.0
+age,adult.csv,numeric,increment_decrement_feature,False,hours.per.week,Kurtosis,6.16788805002078,6.16788805002078,0.0,0.0,0.0
+age,adult.csv,numeric,increment_decrement_feature,False,hours.per.week,Skewness,0.3308693044034244,0.3308693044034244,0.0,0.0,0.0
+age,adult.csv,numeric,increment_decrement_feature,False,hours.per.week,Mutual Information,0.0417087022978246,0.0417087022978246,0.0,0.0,0.0
+age,adult.csv,numeric,increment_decrement_feature,False,hours.per.week,Normalized Mutual Information,0.014193200259488266,0.014193200259488266,0.0,0.0,0.0
+age,adult.csv,numeric,increment_decrement_feature,False,hours.per.week,Kendall Tau,0.2370251615380332,0.2370251615380332,0.0,0.0,0.0
+age,adult.csv,numeric,increment_decrement_feature,False,hours.per.week,Correlation Ratio,0.22948012988851,0.22948012988851,0.0,0.0,0.0
+age,adult.csv,numeric,increment_decrement_feature,False,hours.per.week,APD,0.19432320951134358,0.19432320951134358,0.0,0.0,0.0
+age,adult.csv,numeric,increment_decrement_feature,False,hours.per.week,Statistical Parity,-0.19432320951134358,-0.19432320951134358,0.0,0.0,-0.0
+age,adult.csv,numeric,increment_decrement_feature,False,hours.per.week,Disparate Impact,0.3349159806419524,0.3349159806419524,0.0,0.0,0.0
+age,adult.csv,numeric,increment_decrement_feature,False,hours.per.week,Unprivileged Unbalance,0.39311526150479703,0.39311526150479703,0.0,0.0,0.0
+age,adult.csv,numeric,increment_decrement_feature,False,hours.per.week,Privileged Unbalance,1.1737727795230635,1.1737727795230635,0.0,0.0,0.0
+age,adult.csv,numeric,increment_decrement_feature,False,hours.per.week,Unprivileged Pos Prob,0.09785522788203753,0.09785522788203753,0.0,0.0,0.0
+age,adult.csv,numeric,increment_decrement_feature,False,hours.per.week,Privileged Pos Prob,0.2921784373933811,0.2921784373933811,0.0,0.0,0.0
+age,adult.csv,numeric,increment_decrement_feature,False,hours.per.week,Pos Probability Diff,-0.19432320951134358,-0.19432320951134358,0.0,0.0,-0.0
+age,adult.csv,numeric,increment_decrement_feature,False,native.country,Gini Index,0.17208627101515114,0.17208627101515114,0.0,0.0,0.0
+age,adult.csv,numeric,increment_decrement_feature,False,native.country,Shannon Entropy,0.155245819405426,0.155245819405426,0.0,0.0,0.0
+age,adult.csv,numeric,increment_decrement_feature,False,native.country,Simpson Diversity,0.005044070260774525,0.005044070260774525,0.0,0.0,0.0
+age,adult.csv,numeric,increment_decrement_feature,False,native.country,Imbalance Ratio,3.635834787667248e-05,3.635834787667248e-05,0.0,0.0,0.0
+age,adult.csv,numeric,increment_decrement_feature,False,native.country,Mutual Information,0.006466379803028478,0.006466379803028478,0.0,0.0,0.0
+age,adult.csv,numeric,increment_decrement_feature,False,native.country,Normalized Mutual Information,0.005683905952863984,0.005683905952863984,0.0,0.0,0.0
+age,adult.csv,numeric,increment_decrement_feature,False,native.country,Correlation Ratio,0.10263691873503172,0.10263691873503172,0.0,0.0,0.0
+age,adult.csv,numeric,scale_values,False,age,Gini Index,0.991860669994249,0.9898180636479317,-0.002042606346317366,0.002042606346317366,-0.20593682238950048
+age,adult.csv,numeric,scale_values,False,age,Shannon Entropy,0.9148863520405641,0.8832473717631582,-0.03163898027740597,0.03163898027740597,-3.458241584524497
+age,adult.csv,numeric,scale_values,False,age,Simpson Diversity,0.628598408154845,0.5306013681488856,-0.09799704000595943,0.09799704000595943,-15.58976903769369
+age,adult.csv,numeric,scale_values,False,age,Imbalance Ratio,0.0011737089201877935,0.0011627906976744186,-1.0918222513374865e-05,1.0918222513374865e-05,-0.9302325581395385
+age,adult.csv,numeric,scale_values,False,age,Kurtosis,2.8553258924923943,2.9996114446788478,0.14428555218645345,0.14428555218645345,5.053207851539061
+age,adult.csv,numeric,scale_values,False,age,Skewness,0.5302277818340091,0.5712843131847116,0.04105653135070253,0.04105653135070253,7.743187504942077
+age,adult.csv,numeric,scale_values,False,age,Mutual Information,0.06756715824973153,0.0650065940898835,-0.002560564159848025,0.002560564159848025,-3.789657913958812
+age,adult.csv,numeric,scale_values,False,age,Normalized Mutual Information,0.015102816611388828,0.014460566974035772,-0.0006422496373530567,0.0006422496373530567,-4.25251563253933
+age,adult.csv,numeric,scale_values,False,age,Kendall Tau,0.22844583776755628,0.22637053357777798,-0.0020753041897783042,0.0020753041897783042,-0.908444736861403
+age,adult.csv,numeric,scale_values,False,age,Correlation Ratio,0.2419981362661177,0.23850030374635156,-0.003497832519766153,0.003497832519766153,-1.4453964702933486
+age,adult.csv,numeric,scale_values,False,age,APD,0.2289780853034576,0.22718035713757678,-0.0017977281658808075,0.0017977281658808075,-0.7851092664602963
+age,adult.csv,numeric,scale_values,False,age,Statistical Parity,-0.2289780853034576,-0.22718035713757678,0.0017977281658808075,0.0017977281658808075,-0.7851092664602963
+age,adult.csv,numeric,scale_values,False,age,Disparate Impact,0.3633910472513048,0.3677608585422742,0.0043698112909694165,0.0043698112909694165,1.202509341939691
+age,adult.csv,numeric,scale_values,False,age,Unprivileged Unbalance,0.5250870079454659,0.5308731676796763,0.005786159734210372,0.005786159734210372,1.1019430392784173
+age,adult.csv,numeric,scale_values,False,age,Privileged Unbalance,1.4449640735984879,1.4435281932502133,-0.0014358803482745763,0.0014358803482745763,-0.09937135285991647
+age,adult.csv,numeric,scale_values,False,age,Unprivileged Pos Prob,0.1307059629883482,0.1321462682494201,0.001440305261071917,0.001440305261071917,1.1019430392784093
+age,adult.csv,numeric,scale_values,False,age,Privileged Pos Prob,0.3596840482918058,0.3593266253869969,-0.0003574229048088906,0.0003574229048088906,-0.09937135285991867
+age,adult.csv,numeric,scale_values,False,age,Pos Probability Diff,-0.2289780853034576,-0.22718035713757678,0.0017977281658808075,0.0017977281658808075,-0.7851092664602963
+age,adult.csv,numeric,scale_values,False,workclass,Gini Index,0.5115326371529745,0.5115326371529745,0.0,0.0,0.0
+age,adult.csv,numeric,scale_values,False,workclass,Shannon Entropy,0.502765262650253,0.502765262650253,0.0,0.0,0.0
+age,adult.csv,numeric,scale_values,False,workclass,Simpson Diversity,0.13013434760636855,0.13013434760636855,0.0,0.0,0.0
+age,adult.csv,numeric,scale_values,False,workclass,Imbalance Ratio,0.0006281970743964821,0.0006281970743964821,0.0,0.0,0.0
+age,adult.csv,numeric,scale_values,False,workclass,Mutual Information,0.0118559218256204,0.0118559218256204,0.0,0.0,0.0
+age,adult.csv,numeric,scale_values,False,workclass,Normalized Mutual Information,0.007701229438935818,0.007701229438935818,0.0,0.0,0.0
+age,adult.csv,numeric,scale_values,False,workclass,Correlation Ratio,0.16328282211596684,0.16328282211596684,0.0,0.0,0.0
+age,adult.csv,numeric,scale_values,False,workclass,APD,0.11538771992537844,0.11538771992537844,0.0,0.0,0.0
+age,adult.csv,numeric,scale_values,False,workclass,Statistical Parity,0.11538771992537844,0.11538771992537844,0.0,0.0,0.0
+age,adult.csv,numeric,scale_values,False,workclass,Disparate Impact,1.5273853007089795,1.5273853007089795,0.0,0.0,0.0
+age,adult.csv,numeric,scale_values,False,workclass,Unprivileged Unbalance,1.3425054243815908,1.3425054243815908,0.0,0.0,0.0
+age,adult.csv,numeric,scale_values,False,workclass,Privileged Unbalance,0.8789566219855781,0.8789566219855781,0.0,0.0,0.0
+age,adult.csv,numeric,scale_values,False,workclass,Unprivileged Pos Prob,0.3341797866937532,0.3341797866937532,0.0,0.0,0.0
+age,adult.csv,numeric,scale_values,False,workclass,Privileged Pos Prob,0.21879206676837476,0.21879206676837476,0.0,0.0,0.0
+age,adult.csv,numeric,scale_values,False,workclass,Pos Probability Diff,0.11538771992537844,0.11538771992537844,0.0,0.0,0.0
+age,adult.csv,numeric,scale_values,False,fnlwgt,Gini Index,0.9999768901273637,0.9999768901273637,0.0,0.0,0.0
+age,adult.csv,numeric,scale_values,False,fnlwgt,Shannon Entropy,0.9835460138026236,0.9835460138026236,0.0,0.0,0.0
+age,adult.csv,numeric,scale_values,False,fnlwgt,Simpson Diversity,0.6810661433521836,0.6810661433521836,0.0,0.0,0.0
+age,adult.csv,numeric,scale_values,False,fnlwgt,Imbalance Ratio,0.07692307692307693,0.07692307692307693,0.0,0.0,0.0
+age,adult.csv,numeric,scale_values,False,fnlwgt,Kurtosis,9.394133360513433,9.394133360513433,0.0,0.0,0.0
+age,adult.csv,numeric,scale_values,False,fnlwgt,Skewness,1.459219655773381,1.459219655773381,0.0,0.0,0.0
+age,adult.csv,numeric,scale_values,False,fnlwgt,Mutual Information,0.4024365576956268,0.4024365576956268,0.0,0.0,0.0
+age,adult.csv,numeric,scale_values,False,fnlwgt,Normalized Mutual Information,0.039016458198039526,0.039016458198039526,0.0,0.0,0.0
+age,adult.csv,numeric,scale_values,False,fnlwgt,Kendall Tau,-0.008192727424707074,-0.008192727424707074,0.0,0.0,-0.0
+age,adult.csv,numeric,scale_values,False,fnlwgt,Correlation Ratio,-0.008957423359171598,-0.008957423359171598,0.0,0.0,-0.0
+age,adult.csv,numeric,scale_values,False,fnlwgt,APD,0.014057423247795214,0.014057423247795214,0.0,0.0,0.0
+age,adult.csv,numeric,scale_values,False,fnlwgt,Statistical Parity,-0.014057423247795214,-0.014057423247795214,0.0,0.0,-0.0
+age,adult.csv,numeric,scale_values,False,fnlwgt,Disparate Impact,0.945077720207254,0.945077720207254,0.0,0.0,0.0
+age,adult.csv,numeric,scale_values,False,fnlwgt,Unprivileged Unbalance,0.9717634523175279,0.9717634523175279,0.0,0.0,0.0
+age,adult.csv,numeric,scale_values,False,fnlwgt,Privileged Unbalance,1.028236547682472,1.028236547682472,0.0,0.0,0.0
+age,adult.csv,numeric,scale_values,False,fnlwgt,Unprivileged Pos Prob,0.24189377362243883,0.24189377362243883,0.0,0.0,0.0
+age,adult.csv,numeric,scale_values,False,fnlwgt,Privileged Pos Prob,0.25595119687023404,0.25595119687023404,0.0,0.0,0.0
+age,adult.csv,numeric,scale_values,False,fnlwgt,Pos Probability Diff,-0.014057423247795214,-0.014057423247795214,0.0,0.0,-0.0
+diabetesMed,diabetic.csv,categorical,add_noise,False,race,Mutual Information,7.71777345534401e-05,7.71777345534401e-05,0.0,0.0,0.0
+diabetesMed,diabetic.csv,categorical,add_noise,False,race,Normalized Mutual Information,7.033993538385141e-05,7.033993538385141e-05,0.0,0.0,0.0
+diabetesMed,diabetic.csv,categorical,add_noise,False,race,Correlation Ratio,0.012101738856755404,0.012101738856755404,0.0,0.0,0.0
+diabetesMed,diabetic.csv,categorical,add_noise,False,race,APD,0.011190376845033389,0.011190376845033389,0.0,0.0,0.0
+diabetesMed,diabetic.csv,categorical,add_noise,False,race,Statistical Parity,0.00928039311113612,0.00928039311113612,0.0,0.0,0.0
+diabetesMed,diabetic.csv,categorical,add_noise,False,race,Disparate Impact,1.1181319440322945,1.1181319440322945,0.0,0.0,0.0
+diabetesMed,diabetic.csv,categorical,add_noise,False,race,Unprivileged Unbalance,0.9949750095361768,0.9949750095361768,0.0,0.0,0.0
+diabetesMed,diabetic.csv,categorical,add_noise,False,race,Privileged Unbalance,0.9016311282801677,0.9016311282801677,0.0,0.0,0.0
+diabetesMed,diabetic.csv,categorical,add_noise,False,race,Unprivileged Pos Prob,0.09892195503342323,0.09892195503342323,0.0,0.0,0.0
+diabetesMed,diabetic.csv,categorical,add_noise,False,race,Privileged Pos Prob,0.0896415619222871,0.0896415619222871,0.0,0.0,0.0
+diabetesMed,diabetic.csv,categorical,add_noise,False,race,Pos Probability Diff,0.00928039311113612,0.00928039311113612,0.0,0.0,0.0
+diabetesMed,diabetic.csv,categorical,add_noise,False,gender,Gini Index,0.9988532578421734,0.9988532578421734,0.0,0.0,0.0
+diabetesMed,diabetic.csv,categorical,add_noise,False,gender,Shannon Entropy,0.9991726422149693,0.9991726422149693,0.0,0.0,0.0
+diabetesMed,diabetic.csv,categorical,add_noise,False,gender,Simpson Diversity,0.9977091427069822,0.9977091427069822,0.0,0.0,0.0
+diabetesMed,diabetic.csv,categorical,add_noise,False,gender,Imbalance Ratio,0.9344911994404942,0.9344911994404942,0.0,0.0,0.0
+diabetesMed,diabetic.csv,categorical,add_noise,False,gender,Mutual Information,0.0001057157066490233,0.0001057157066490233,0.0,0.0,0.0
+diabetesMed,diabetic.csv,categorical,add_noise,False,gender,Normalized Mutual Information,0.00010401159925077363,0.00010401159925077363,0.0,0.0,0.0
+diabetesMed,diabetic.csv,categorical,add_noise,False,gender,Correlation Ratio,0.014532189890740047,0.014532189890740047,0.0,0.0,0.0
+diabetesMed,diabetic.csv,categorical,add_noise,False,gender,APD,0.00870184312119239,0.00870184312119239,0.0,0.0,0.0
+diabetesMed,diabetic.csv,categorical,add_noise,False,gender,Statistical Parity,0.0,0.0,0.0,0.0,0.0
+diabetesMed,diabetic.csv,categorical,add_noise,False,gender,Disparate Impact,1.0038490596093994,1.0038490596093994,0.0,0.0,0.0
+diabetesMed,diabetic.csv,categorical,add_noise,False,gender,Unprivileged Unbalance,0.9985180497472392,0.9985180497472392,0.0,0.0,0.0
+diabetesMed,diabetic.csv,categorical,add_noise,False,gender,Privileged Unbalance,0.9985180497472392,0.9985180497472392,0.0,0.0,0.0
+diabetesMed,diabetic.csv,categorical,add_noise,False,gender,Unprivileged Pos Prob,0.09927420957356864,0.09927420957356864,0.0,0.0,0.0
+diabetesMed,diabetic.csv,categorical,add_noise,False,gender,Privileged Pos Prob,0.09927420957356864,0.09927420957356864,0.0,0.0,0.0
+diabetesMed,diabetic.csv,categorical,add_noise,False,gender,Pos Probability Diff,0.0,0.0,0.0,0.0,0.0
+diabetesMed,diabetic.csv,categorical,add_noise,False,age,Gini Index,0.9281580945871377,0.9281580945871377,0.0,0.0,0.0
+diabetesMed,diabetic.csv,categorical,add_noise,False,age,Shannon Entropy,0.8424196519918264,0.8424196519918264,0.0,0.0,0.0
+diabetesMed,diabetic.csv,categorical,add_noise,False,age,Simpson Diversity,0.5636894058143888,0.5636894058143888,0.0,0.0,0.0
+diabetesMed,diabetic.csv,categorical,add_noise,False,age,Imbalance Ratio,0.026878612716763006,0.026878612716763006,0.0,0.0,0.0
+diabetesMed,diabetic.csv,categorical,add_noise,False,age,Mutual Information,0.0013954307518013868,0.0013954307518013868,0.0,0.0,0.0
+diabetesMed,diabetic.csv,categorical,add_noise,False,age,Normalized Mutual Information,0.0006164780408233838,0.0006164780408233838,0.0,0.0,0.0
+diabetesMed,diabetic.csv,categorical,add_noise,False,age,Correlation Ratio,0.04848326411309864,0.04848326411309864,0.0,0.0,0.0
+diabetesMed,diabetic.csv,categorical,add_noise,False,time_in_hospital,Gini Index,0.9599476539971048,0.9599476539971048,0.0,0.0,0.0
+diabetesMed,diabetic.csv,categorical,add_noise,False,time_in_hospital,Shannon Entropy,0.8987811829542817,0.8987811829542817,0.0,0.0,0.0
+diabetesMed,diabetic.csv,categorical,add_noise,False,time_in_hospital,Simpson Diversity,0.6312618957340937,0.6312618957340937,0.0,0.0,0.0
+diabetesMed,diabetic.csv,categorical,add_noise,False,time_in_hospital,Imbalance Ratio,0.08775137111517367,0.08775137111517367,0.0,0.0,0.0
+diabetesMed,diabetic.csv,categorical,add_noise,False,time_in_hospital,Kurtosis,3.4117307140024518,3.4117307140024518,0.0,0.0,0.0
+diabetesMed,diabetic.csv,categorical,add_noise,False,time_in_hospital,Skewness,0.9861378676125913,0.9861378676125913,0.0,0.0,0.0
+diabetesMed,diabetic.csv,categorical,add_noise,False,time_in_hospital,Mutual Information,0.0017626420611924713,0.0017626420611924713,0.0,0.0,0.0
+diabetesMed,diabetic.csv,categorical,add_noise,False,time_in_hospital,Normalized Mutual Information,0.0006538607833023417,0.0006538607833023417,0.0,0.0,0.0
+diabetesMed,diabetic.csv,categorical,add_noise,False,time_in_hospital,Kendall Tau,0.048356872108372,0.048356872108372,0.0,0.0,0.0
+diabetesMed,diabetic.csv,categorical,add_noise,False,time_in_hospital,Correlation Ratio,0.05319058454876894,0.05319058454876894,0.0,0.0,0.0
+diabetesMed,diabetic.csv,categorical,add_noise,False,time_in_hospital,APD,0.026613206970797013,0.026613206970797013,0.0,0.0,0.0
+diabetesMed,diabetic.csv,categorical,add_noise,False,time_in_hospital,Statistical Parity,-0.026613206970797013,-0.026613206970797013,0.0,0.0,-0.0
+diabetesMed,diabetic.csv,categorical,add_noise,False,time_in_hospital,Disparate Impact,0.7592839170804481,0.7592839170804481,0.0,0.0,0.0
+diabetesMed,diabetic.csv,categorical,add_noise,False,time_in_hospital,Unprivileged Unbalance,0.8443369330453563,0.8443369330453563,0.0,0.0,0.0
+diabetesMed,diabetic.csv,categorical,add_noise,False,time_in_hospital,Privileged Unbalance,1.1120174075225364,1.1120174075225364,0.0,0.0,0.0
+diabetesMed,diabetic.csv,categorical,add_noise,False,time_in_hospital,Unprivileged Pos Prob,0.08394528437724982,0.08394528437724982,0.0,0.0,0.0
+diabetesMed,diabetic.csv,categorical,add_noise,False,time_in_hospital,Privileged Pos Prob,0.11055849134804684,0.11055849134804684,0.0,0.0,0.0
+diabetesMed,diabetic.csv,categorical,add_noise,False,time_in_hospital,Pos Probability Diff,-0.026613206970797013,-0.026613206970797013,0.0,0.0,-0.0
+diabetesMed,diabetic.csv,categorical,add_noise,False,num_procedures,Gini Index,0.7964196416474204,0.7964196416474204,0.0,0.0,0.0
+diabetesMed,diabetic.csv,categorical,add_noise,False,num_procedures,Shannon Entropy,0.763906398432665,0.763906398432665,0.0,0.0,0.0
+diabetesMed,diabetic.csv,categorical,add_noise,False,num_procedures,Simpson Diversity,0.35850823361602113,0.35850823361602113,0.0,0.0,0.0
+diabetesMed,diabetic.csv,categorical,add_noise,False,num_procedures,Imbalance Ratio,0.05841121495327103,0.05841121495327103,0.0,0.0,0.0
+diabetesMed,diabetic.csv,categorical,add_noise,False,num_procedures,Kurtosis,3.817214812373327,3.817214812373327,0.0,0.0,0.0
+diabetesMed,diabetic.csv,categorical,add_noise,False,num_procedures,Skewness,1.3605390721537678,1.3605390721537678,0.0,0.0,0.0
+diabetesMed,diabetic.csv,categorical,add_noise,False,num_procedures,Mutual Information,0.0001702330325806245,0.0001702330325806245,0.0,0.0,0.0
+diabetesMed,diabetic.csv,categorical,add_noise,False,num_procedures,Normalized Mutual Information,9.403563995714301e-05,9.403563995714301e-05,0.0,0.0,0.0
+diabetesMed,diabetic.csv,categorical,add_noise,False,num_procedures,Kendall Tau,0.010896241448467896,0.010896241448467896,0.0,0.0,0.0
+diabetesMed,diabetic.csv,categorical,add_noise,False,num_procedures,Correlation Ratio,0.009783391039548303,0.009783391039548303,0.0,0.0,0.0
+diabetesMed,diabetic.csv,categorical,add_noise,False,num_medications,Gini Index,0.976016956805816,0.976016956805816,0.0,0.0,0.0
+diabetesMed,diabetic.csv,categorical,add_noise,False,num_medications,Shannon Entropy,0.8196682432860457,0.8196682432860457,0.0,0.0,0.0
+diabetesMed,diabetic.csv,categorical,add_noise,False,num_medications,Simpson Diversity,0.3778792027891703,0.3778792027891703,0.0,0.0,0.0
+diabetesMed,diabetic.csv,categorical,add_noise,False,num_medications,Imbalance Ratio,0.0010309278350515464,0.0010309278350515464,0.0,0.0,0.0
+diabetesMed,diabetic.csv,categorical,add_noise,False,num_medications,Kurtosis,6.1193110781116165,6.1193110781116165,0.0,0.0,0.0
+diabetesMed,diabetic.csv,categorical,add_noise,False,num_medications,Skewness,1.3113097209790614,1.3113097209790614,0.0,0.0,0.0
+diabetesMed,diabetic.csv,categorical,add_noise,False,num_medications,Mutual Information,0.003995811420024816,0.003995811420024816,0.0,0.0,0.0
+diabetesMed,diabetic.csv,categorical,add_noise,False,num_medications,Normalized Mutual Information,0.001059822956175302,0.001059822956175302,0.0,0.0,0.0
+diabetesMed,diabetic.csv,categorical,add_noise,False,num_medications,Kendall Tau,0.046459849468046883,0.046459849468046883,0.0,0.0,0.0
+diabetesMed,diabetic.csv,categorical,add_noise,False,num_medications,Correlation Ratio,0.051120719993175405,0.051120719993175405,0.0,0.0,0.0
+diabetesMed,diabetic.csv,categorical,add_noise,False,num_medications,APD,0.03291498893361483,0.03291498893361483,0.0,0.0,0.0
+diabetesMed,diabetic.csv,categorical,add_noise,False,num_medications,Statistical Parity,-0.03291498893361483,-0.03291498893361483,0.0,0.0,-0.0
+diabetesMed,diabetic.csv,categorical,add_noise,False,num_medications,Disparate Impact,0.7137442960435426,0.7137442960435426,0.0,0.0,0.0
+diabetesMed,diabetic.csv,categorical,add_noise,False,num_medications,Unprivileged Unbalance,0.8254707647392749,0.8254707647392749,0.0,0.0,0.0
+diabetesMed,diabetic.csv,categorical,add_noise,False,num_medications,Privileged Unbalance,1.1565357079770155,1.1565357079770155,0.0,0.0,0.0
+diabetesMed,diabetic.csv,categorical,add_noise,False,num_medications,Unprivileged Pos Prob,0.08206958073148975,0.08206958073148975,0.0,0.0,0.0
+diabetesMed,diabetic.csv,categorical,add_noise,False,num_medications,Privileged Pos Prob,0.11498456966510458,0.11498456966510458,0.0,0.0,0.0
+diabetesMed,diabetic.csv,categorical,add_noise,False,num_medications,Pos Probability Diff,-0.03291498893361483,-0.03291498893361483,0.0,0.0,-0.0
+diabetesMed,diabetic.csv,categorical,add_noise,False,number_outpatient,Gini Index,0.24517098209887234,0.24517098209887234,0.0,0.0,0.0
+diabetesMed,diabetic.csv,categorical,add_noise,False,number_outpatient,Shannon Entropy,0.1824350886287388,0.1824350886287388,0.0,0.0,0.0
+diabetesMed,diabetic.csv,categorical,add_noise,False,number_outpatient,Simpson Diversity,0.013352763028488134,0.013352763028488134,0.0,0.0,0.0
+diabetesMed,diabetic.csv,categorical,add_noise,False,number_outpatient,Imbalance Ratio,6.912760956726116e-05,6.912760956726116e-05,0.0,0.0,0.0
+diabetesMed,diabetic.csv,categorical,add_noise,False,number_outpatient,Kurtosis,204.30336344283205,204.30336344283205,0.0,0.0,0.0
+diabetesMed,diabetic.csv,categorical,add_noise,False,number_outpatient,Skewness,10.832079257668731,10.832079257668731,0.0,0.0,0.0
+diabetesMed,diabetic.csv,categorical,add_noise,False,number_outpatient,Mutual Information,0.0006495917876614041,0.0006495917876614041,0.0,0.0,0.0
+diabetesMed,diabetic.csv,categorical,add_noise,False,number_outpatient,Normalized Mutual Information,0.0007188941522017987,0.0007188941522017987,0.0,0.0,0.0
+diabetesMed,diabetic.csv,categorical,add_noise,False,number_outpatient,Kendall Tau,0.02539550687622489,0.02539550687622489,0.0,0.0,0.0
+diabetesMed,diabetic.csv,categorical,add_noise,False,number_outpatient,Correlation Ratio,0.0114961599066121,0.0114961599066121,0.0,0.0,0.0
+diabetesMed,diabetic.csv,categorical,add_noise,False,number_emergency,Gini Index,0.19836266572065173,0.19836266572065173,0.0,0.0,0.0
+diabetesMed,diabetic.csv,categorical,add_noise,False,number_emergency,Shannon Entropy,0.15064374747759904,0.15064374747759904,0.0,0.0,0.0
+diabetesMed,diabetic.csv,categorical,add_noise,False,number_emergency,Simpson Diversity,0.012856089015990618,0.012856089015990618,0.0,0.0,0.0
+diabetesMed,diabetic.csv,categorical,add_noise,False,number_emergency,Imbalance Ratio,6.70735797169495e-05,6.70735797169495e-05,0.0,0.0,0.0
+diabetesMed,diabetic.csv,categorical,add_noise,False,number_emergency,Kurtosis,217.79212561518187,217.79212561518187,0.0,0.0,0.0
+diabetesMed,diabetic.csv,categorical,add_noise,False,number_emergency,Skewness,11.205851862632144,11.205851862632144,0.0,0.0,0.0
+diabetesMed,diabetic.csv,categorical,add_noise,False,number_emergency,Mutual Information,0.00262663629527494,0.00262663629527494,0.0,0.0,0.0
+diabetesMed,diabetic.csv,categorical,add_noise,False,number_emergency,Normalized Mutual Information,0.003422900760004278,0.003422900760004278,0.0,0.0,0.0
+diabetesMed,diabetic.csv,categorical,add_noise,False,number_emergency,Kendall Tau,0.054358281326764776,0.054358281326764776,0.0,0.0,0.0
+diabetesMed,diabetic.csv,categorical,add_noise,False,number_emergency,Correlation Ratio,0.0708317303508988,0.0708317303508988,0.0,0.0,0.0
+diabetesMed,diabetic.csv,categorical,add_noise,False,number_inpatient,Gini Index,0.4431820317149435,0.4431820317149435,0.0,0.0,0.0
+diabetesMed,diabetic.csv,categorical,add_noise,False,number_inpatient,Shannon Entropy,0.30589326383997106,0.30589326383997106,0.0,0.0,0.0
+diabetesMed,diabetic.csv,categorical,add_noise,False,number_inpatient,Simpson Diversity,0.04234531196301491,0.04234531196301491,0.0,0.0,0.0
+diabetesMed,diabetic.csv,categorical,add_noise,False,number_inpatient,Imbalance Ratio,8.089305937550558e-05,8.089305937550558e-05,0.0,0.0,0.0
+diabetesMed,diabetic.csv,categorical,add_noise,False,number_inpatient,Kurtosis,33.388262591073165,33.388262591073165,0.0,0.0,0.0
+diabetesMed,diabetic.csv,categorical,add_noise,False,number_inpatient,Skewness,4.268508206822418,4.268508206822418,0.0,0.0,0.0
+diabetesMed,diabetic.csv,categorical,add_noise,False,number_inpatient,Mutual Information,0.00680741570383929,0.00680741570383929,0.0,0.0,0.0
+diabetesMed,diabetic.csv,categorical,add_noise,False,number_inpatient,Normalized Mutual Information,0.005635486097956734,0.005635486097956734,0.0,0.0,0.0
+diabetesMed,diabetic.csv,categorical,add_noise,False,number_inpatient,Kendall Tau,0.0949443761617139,0.0949443761617139,0.0,0.0,0.0
+diabetesMed,diabetic.csv,categorical,add_noise,False,number_inpatient,Correlation Ratio,0.12946023634311263,0.12946023634311263,0.0,0.0,0.0
+diabetesMed,diabetic.csv,categorical,add_noise,False,A1Cresult,Gini Index,0.948042313291218,0.948042313291218,0.0,0.0,0.0
+diabetesMed,diabetic.csv,categorical,add_noise,False,A1Cresult,Shannon Entropy,0.9540572051529483,0.9540572051529483,0.0,0.0,0.0
+diabetesMed,diabetic.csv,categorical,add_noise,False,A1Cresult,Simpson Diversity,0.8587998103117405,0.8587998103117405,0.0,0.0,0.0
+diabetesMed,diabetic.csv,categorical,add_noise,False,A1Cresult,Imbalance Ratio,0.46853410375580956,0.46853410375580956,0.0,0.0,0.0
+diabetesMed,diabetic.csv,categorical,add_noise,False,A1Cresult,Mutual Information,1.4164799261598415e-05,1.4164799261598415e-05,0.0,0.0,0.0
+diabetesMed,diabetic.csv,categorical,add_noise,False,A1Cresult,Normalized Mutual Information,1.032458081633017e-05,1.032458081633017e-05,0.0,0.0,0.0
+diabetesMed,diabetic.csv,categorical,add_noise,False,A1Cresult,Correlation Ratio,0.005313409454549601,0.005313409454549601,0.0,0.0,0.0
+diabetesMed,diabetic.csv,categorical,add_noise,False,A1Cresult,APD,0.0033752929996335307,0.0033752929996335307,0.0,0.0,0.0
+diabetesMed,diabetic.csv,categorical,add_noise,False,A1Cresult,Statistical Parity,0.0033752929996335307,0.0033752929996335307,0.0,0.0,0.0
+diabetesMed,diabetic.csv,categorical,add_noise,False,A1Cresult,Disparate Impact,1.0347811179899211,1.0347811179899211,0.0,0.0,0.0
+diabetesMed,diabetic.csv,categorical,add_noise,False,A1Cresult,Unprivileged Unbalance,1.010033825553456,1.010033825553456,0.0,0.0,0.0
+diabetesMed,diabetic.csv,categorical,add_noise,False,A1Cresult,Privileged Unbalance,0.9760845148735056,0.9760845148735056,0.0,0.0,0.0
+diabetesMed,diabetic.csv,categorical,add_noise,False,A1Cresult,Unprivileged Pos Prob,0.10041912582328287,0.10041912582328287,0.0,0.0,0.0
+diabetesMed,diabetic.csv,categorical,add_noise,False,A1Cresult,Privileged Pos Prob,0.09704383282364934,0.09704383282364934,0.0,0.0,0.0
+diabetesMed,diabetic.csv,categorical,add_noise,False,A1Cresult,Pos Probability Diff,0.0033752929996335307,0.0033752929996335307,0.0,0.0,0.0
+diabetesMed,diabetic.csv,categorical,add_noise,False,metformin,Gini Index,0.4921103124875404,0.4921103124875404,0.0,0.0,0.0
+diabetesMed,diabetic.csv,categorical,add_noise,False,metformin,Shannon Entropy,0.46709696263424433,0.46709696263424433,0.0,0.0,0.0
+diabetesMed,diabetic.csv,categorical,add_noise,False,metformin,Simpson Diversity,0.1949979574551493,0.1949979574551493,0.0,0.0,0.0
+diabetesMed,diabetic.csv,categorical,add_noise,False,metformin,Imbalance Ratio,0.010126383546589214,0.010126383546589214,0.0,0.0,0.0
+diabetesMed,diabetic.csv,categorical,add_noise,False,metformin,Mutual Information,0.00022259565579856033,0.00022259565579856033,0.0,0.0,0.0
+diabetesMed,diabetic.csv,categorical,add_noise,False,metformin,Normalized Mutual Information,0.00022916253598508375,0.00022916253598508375,0.0,0.0,0.0
+diabetesMed,diabetic.csv,categorical,add_noise,False,metformin,Correlation Ratio,0.020583253774495956,0.020583253774495956,0.0,0.0,0.0
+diabetesMed,diabetic.csv,categorical,add_noise,False,metformin,APD,0.01856198749012045,0.01856198749012045,0.0,0.0,0.0
+diabetesMed,diabetic.csv,categorical,add_noise,False,metformin,Statistical Parity,0.0010151534259084279,0.0010151534259084279,0.0,0.0,0.0
+diabetesMed,diabetic.csv,categorical,add_noise,False,metformin,Disparate Impact,1.0580209050223177,1.0580209050223177,0.0,0.0,0.0
+diabetesMed,diabetic.csv,categorical,add_noise,False,metformin,Unprivileged Unbalance,0.9856665507242226,0.9856665507242226,0.0,0.0,0.0
+diabetesMed,diabetic.csv,categorical,add_noise,False,metformin,Privileged Unbalance,0.9754559529930855,0.9754559529930855,0.0,0.0,0.0
+diabetesMed,diabetic.csv,categorical,add_noise,False,metformin,Unprivileged Pos Prob,0.09799649365479438,0.09799649365479438,0.0,0.0,0.0
+diabetesMed,diabetic.csv,categorical,add_noise,False,metformin,Privileged Pos Prob,0.09698134022888594,0.09698134022888594,0.0,0.0,0.0
+diabetesMed,diabetic.csv,categorical,add_noise,False,metformin,Pos Probability Diff,0.0010151534259084279,0.0010151534259084279,0.0,0.0,0.0
+diabetesMed,diabetic.csv,categorical,add_noise,False,chlorpropamide,Gini Index,0.0026494839928963287,0.0026494839928963287,0.0,0.0,0.0
+diabetesMed,diabetic.csv,categorical,add_noise,False,chlorpropamide,Shannon Entropy,0.007954607406167906,0.007954607406167906,0.0,0.0,0.0
+diabetesMed,diabetic.csv,categorical,add_noise,False,chlorpropamide,Simpson Diversity,0.0013264992657338048,0.0013264992657338048,0.0,0.0,0.0
+diabetesMed,diabetic.csv,categorical,add_noise,False,chlorpropamide,Imbalance Ratio,0.0006632499246306904,0.0006632499246306904,0.0,0.0,0.0
+diabetesMed,diabetic.csv,categorical,add_noise,False,chlorpropamide,Mutual Information,6.943242970414414e-05,6.943242970414414e-05,0.0,0.0,0.0
+diabetesMed,diabetic.csv,categorical,add_noise,False,chlorpropamide,Normalized Mutual Information,0.00021083329661704826,0.00021083329661704826,0.0,0.0,0.0
+diabetesMed,diabetic.csv,categorical,add_noise,False,chlorpropamide,Correlation Ratio,0.00855693213861284,0.00855693213861284,0.0,0.0,0.0
+diabetesMed,diabetic.csv,categorical,add_noise,False,chlorpropamide,APD,0.09948748869460355,0.09948748869460355,0.0,0.0,0.0
+diabetesMed,diabetic.csv,categorical,add_noise,False,chlorpropamide,Statistical Parity,0.0,0.0,0.0,0.0,0.0
+diabetesMed,diabetic.csv,categorical,add_noise,False,chlorpropamide,Disparate Impact,0.0,0.0,0.0,0.0,0.0
+diabetesMed,diabetic.csv,categorical,add_noise,False,chlorpropamide,Unprivileged Unbalance,0.5003316249623153,0.5003316249623153,0.0,0.0,0.0
+diabetesMed,diabetic.csv,categorical,add_noise,False,chlorpropamide,Privileged Unbalance,0.5003316249623153,0.5003316249623153,0.0,0.0,0.0
+diabetesMed,diabetic.csv,categorical,add_noise,False,chlorpropamide,Unprivileged Pos Prob,0.04974374434730178,0.04974374434730178,0.0,0.0,0.0
+diabetesMed,diabetic.csv,categorical,add_noise,False,chlorpropamide,Privileged Pos Prob,0.04974374434730178,0.04974374434730178,0.0,0.0,0.0
+diabetesMed,diabetic.csv,categorical,add_noise,False,chlorpropamide,Pos Probability Diff,0.0,0.0,0.0,0.0,0.0
+diabetesMed,diabetic.csv,categorical,add_noise,False,glipizide,Gini Index,0.31188617661274726,0.31188617661274726,0.0,0.0,0.0
+diabetesMed,diabetic.csv,categorical,add_noise,False,glipizide,Shannon Entropy,0.3313237103329705,0.3313237103329705,0.0,0.0,0.0
+diabetesMed,diabetic.csv,categorical,add_noise,False,glipizide,Simpson Diversity,0.10177918474480055,0.10177918474480055,0.0,0.0,0.0
+diabetesMed,diabetic.csv,categorical,add_noise,False,glipizide,Imbalance Ratio,0.00833101916134407,0.00833101916134407,0.0,0.0,0.0
+diabetesMed,diabetic.csv,categorical,add_noise,False,glipizide,Mutual Information,0.0001153932018016458,0.0001153932018016458,0.0,0.0,0.0
+diabetesMed,diabetic.csv,categorical,add_noise,False,glipizide,Normalized Mutual Information,0.00014735016484259148,0.00014735016484259148,0.0,0.0,0.0
+diabetesMed,diabetic.csv,categorical,add_noise,False,glipizide,Correlation Ratio,0.015625049269523957,0.015625049269523957,0.0,0.0,0.0
+diabetesMed,diabetic.csv,categorical,add_noise,False,glipizide,APD,0.01652552774825167,0.01652552774825167,0.0,0.0,0.0
+diabetesMed,diabetic.csv,categorical,add_noise,False,glipizide,Statistical Parity,-0.011951394865189816,-0.011951394865189816,0.0,0.0,-0.0
+diabetesMed,diabetic.csv,categorical,add_noise,False,glipizide,Disparate Impact,0.9161757116381237,0.9161757116381237,0.0,0.0,0.0
+diabetesMed,diabetic.csv,categorical,add_noise,False,glipizide,Unprivileged Unbalance,0.9923824736891378,0.9923824736891378,0.0,0.0,0.0
+diabetesMed,diabetic.csv,categorical,add_noise,False,glipizide,Privileged Unbalance,1.1125917762241015,1.1125917762241015,0.0,0.0,0.0
+diabetesMed,diabetic.csv,categorical,add_noise,False,glipizide,Unprivileged Pos Prob,0.09866420110792223,0.09866420110792223,0.0,0.0,0.0
+diabetesMed,diabetic.csv,categorical,add_noise,False,glipizide,Privileged Pos Prob,0.11061559597311206,0.11061559597311206,0.0,0.0,0.0
+diabetesMed,diabetic.csv,categorical,add_noise,False,glipizide,Pos Probability Diff,-0.011951394865189816,-0.011951394865189816,0.0,0.0,-0.0
+diabetesMed,diabetic.csv,categorical,add_noise,False,rosiglitazone,Gini Index,0.16971737462575223,0.16971737462575223,0.0,0.0,0.0
+diabetesMed,diabetic.csv,categorical,add_noise,False,rosiglitazone,Shannon Entropy,0.19147827332558492,0.19147827332558492,0.0,0.0,0.0
+diabetesMed,diabetic.csv,categorical,add_noise,False,rosiglitazone,Simpson Diversity,0.048617808809891784,0.048617808809891784,0.0,0.0,0.0
+diabetesMed,diabetic.csv,categorical,add_noise,False,rosiglitazone,Imbalance Ratio,0.0014870369173078167,0.0014870369173078167,0.0,0.0,0.0
+diabetesMed,diabetic.csv,categorical,add_noise,False,rosiglitazone,Mutual Information,0.00010011242793289275,0.00010011242793289275,0.0,0.0,0.0
+diabetesMed,diabetic.csv,categorical,add_noise,False,rosiglitazone,Normalized Mutual Information,0.0001698965045981403,0.0001698965045981403,0.0,0.0,0.0
+diabetesMed,diabetic.csv,categorical,add_noise,False,rosiglitazone,Correlation Ratio,0.01438720790711455,0.01438720790711455,0.0,0.0,0.0
+diabetesMed,diabetic.csv,categorical,add_noise,False,rosiglitazone,APD,0.01673743242192477,0.01673743242192477,0.0,0.0,0.0
+diabetesMed,diabetic.csv,categorical,add_noise,False,rosiglitazone,Statistical Parity,0.008265270744552751,0.008265270744552751,0.0,0.0,0.0
+diabetesMed,diabetic.csv,categorical,add_noise,False,rosiglitazone,Disparate Impact,1.1104682691074808,1.1104682691074808,0.0,0.0,0.0
+diabetesMed,diabetic.csv,categorical,add_noise,False,rosiglitazone,Unprivileged Unbalance,1.032523181091288,1.032523181091288,0.0,0.0,0.0
+diabetesMed,diabetic.csv,categorical,add_noise,False,rosiglitazone,Privileged Unbalance,0.9493895851660776,0.9493895851660776,0.0,0.0,0.0
+diabetesMed,diabetic.csv,categorical,add_noise,False,rosiglitazone,Unprivileged Pos Prob,0.10265505235000154,0.10265505235000154,0.0,0.0,0.0
+diabetesMed,diabetic.csv,categorical,add_noise,False,rosiglitazone,Privileged Pos Prob,0.0943897816054488,0.0943897816054488,0.0,0.0,0.0
+diabetesMed,diabetic.csv,categorical,add_noise,False,rosiglitazone,Pos Probability Diff,0.008265270744552751,0.008265270744552751,0.0,0.0,0.0
+diabetesMed,diabetic.csv,categorical,add_noise,False,acarbose,Gini Index,0.008972020639625839,0.008972020639625839,0.0,0.0,0.0
+diabetesMed,diabetic.csv,categorical,add_noise,False,acarbose,Shannon Entropy,0.01756374988530456,0.01756374988530456,0.0,0.0,0.0
+diabetesMed,diabetic.csv,categorical,add_noise,False,acarbose,Simpson Diversity,0.0022582006268810533,0.0022582006268810533,0.0,0.0,0.0
+diabetesMed,diabetic.csv,categorical,add_noise,False,acarbose,Imbalance Ratio,0.00012091898428053205,0.00012091898428053205,0.0,0.0,0.0
+diabetesMed,diabetic.csv,categorical,add_noise,False,acarbose,Mutual Information,3.929502218986275e-05,3.929502218986275e-05,0.0,0.0,0.0
+diabetesMed,diabetic.csv,categorical,add_noise,False,acarbose,Normalized Mutual Information,0.0001128652767291006,0.0001128652767291006,0.0,0.0,0.0
+diabetesMed,diabetic.csv,categorical,add_noise,False,acarbose,Correlation Ratio,0.007896777175077611,0.007896777175077611,0.0,0.0,0.0
+diabetesMed,diabetic.csv,categorical,add_noise,False,acarbose,APD,0.0516670123036622,0.0516670123036622,0.0,0.0,0.0
+diabetesMed,diabetic.csv,categorical,add_noise,False,acarbose,Statistical Parity,0.015896174058208805,0.015896174058208805,0.0,0.0,0.0
+diabetesMed,diabetic.csv,categorical,add_noise,False,acarbose,Disparate Impact,0.7431919332840871,0.7431919332840871,0.0,0.0,0.0
+diabetesMed,diabetic.csv,categorical,add_noise,False,acarbose,Unprivileged Unbalance,0.9298486097910557,0.9298486097910557,0.0,0.0,0.0
+diabetesMed,diabetic.csv,categorical,add_noise,False,acarbose,Privileged Unbalance,0.7699620009001263,0.7699620009001263,0.0,0.0,0.0
+diabetesMed,diabetic.csv,categorical,add_noise,False,acarbose,Unprivileged Pos Prob,0.09244698759672462,0.09244698759672462,0.0,0.0,0.0
+diabetesMed,diabetic.csv,categorical,add_noise,False,acarbose,Privileged Pos Prob,0.07655081353851581,0.07655081353851581,0.0,0.0,0.0
+diabetesMed,diabetic.csv,categorical,add_noise,False,acarbose,Pos Probability Diff,0.015896174058208805,0.015896174058208805,0.0,0.0,0.0
+diabetesMed,diabetic.csv,categorical,add_noise,False,miglitol,Gini Index,0.0011244011073571572,0.0011244011073571572,0.0,0.0,0.0
+diabetesMed,diabetic.csv,categorical,add_noise,False,miglitol,Shannon Entropy,0.0029108499101465767,0.0029108499101465767,0.0,0.0,0.0
+diabetesMed,diabetic.csv,categorical,add_noise,False,miglitol,Simpson Diversity,0.0002813375290111608,0.0002813375290111608,0.0,0.0,0.0
+diabetesMed,diabetic.csv,categorical,add_noise,False,miglitol,Imbalance Ratio,6.028090903610827e-05,6.028090903610827e-05,0.0,0.0,0.0
+diabetesMed,diabetic.csv,categorical,add_noise,False,miglitol,Mutual Information,2.619386599608906e-05,2.619386599608906e-05,0.0,0.0,0.0
+diabetesMed,diabetic.csv,categorical,add_noise,False,miglitol,Normalized Mutual Information,7.989700248881445e-05,7.989700248881445e-05,0.0,0.0,0.0
+diabetesMed,diabetic.csv,categorical,add_noise,False,miglitol,Correlation Ratio,0.006880891252832284,0.006880891252832284,0.0,0.0,0.0
+diabetesMed,diabetic.csv,categorical,add_noise,False,miglitol,APD,0.08572944111864166,0.08572944111864166,0.0,0.0,0.0
+diabetesMed,diabetic.csv,categorical,add_noise,False,miglitol,Statistical Parity,0.035425059224843805,0.035425059224843805,0.0,0.0,0.0
+diabetesMed,diabetic.csv,categorical,add_noise,False,miglitol,Disparate Impact,0.4835260590400874,0.4835260590400874,0.0,0.0,0.0
+diabetesMed,diabetic.csv,categorical,add_noise,False,miglitol,Unprivileged Unbalance,1.1091746900174293,1.1091746900174293,0.0,0.0,0.0
+diabetesMed,diabetic.csv,categorical,add_noise,False,miglitol,Privileged Unbalance,0.7528630034140915,0.7528630034140915,0.0,0.0,0.0
+diabetesMed,diabetic.csv,categorical,add_noise,False,miglitol,Unprivileged Pos Prob,0.11027586397497945,0.11027586397497945,0.0,0.0,0.0
+diabetesMed,diabetic.csv,categorical,add_noise,False,miglitol,Privileged Pos Prob,0.07485080475013564,0.07485080475013564,0.0,0.0,0.0
+diabetesMed,diabetic.csv,categorical,add_noise,False,miglitol,Pos Probability Diff,0.035425059224843805,0.035425059224843805,0.0,0.0,0.0
+diabetesMed,diabetic.csv,categorical,add_noise,False,diabetesMed,Gini Index,0.5502372575991186,0.5390258988300802,-0.011211358769038338,0.011211358769038338,-2.037549914005732
+diabetesMed,diabetic.csv,categorical,add_noise,False,diabetesMed,Shannon Entropy,0.6453848270609813,0.5570921165001087,-0.08829271056087262,0.08829271056087262,-13.680630045634773
+diabetesMed,diabetic.csv,categorical,add_noise,False,diabetesMed,Simpson Diversity,0.37953607270103906,0.22620372390495463,-0.15333234879608443,0.15333234879608443,-40.39994082904064
+diabetesMed,diabetic.csv,categorical,add_noise,False,diabetesMed,Imbalance Ratio,0.19714347543821684,0.02344562695046811,-0.17369784848774872,0.17369784848774872,-88.10732797605783
+diabetesMed,diabetic.csv,categorical,add_noise,False,diabetesMed,Mutual Information,0.00014307221146819815,0.0001495947007029222,6.522489234724038e-06,6.522489234724038e-06,4.5588791616419835
+diabetesMed,diabetic.csv,categorical,add_noise,False,diabetesMed,Normalized Mutual Information,0.00018552934053283173,0.0001364785920326426,-4.905074850018913e-05,4.905074850018913e-05,-26.43827028076402
+diabetesMed,diabetic.csv,categorical,add_noise,False,diabetesMed,Correlation Ratio,0.016678572185104466,0.01706240710594139,0.00038383492083692364,0.00038383492083692364,2.301365587995142
+diabetesMed,diabetic.csv,categorical,add_noise,False,diabetesMed,APD,0.013455966663903224,0.008624230940246,-0.004831735723657225,0.004831735723657225,-35.90775634588013
+diabetesMed,diabetic.csv,categorical,add_noise,False,diabetesMed,Statistical Parity,0.0,0.0019448820707580437,0.0019448820707580437,0.0019448820707580437,0.0
+diabetesMed,diabetic.csv,categorical,add_noise,False,diabetesMed,Disparate Impact,1.0101010990237496,1.0267263936091484,0.016625294585398853,0.016625294585398853,1.6459040190597751
+diabetesMed,diabetic.csv,categorical,add_noise,False,diabetesMed,Unprivileged Unbalance,0.9546166942517444,0.9897857978150253,0.035169103563280846,0.035169103563280846,3.6841073254901944
+diabetesMed,diabetic.csv,categorical,add_noise,False,diabetesMed,Privileged Unbalance,0.9546166942517444,0.9702238203324188,0.015607126080674383,0.015607126080674383,1.6349102393299009
+diabetesMed,diabetic.csv,categorical,add_noise,False,diabetesMed,Unprivileged Pos Prob,0.09490946887896955,0.09840603557452349,0.0034965666955539404,0.0034965666955539404,3.684107325490181
+diabetesMed,diabetic.csv,categorical,add_noise,False,diabetesMed,Privileged Pos Prob,0.09490946887896955,0.09646115350376544,0.0015516846247958932,0.0015516846247958932,1.6349102393298949
+diabetesMed,diabetic.csv,categorical,add_noise,False,diabetesMed,Pos Probability Diff,0.0,0.0019448820707580437,0.0019448820707580437,0.0019448820707580437,0.0
