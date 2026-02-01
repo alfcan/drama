@@ -19,19 +19,26 @@ if __name__ == '__main__':
     preprocessor = DataPreprocessor()
     
     # --- 1. Load and Preprocess Dataset ---
-    DATA_PATH = '../data/'
+    # --- 1. Load and Preprocess Dataset ---
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+    DATA_PATH = os.path.join(current_dir, '..', 'data')
+    
     file_path_input = input("Enter the name of the CSV data set to be analyzed (placed in the data folder): ")
     
     try:
-        df_raw = load_dataset(DATA_PATH + file_path_input)
+        full_path = os.path.join(DATA_PATH, file_path_input)
+        df_raw = load_dataset(full_path)
         print(f"Loaded dataset with {len(df_raw)} rows and {len(df_raw.columns)} columns")
     except (FileNotFoundError, ValueError) as e:
         print(f"Error loading dataset: {e}")
         exit(1)
     
-    # Apply only missing value removal (keep raw format for mutations and other processing)
-    df_cleaned, preprocessing_info = preprocessor.clean_data_only(df_raw)
-    print(f"After cleaning (missing values removed): {len(df_cleaned)} rows and {len(df_cleaned.columns)} columns")
+    # Apply only missing value removal and feature exclusion (keep raw format for mutations)
+    df_cleaned, preprocessing_info = preprocessor.clean_data_only(df_raw, dataset_name=file_path_input)
+    print(f"After cleaning (dropped features + missing values): {len(df_cleaned)} rows and {len(df_cleaned.columns)} columns")
+    
+    if preprocessing_info['features_ignored'] > 0:
+        print(f"  - Ignored/Dropped {preprocessing_info['features_ignored']} features based on configuration.")
     
     # Store the cleaned raw dataset for mutations
     df_raw_cleaned = df_cleaned.copy()
@@ -72,9 +79,9 @@ if __name__ == '__main__':
     # --- 4. Calculate Baseline Symptoms for All Potential Sensitive Features ---
     baseline_symptoms_by_feature = {}
     
-    # Apply temporary encoding for baseline symptom calculation
-    df_encoded_for_baseline = preprocessor.apply_temporary_encoding(df_raw_cleaned)
-    baseline_symptom_calculator = SymptomCalculator(df_encoded_for_baseline, target_attribute, positive_label, df_raw_cleaned)
+    # Use the raw cleaned dataframe for symptom calculation
+    # The SymptomCalculator works with raw features (not one-hot encoded)
+    baseline_symptom_calculator = SymptomCalculator(df_raw_cleaned, target_attribute, positive_label)
 
     print(f"\nCalculating baseline symptoms for {len(all_features_for_symptom_analysis)} potential sensitive attributes...")
     for feature in all_features_for_symptom_analysis:
@@ -131,10 +138,8 @@ if __name__ == '__main__':
                 })
                 
                 # Calculate post-mutation symptoms for ALL potential sensitive features on the MUTATED dataset
-                # Apply temporary encoding for symptom calculation on mutated data
-                # --- 3. Apply Temporary Encoding and Calculate Post-Mutation Symptoms ---
-                df_mutated_encoded = preprocessor.apply_temporary_encoding(df_mutated)
-                mutated_symptom_calculator = SymptomCalculator(df_mutated_encoded, target_attribute, positive_label, df_mutated)
+                # Use the raw mutated dataframe (not encoded)
+                mutated_symptom_calculator = SymptomCalculator(df_mutated, target_attribute, positive_label)
 
                 print(f"\n  Analyzing impact on {len(all_features_for_symptom_analysis)} potential sensitive attributes:")
                 for sensitive_feature_for_symptoms in all_features_for_symptom_analysis:
@@ -196,7 +201,7 @@ if __name__ == '__main__':
         # Export transformed datasets in a hierarchical structure
         if transformed_datasets:
             timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
-            base_results_path = '../results'
+            base_results_path = os.path.join(current_dir, '..', 'results')
             
             # Group datasets by the feature that was mutated
             feature_groups = {}

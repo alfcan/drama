@@ -159,12 +159,12 @@ def main() -> None:
     )
     parser.add_argument(
         "--csv",
-        default="/Users/alfonsocannavale/Documents/Progetti/drama/results/results.csv",
+        default="results/results.csv",
         help="Path to results.csv",
     )
     parser.add_argument(
         "--outdir",
-        default="/Users/alfonsocannavale/Documents/Progetti/drama/results",
+        default="results",
         help="Directory to save outputs (CSV/JSON)",
     )
     args = parser.parse_args()

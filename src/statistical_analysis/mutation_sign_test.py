@@ -271,7 +271,9 @@ def main():
     if len(sys.argv) > 1:
         results_file = sys.argv[1]
     else:
-        results_file = "../../results/results_adult_20250916_185125.csv"
+        import os
+        current_dir = os.path.dirname(os.path.abspath(__file__))
+        results_file = os.path.join(current_dir, '..', '..', 'results', 'results_adult_20250916_185125.csv')
     
     try:
         analyzer = MutationSignTest(results_file)

@@ -1,4 +1,6 @@
 import pandas as pd
+import json
+import os
 from typing import Dict, Any
 
 class DataPreprocessor:
@@ -6,8 +8,9 @@ class DataPreprocessor:
     A streamlined data preprocessing module for DRAMA framework.
     
     This preprocessor implements the DRAMA framework's strict preprocessing requirements:
-    1. Remove all missing values from datasets
-    2. Apply one-hot encoding to categorical columns
+    1. Remove specified ignored features (e.g. identifiers)
+    2. Remove all missing values from datasets
+    3. Apply one-hot encoding to categorical columns
     
     No additional preprocessing steps (outlier detection, scaling, normalization, etc.) 
     are performed, ensuring compliance with DRAMA's methodology.
@@ -15,21 +18,32 @@ class DataPreprocessor:
     Attributes:
         feature_types: Dictionary mapping column names to their identified types
         preprocessing_info: Tracking information about preprocessing steps applied
+        config: Configuration dictionary loaded from JSON
     """
     
     def __init__(self):
         """
-        Initialize the preprocessor with only required preprocessing steps.
-        
-        The preprocessor is configured to perform only the two mandatory steps:
-        missing value removal and one-hot encoding for categorical variables.
+        Initialize the preprocessor and load dataset configuration.
         """
         self.feature_types = {}
         self.preprocessing_info = {
+            'features_ignored': 0,
             'missing_handled': 0,
             'categorical_encoded': 0
         }
+        self.config = self._load_config()
         
+    def _load_config(self) -> Dict[str, Any]:
+        """Load feature configuration from JSON file."""
+        try:
+            current_dir = os.path.dirname(os.path.abspath(__file__))
+            config_path = os.path.join(current_dir, '..', 'config', 'dataset_config.json')
+            with open(config_path, 'r') as f:
+                return json.load(f)
+        except Exception as e:
+            print(f"Warning: Could not load dataset config. Using defaults. Error: {e}")
+            return {"default": {"ignore_features": []}}
+
     def identify_feature_types(self, df: pd.DataFrame) -> Dict[str, Dict[str, Any]]:
         """
         Automatically identify and categorize feature types.
@@ -77,6 +91,37 @@ class DataPreprocessor:
         self.feature_types = feature_types
         return feature_types
     
+    def drop_ignored_features(self, df: pd.DataFrame, dataset_name: str = None) -> pd.DataFrame:
+        """
+        Drop features specified in the configuration for the given dataset.
+        
+        Args:
+            df: Input DataFrame
+            dataset_name: Name of the dataset file (e.g., 'adult.csv')
+            
+        Returns:
+            DataFrame with ignored features removed
+        """
+        if dataset_name is None:
+            return df
+            
+        ignored_features = []
+        if dataset_name in self.config:
+            ignored_features = self.config[dataset_name].get("ignore_features", [])
+        else:
+            ignored_features = self.config.get("default", {}).get("ignore_features", [])
+            
+        # Only try to drop features that actually exist in the dataframe
+        features_to_drop = [f for f in ignored_features if f in df.columns]
+        
+        if features_to_drop:
+            print(f"Dropping ignored features for {dataset_name}: {features_to_drop}")
+            df_cleaned = df.drop(columns=features_to_drop)
+            self.preprocessing_info['features_ignored'] = len(features_to_drop)
+            return df_cleaned
+            
+        return df
+
     def handle_missing_values(self, df: pd.DataFrame) -> pd.DataFrame:
         """
         Remove all rows with missing values.
@@ -155,9 +200,14 @@ class DataPreprocessor:
         self.feature_types = self.identify_feature_types(df)
         return self
         
-    def transform(self, df: pd.DataFrame):
-        """Apply only the required preprocessing steps: missing value removal and one-hot encoding."""
+    def transform(self, df: pd.DataFrame, dataset_name: str = None):
+        """
+        Apply required preprocessing steps: feature exclusion, missing value removal, and one-hot encoding.
+        """
         df_processed = df.copy()
+        
+        # Step 0: Drop ignored features
+        df_processed = self.drop_ignored_features(df_processed, dataset_name)
         
         # Step 1: Remove all missing values
         df_processed = self.handle_missing_values(df_processed)
@@ -167,42 +217,45 @@ class DataPreprocessor:
         
         return df_processed, self.preprocessing_info
     
-    def fit_transform(self, df: pd.DataFrame):
+    def fit_transform(self, df: pd.DataFrame, dataset_name: str = None):
         """
         Fit and transform the dataset in one step.
-        
-        This convenience method performs both the analysis and preprocessing
-        steps required by the DRAMA framework. It identifies feature types,
-        removes missing values, and applies one-hot encoding to categorical
-        features.
-        
-        Args:
-            df: Raw input DataFrame
-            
-        Returns:
-            tuple: (processed_dataframe, preprocessing_info_dict)
-            
-        Raises:
-            TypeError: If input is not a pandas DataFrame
-            ValueError: If preprocessing results in empty DataFrame
         """
         if not isinstance(df, pd.DataFrame):
             raise TypeError("Input must be a pandas DataFrame")
             
         try:
-            return self.fit(df).transform(df)
+            # Note: fit() identifies types on the raw df. 
+            # If we drop columns in transform, we might have identified types for dropped columns.
+            # It's better to drop first, then identify types.
+            
+            # Custom pipeline here to ensure correct order:
+            df_processed = df.copy()
+            
+            # 1. Drop features
+            df_processed = self.drop_ignored_features(df_processed, dataset_name)
+            
+            # 2. Identify types on the potentially smaller dataframe
+            self.fit(df_processed)
+            
+            # 3. Handle missing
+            df_processed = self.handle_missing_values(df_processed)
+            
+            # 4. Encode
+            df_processed = self.encode_categorical_features(df_processed)
+            
+            return df_processed, self.preprocessing_info
+            
         except Exception as e:
             raise
             
-    def clean_data_only(self, df: pd.DataFrame):
+    def clean_data_only(self, df: pd.DataFrame, dataset_name: str = None):
         """
-        Apply only missing value removal without one-hot encoding.
-        
-        This method is used when we need to apply mutations on raw data
-        but still need clean data without categorical encoding.
+        Apply feature exclusion and missing value removal without one-hot encoding.
         
         Args:
             df: Input DataFrame
+            dataset_name: Name of the dataset file
             
         Returns:
             tuple: (cleaned_dataframe, preprocessing_info_dict)
@@ -212,15 +265,21 @@ class DataPreprocessor:
             
         # Reset preprocessing info for this operation
         self.preprocessing_info = {
+            'features_ignored': 0,
             'missing_handled': 0,
             'categorical_encoded': 0
         }
         
-        # Identify feature types
-        self.identify_feature_types(df)
+        df_cleaned = df.copy()
         
-        # Only remove missing values
-        df_cleaned = self.handle_missing_values(df)
+        # 1. Drop features
+        df_cleaned = self.drop_ignored_features(df_cleaned, dataset_name)
+        
+        # 2. Identify feature types on the remaining data
+        self.identify_feature_types(df_cleaned)
+        
+        # 3. Unconditionally remove missing values
+        df_cleaned = self.handle_missing_values(df_cleaned)
         
         return df_cleaned, self.preprocessing_info
     
@@ -266,7 +325,8 @@ class DataPreprocessor:
             Dictionary containing preprocessing statistics
         """
         return {
-            'preprocessing_steps_applied': ['missing_value_removal', 'one_hot_encoding'],
+            'preprocessing_steps_applied': ['feature_exclusion', 'missing_value_removal', 'one_hot_encoding'],
+            'features_ignored': self.preprocessing_info['features_ignored'],
             'missing_values_removed': self.preprocessing_info['missing_handled'],
             'categorical_features_encoded': self.preprocessing_info['categorical_encoded'],
             'feature_types_identified': len(self.feature_types),

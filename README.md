@@ -105,8 +105,21 @@ There are no specific prerequisites for using DRAMA.
    python main.py
    ```
    - Enter the dataset file name (e.g., `adult.csv`) when prompted.
-   - Select the `target_attribute` (printed list of columns).
+   - Enter the `target_attribute` (printed list of columns).
    - Select the `positive_label` (default `1` if unsure).
+
+### Configuration
+
+To exclude specific features (e.g., identifiers) from analysis and mutation, you can configure them in `src/config/dataset_config.json`.
+
+Example:
+```json
+{
+  "dataset_name.csv": {
+    "ignore_features": ["id", "name", "irrelevant_column"]
+  }
+}
+```
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -140,6 +153,7 @@ DRAMA applies a set of mutation operators to each non-target feature and evaluat
 Top-level directories:
 
 - `src/`: Core framework code for dataset-level fairness symptom analysis, mutation application, and statistical testing.
+  - `config/`: Configuration files (e.g., `dataset_config.json` for feature exclusion).
 - `data/`: Example datasets used by the main framework (CSV).
 - `results/`: Outputs produced by `src/main.py` and analysis modules:
   - Streamlined results CSVs, comprehensive analysis reports, and hierarchical transformed datasets per feature.

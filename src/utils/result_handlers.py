@@ -1,4 +1,5 @@
 import pandas as pd
+import os
 from datetime import datetime
 
 
@@ -48,7 +49,12 @@ def export_streamlined_results(results, file_path):
     # Export streamlined results
     if streamlined_results:
         streamlined_df = pd.DataFrame(streamlined_results)
-        results_filename = f'../results/results_{file_path.replace(".csv", "")}_{timestamp}.csv'
+        
+        # Determine results directory relative to this file
+        current_dir = os.path.dirname(os.path.abspath(__file__))
+        results_dir = os.path.join(current_dir, '..', '..', 'results')
+        
+        results_filename = os.path.join(results_dir, f'results_{file_path.replace(".csv", "")}_{timestamp}.csv')
         streamlined_df.to_csv(results_filename, index=False)
         print(f"\n✓ Streamlined results exported: {results_filename}")
         return results_filename

@@ -17,7 +17,10 @@ def export_transformed_datasets_hierarchical(transformed_datasets, comprehensive
         return
         
     timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
-    base_results_path = '../results'
+    
+    # Determine results directory relative to this file
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+    base_results_path = os.path.join(current_dir, '..', '..', 'results')
     
     # Group datasets by feature for hierarchical organization
     feature_groups = {}
@@ -45,7 +48,7 @@ def export_transformed_datasets_hierarchical(transformed_datasets, comprehensive
     # Export comprehensive final dataset
     if comprehensive_results:
         comprehensive_df = pd.DataFrame(comprehensive_results)
-        comprehensive_filename = f'../results/comprehensive_analysis_{timestamp}.csv'
+        comprehensive_filename = os.path.join(base_results_path, f'comprehensive_analysis_{timestamp}.csv')
         comprehensive_df.to_csv(comprehensive_filename, index=False)
         print(f"\n✓ Comprehensive final dataset exported: {comprehensive_filename}")
     

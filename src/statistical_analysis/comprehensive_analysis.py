@@ -428,10 +428,13 @@ class ComprehensiveMutationAnalysis:
 
 def main():
     """Main function to run the comprehensive analysis."""
-    path = "../../results/"
+    # Determine results directory relative to this file
+    current_dir = Path(__file__).resolve().parent
+    path = current_dir.parent.parent / "results"
+    
     dataset_name = input("Enter the dataset name (with extension):")
 
-    csv_path = path + dataset_name
+    csv_path = path / dataset_name
     
     print("Starting Comprehensive Mutation Analysis...")
     print("This analysis combines Sign Test and Wilcoxon Signed-Rank Test")

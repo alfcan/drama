@@ -1,0 +1,20 @@
+{
+    "default": {
+        "ignore_features": []
+    },
+    "adult.csv": {
+        "ignore_features": [
+            "fnlwgt",
+            "education-num"
+        ]
+    },
+    "compas.csv": {
+        "ignore_features": [
+            "id",
+            "name",
+            "first",
+            "last",
+            "case_number"
+        ]
+    }
+}
