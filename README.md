@@ -207,13 +207,11 @@ Calculated in `src/analysis/symptom_calculator.py`:
   - `Gini Index`, `Shannon Entropy`, `Simpson Diversity`, `Imbalance Ratio`.
   - `Kurtosis`, `Skewness` (numeric only).
 - Relationship to target:
-  - `Mutual Information`, `Normalized Mutual Information`, `Kendall Tau` (numeric), `Correlation Ratio`.
+  - `Mutual Information`, `Kendall Tau` (numeric), `Correlation Ratio`.
 - Fairness metrics (group-based):
-  - `APD` (Absolute Probability Difference)
-  - `Statistical Parity` (difference of positive rates)
-  - `Disparate Impact` (ratio of positive rates)
-  - `Unprivileged Unbalance`, `Privileged Unbalance`
-  - `Unprivileged Pos Prob`, `Privileged Pos Prob`, `Pos Probability Diff`
+  - `Data Statistical Parity`
+  - `Unprivileged Pos Prob` and `Privileged Pos Prob`
+  - `Group Unbalance`
 
 For one-hot encoded categorical features, fairness metrics are aggregated over binary indicator columns (0 vs 1 groups).
 

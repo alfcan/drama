@@ -19,7 +19,6 @@ if __name__ == '__main__':
     preprocessor = DataPreprocessor()
     
     # --- 1. Load and Preprocess Dataset ---
-    # --- 1. Load and Preprocess Dataset ---
     current_dir = os.path.dirname(os.path.abspath(__file__))
     DATA_PATH = os.path.join(current_dir, '..', 'data')
     

@@ -5,16 +5,16 @@
     "adult.csv": {
         "ignore_features": [
             "fnlwgt",
-            "education-num"
+            "education.num"
         ]
     },
+    "bank.csv": {
+        "ignore_features": []
+    },
     "compas.csv": {
-        "ignore_features": [
-            "id",
-            "name",
-            "first",
-            "last",
-            "case_number"
-        ]
+        "ignore_features": []
+    },
+    "diabetic.csv": {
+        "ignore_features": []
     }
 }
