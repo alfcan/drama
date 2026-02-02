@@ -13,13 +13,6 @@
 
   <p align="center">
     A framework designed to identify biases in datasets used for training machine learning models.
-    <br />
-    <a href="https://github.com/alfcan/drama"><strong>Explore the documentation »</strong></a>
-    <br />
-    <br />
-    <a href="https://github.com/alfcan/drama/issues/new?labels=bug&template=bug-report---.md">Report a bug</a>
-    ·
-    <a href="https://github.com/alfcan/drama/issues/new?labels=enhancement&template=feature-request---.md">Request a Function</a>
   </p>
 </div>
 
@@ -90,13 +83,9 @@ There are no specific prerequisites for using DRAMA.
 
 ### Installation
 
-1. Clone the Repository:
-   ```sh
-   git clone https://github.com/alfcan/drama.git
-   ```
+1. Clone the Repository
 2. Install Dependencies:
    ```sh
-   cd drama
    pip install -r requirements.txt
    ```
 3. Run the Framework (interactive):

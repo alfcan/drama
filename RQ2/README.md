@@ -7,7 +7,6 @@
   <p align="center">
     Reproducible experiments that assess fairness metrics on ML models trained on mutated datasets across canonical benchmarks (Adult, Bank, COMPAS, Diabetic).
     <br />
-    <a href="https://github.com/alfcan/drama"><strong>Back to main documentation »</strong></a>
   </p>
 </div>
 
