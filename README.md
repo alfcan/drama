@@ -255,6 +255,15 @@ Tools located in `src/statistical_analysis/` operate on the streamlined results 
   - Prompts for filename in `results/` (e.g., `results_adult_YYYYMMDD_HHMMSS.csv`).
   - Output: `results/comprehensive_analysis_results.json`, `results/analysis_report.txt`
 
+- RQ1 Analysis (FADE) (`run_analysis_rq1.py`)
+  - Purpose: Performs a two-stage analysis. Part A evaluates symptom sensitivity (Wilcoxon + Effect Size) to see which fairness metrics are most reactive. Part B calculates the Composite Fragility Score (CFS) to rank the most "fairness-fragile" features.
+  - Usage:
+    ```bash
+    python src/statistical_analysis/run_analysis_rq1.py
+    ```
+  - Note: This script automatically aggregates all `results_*.csv` files found in the `results/` folder into a single `results.csv` before starting the analysis.
+  - Outputs: `results/fade_analysis.csv`, `results/symptom_sensitivity_results.csv`, and `results/results.csv`.
+
 Interpretation guidelines (significance thresholds and effect size notes) are detailed in `src/statistical_analysis/README.md`.
 
 ## Results Structure
